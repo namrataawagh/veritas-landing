@@ -1,383 +1,510 @@
 "use client"
 
-import React, { useRef, useEffect, useState, useCallback } from "react"
-import { IntroAnimation, HERO_REVEAL_MS } from "@/components/intro-animation"
-import { PixelIcon } from "@/components/pixel-icon"
-import { RevealText } from "@/components/reveal-text"
-import { StackingAgentCards } from "@/components/stacking-agent-cards"
-import { MobileNav } from "@/components/mobile-nav"
-import { DevExSection } from "@/components/devex-section"
-import { VeritasFooter } from "@/components/veritas-footer"
-import { GlitchBackground } from "@/components/glitch-background"
+import React, { useEffect, useRef, useState } from "react"
 import Link from "next/link"
+import { Inter, Geist_Mono } from "next/font/google"
+import {
+  ArrowRight, Boxes, Clock3, CornerDownLeft, Eye, FileWarning, Fingerprint, LayoutDashboard,
+  Link2, Lock, Menu, Search, ScanSearch, Server, ShieldCheck, Sparkles, Target, Terminal, Users, X,
+} from "lucide-react"
+import "./home-theme.css"
 
-// ─── Intersection Observer hook ───────────────────────────────────────────────
-function useInView(threshold = 0.15) {
+const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--rc-inter" })
+const geistMono = Geist_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--rc-mono" })
+
+// ─── Content ──────────────────────────────────────────────────────────────────
+const NAV_LINKS = [
+  { label: "Product", href: "/product" },
+  { label: "How It Works", href: "/how-it-works" },
+  { label: "Docs", href: "/documentation" },
+  { label: "Pricing", href: "/pricing" },
+  { label: "About", href: "/about" },
+  { label: "Contact", href: "/contact" },
+]
+
+const VIOLATIONS = [
+  { icon: FileWarning, title: "Aadhaar number in application logs", svc: "payments-api", rule: "Data Exposure", sev: "HIGH", time: "14:02", fields: "aadhaar, phone, name", hash: "9f2c41…e8a71e" },
+  { icon: FileWarning, title: "PAN and bank account in debug output", svc: "loan-service", rule: "Data Exposure", sev: "HIGH", time: "13:57", fields: "pan, acct_no", hash: "4bca07…31c441" },
+  { icon: Target, title: "KYC data read by marketing-sync", svc: "marketing-sync", rule: "Purpose Violation", sev: "HIGH", time: "13:31", fields: "aadhaar (declared: onboarding_kyc)", hash: "af3e92…0d2b3b" },
+  { icon: Clock3, title: "Retention window exceeded", svc: "crm-sync", rule: "Retention Exceeded", sev: "MEDIUM", time: "11:20", fields: "phone (180-day policy)", hash: "6fc6d1…7713b4" },
+  { icon: Fingerprint, title: "Name, PIN code and DOB logged together", svc: "analytics-etl", rule: "Re-identification Risk", sev: "MEDIUM", time: "10:05", fields: "name, pincode, dob", hash: "c19a5e…b2f0d8" },
+]
+
+const PROBLEMS = [
+  { icon: FileWarning, title: "Personal data leaks into logs", desc: "A debug line dumps a customer record. Without automated scanning, you'll never know  -  until an auditor finds it." },
+  { icon: Target, title: "Data used beyond declared purpose", desc: "An API call accesses fields your privacy policy doesn't permit for that service. Purpose limitation violated silently." },
+  { icon: Clock3, title: "Retention windows exceeded", desc: "Data from 3 years ago sits in a system that's only allowed to keep it for 6 months. Every day is a fresh violation." },
+]
+
+const RULES = [
+  { title: "Data Exposure", severity: "HIGH", label: "Personal data appears where it must never appear  -  logs, debug output, API responses" },
+  { title: "Purpose Violation", severity: "HIGH", label: "Data used in a system whose declared consent scope doesn't permit it" },
+  { title: "Retention Exceeded", severity: "MEDIUM", label: "Data held past the permitted retention window for that field" },
+  { title: "Re-identification Risk", severity: "MEDIUM", label: "Individually harmless fields appearing together that could identify a person" },
+]
+
+const AUDIENCES = [
+  { icon: LayoutDashboard, label: "COMPLIANCE OFFICER", title: "Live violation detection", desc: "Every DPDPA violation appears on your dashboard the moment it's detected — via WebSocket live feed. Open a case, investigate with AI-assisted explanations, annotate, and resolve. Full case lifecycle in one view.", badges: ["Live Stream", "Case lifecycle"] },
+  { icon: Link2, label: "DPO / AUDITOR", title: "Tamper-evident evidence chain", desc: "Every verdict is linked by SHA-256 hash to the previous one. The chain can be verified at any time — proving no record was altered. Export a signed PDF audit report for regulators on demand.", badges: ["Hash chain", "PDF export"] },
+  { icon: Boxes, label: "ENGINEERING TEAM", title: "Agent deployment and monitoring", desc: "Deploy the Veritas Agent as a Docker container, .deb package, or Kubernetes DaemonSet. Each agent appears with a heartbeat status. Revoke any agent instantly from the dashboard.", badges: ["Docker", "Kubernetes DaemonSet"] },
+  { icon: Lock, label: "CTO / SECURITY", title: "Zero data leaves your network", desc: "Everything runs on your infrastructure — server, evidence store, dashboard. No data transmitted to us. RBAC with 4 server-enforced roles. TLS by default. Machine-bound RSA-PSS licensing.", badges: ["On-premise", "RBAC"] },
+]
+
+type CodeLine = { t: "c" | "cmd" | "out" | "ok" | "url" | "gap" | "plain"; s?: string } | { t: "prop"; k: string; v: string }
+const INSTALL: { title: string; desc: string; file: string; code: CodeLine[] }[] = [
+  {
+    title: "Install Veritas Server", desc: "One command on Ubuntu 22.04+", file: "terminal",
+    code: [
+      { t: "c", s: "# Install the Veritas Server (.deb)" }, { t: "cmd", s: "sudo apt install ./veritas_1.0.16_amd64.deb" }, { t: "gap" },
+      { t: "c", s: "# Get your machine fingerprint" }, { t: "cmd", s: "sudo veritas fingerprint" }, { t: "gap" },
+      { t: "out", s: "v2:a3f8c2d1e9b47f6c..." }, { t: "c", s: "# Send this hash to your Veritas contact" },
+    ],
+  },
+  {
+    title: "Install License", desc: "Machine-bound RSA-PSS signed .vlic", file: "terminal",
+    code: [
+      { t: "c", s: "# Install your signed license file" }, { t: "cmd", s: "sudo veritas license ./veritas.vlic" }, { t: "gap" },
+      { t: "ok", s: "✓ License valid" }, { t: "ok", s: "✓ Machine fingerprint matched" }, { t: "ok", s: "✓ Veritas service started" }, { t: "gap" },
+      { t: "url", s: "  → Dashboard: http://localhost:8000" },
+    ],
+  },
+  {
+    title: "Deploy Agent", desc: "One agent per application server", file: "agent-config.yaml",
+    code: [
+      { t: "c", s: "# agent-config.yaml" }, { t: "prop", k: "veritas_address", v: "'https://veritas.your-company.internal'" },
+      { t: "prop", k: "registration_key", v: "'KEY-FROM-DASHBOARD'" }, { t: "plain", s: "sources:" }, { t: "plain", s: "  - type: file" },
+      { t: "prop", k: "    path", v: "'/var/log/your-app/*.log'" }, { t: "plain", s: "  - type: docker" }, { t: "prop", k: "    container", v: "'order-service'" },
+    ],
+  },
+  {
+    title: "Define Data Policy", desc: "Upload org config — no code change needed", file: "org-config.yaml",
+    code: [
+      { t: "prop", k: "org_id", v: "'acme_retail'" }, { t: "plain", s: "fields:" }, { t: "plain", s: "  - field_name: aadhaar" },
+      { t: "prop", k: "    declared_purpose", v: "'onboarding_kyc'" }, { t: "prop", k: "    retention_days", v: "180" },
+      { t: "prop", k: "    source_system", v: "'partner-service'" }, { t: "gap" }, { t: "ok", s: "✓ Policy active — violations now detected" },
+    ],
+  },
+]
+
+const PLATFORMS = [
+  { icon: Terminal, os: "Linux", pkg: "Ubuntu 22.04+" },
+  { icon: Server, os: "macOS", pkg: "macOS 12+ (Apple Silicon)" },
+  { icon: LayoutDashboard, os: "Windows", pkg: "Windows 10/11, Server 2019+" },
+]
+
+const FOOTER_COLS = [
+  { heading: "Product", links: [{ label: "Overview", href: "/product" }, { label: "How It Works", href: "/how-it-works" }, { label: "Use Cases", href: "/use-cases" }] },
+  { heading: "Resources", links: [{ label: "Documentation", href: "/documentation" }, { label: "Quickstart", href: "/documentation/quickstart" }, { label: "GitHub ↗", href: "https://github.com/shreyaaassss/Veritas", external: true }] },
+  { heading: "Company", links: [{ label: "About", href: "/about" }, { label: "Contact", href: "/contact" }, { label: "Book a Demo", href: "/book-demo" }] },
+  { heading: "Legal", links: [{ label: "Privacy", href: "/privacy" }, { label: "License", href: "/license" }, { label: "Security", href: "/security" }] },
+]
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+function Reveal({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
   const ref = useRef<HTMLDivElement>(null)
   const [inView, setInView] = useState(false)
   useEffect(() => {
     const el = ref.current
     if (!el) return
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setInView(true) }, { threshold })
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setInView(true); obs.disconnect() } }, { threshold: 0.12 })
     obs.observe(el)
     return () => obs.disconnect()
-  }, [threshold])
-  return { ref, inView }
-}
-
-// ─── Bento card ───────────────────────────────────────────────────────────────
-function BentoCard({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
-  const { ref, inView } = useInView(0.08)
-  return (
-    <div
-      ref={ref}
-      className={`group relative rounded-2xl border border-black/[0.07] bg-white overflow-hidden hover:border-black/[0.14] hover:bg-[#fafaf8] transition-colors ${className}`}
-      style={{
-        opacity: inView ? 1 : 0,
-        transform: inView ? "translateY(0)" : "translateY(28px)",
-        transition: `opacity 0.7s ease ${delay}ms, transform 0.7s ease ${delay}ms, border-color 0.3s, background-color 0.3s`,
-      }}
-    >
-      {children}
-    </div>
-  )
-}
-
-function Tag({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] tracking-widest font-sans text-black/40 bg-black/[0.04]">
-      {children}
-    </span>
-  )
-}
-
-function RuleBadge({ title, severity, label }: { title: string; severity: "HIGH" | "MEDIUM"; label: string }) {
-  const color = severity === "HIGH" ? "bg-red-50 text-red-600 border-red-200/70" : "bg-amber-50 text-amber-600 border-amber-200/70"
-  return (
-    <div className="flex items-center gap-3 p-3.5 rounded-xl border border-black/[0.06] bg-black/[0.02] hover:bg-black/[0.04] transition-colors">
-      <span className="text-xs font-light text-black/70 shrink-0 w-36">{title}</span>
-      <span className="text-xs text-black/50 flex-1">{label}</span>
-      <span className={`text-[9px] px-2 py-0.5 rounded-full border tracking-widest shrink-0 ${color}`}>{severity}</span>
-    </div>
-  )
-}
-
-// ─── Main page ────────────────────────────────────────────────────────────────
-export default function VeritasPage() {
-  const [mounted, setMounted] = useState(false)
-  const [heroReady, setHeroReady] = useState(false)
-  const [videoReady, setVideoReady] = useState(false)
-  const [ctaHovered, setCtaHovered] = useState(false)
-
-  useEffect(() => setMounted(true), [])
-
-  const handleIntroDone = useCallback(() => {
-    setHeroReady(true)
   }, [])
-
   return (
-    <div className="bg-[#F5F4F0] text-[#111] min-h-screen font-sans antialiased">
+    <div ref={ref} className={`rc-reveal ${inView ? "is-in" : ""} ${className}`} style={{ transitionDelay: `${delay}ms` }}>
+      {children}
+    </div>
+  )
+}
 
-      {mounted && <IntroAnimation onDone={handleIntroDone} />}
+function SectionHead({ eyebrow, title, lede, center }: { eyebrow: string; title: string; lede?: string; center?: boolean }) {
+  return (
+    <Reveal className={`rc-section-head ${center ? "center" : ""}`}>
+      <span className="rc-eyebrow">{eyebrow}</span>
+      <h2 className="rc-h2">{title}</h2>
+      {lede && <p className="rc-body-lg">{lede}</p>}
+    </Reveal>
+  )
+}
 
-      <MobileNav />
-
-      {/* ── HERO ────────────────────────────────────────────────────────────── */}
-      <section className="relative min-h-[92vh] overflow-hidden flex flex-col">
-        <div
-          className="absolute inset-0 z-0"
-          style={{
-            opacity: heroReady ? 1 : 0,
-            transition: `opacity 1.2s ease ${HERO_REVEAL_MS}ms`,
-          }}
-        >
-          <video
-            autoPlay muted loop playsInline
-            onCanPlay={() => setVideoReady(true)}
-            className="absolute inset-0 w-full h-full object-cover object-center"
-            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/agentic-hero-9yW3wnTNMfn2U6lsVhTTZSJFEvAoSj.mp4"
-            style={{
-              transform: videoReady ? "scale(1.05)" : "scale(0.85)",
-              transition: "transform 2s cubic-bezier(0.16, 1, 0.3, 1)",
-              filter: "saturate(1.8) brightness(1.15) contrast(1.05)",
-            }}
-          />
-          <div className="absolute inset-x-0 bottom-0 z-10 pointer-events-none" style={{ height: "55%", background: "linear-gradient(to top, #F5F4F0 0%, #F5F4F0 12%, rgba(245,244,240,0.75) 28%, rgba(245,244,240,0.35) 48%, rgba(245,244,240,0.08) 70%, transparent 100%)" }} />
-          <div className="absolute inset-x-0 bottom-0 z-10 pointer-events-none" style={{ height: "18%", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", maskImage: "linear-gradient(to top, black 0%, transparent 100%)", WebkitMaskImage: "linear-gradient(to top, black 0%, transparent 100%)" }} />
+// ─── Navigation ───────────────────────────────────────────────────────────────
+function Nav() {
+  const [open, setOpen] = useState(false)
+  return (
+    <div className="rc-nav-wrap">
+      <nav className="rc-nav" aria-label="Main">
+        <Link href="/" className="rc-logo"><span className="rc-logo-mark" aria-hidden="true" />Veritas</Link>
+        <div className="rc-nav-links">
+          {NAV_LINKS.map(l => <Link key={l.label} href={l.href}>{l.label}</Link>)}
         </div>
+        <Link href="/book-demo" className="rc-btn rc-btn-primary">Book a demo</Link>
+        <button className="rc-burger" onClick={() => setOpen(v => !v)} aria-label={open ? "Close menu" : "Open menu"} aria-expanded={open}>
+          {open ? <X size={18} /> : <Menu size={18} />}
+        </button>
+      </nav>
+      {open && (
+        <div className="rc-menu">
+          {NAV_LINKS.map(l => <Link key={l.label} href={l.href} onClick={() => setOpen(false)}>{l.label}</Link>)}
+          <Link href="/book-demo" onClick={() => setOpen(false)} className="rc-btn rc-btn-primary" style={{ justifyContent: "center", marginTop: 8 }}>Book a demo</Link>
+        </div>
+      )}
+    </div>
+  )
+}
 
-        <div className="h-20" />
+// ─── Product window (hero) ────────────────────────────────────────────────────
+const QUERY = "status:open since:today"
 
-        <div className="relative z-20 flex-1 flex flex-col justify-end px-6 md:px-12 lg:px-20 pb-16 max-w-6xl">
-          <div style={{ opacity: heroReady ? 1 : 0, transform: heroReady ? "translateY(0)" : "translateY(24px)", transition: "opacity 1s ease 200ms, transform 1s cubic-bezier(0.16,1,0.3,1) 200ms" }}>
-            <Tag>DPDPA COMPLIANCE PLATFORM</Tag>
-            <RevealText className="mt-5 text-5xl md:text-6xl lg:text-7xl font-light tracking-tight leading-[1.02]">
-              {"Stop guessing.\nStart proving\nDPDPA compliance."}
-            </RevealText>
-            <p className="mt-7 text-base text-black/50 max-w-lg leading-relaxed">
+function ProductWindow() {
+  const [active, setActive] = useState(0)
+  const [typed, setTyped] = useState(0)
+  const [hover, setHover] = useState(false)
+
+  // Type the search query once the window has landed
+  useEffect(() => {
+    if (typed >= QUERY.length) return
+    const t = setTimeout(() => setTyped(n => n + 1), typed === 0 ? 1600 : 45)
+    return () => clearTimeout(t)
+  }, [typed])
+
+  // Step through the results like someone pressing ↓
+  useEffect(() => {
+    if (hover) return
+    const t = setInterval(() => setActive(i => (i + 1) % VIOLATIONS.length), 2400)
+    return () => clearInterval(t)
+  }, [hover])
+
+  const v = VIOLATIONS[active]
+  return (
+    <div className="rc-window-stage">
+      <div className="rc-window" onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
+        <div className="rc-window-bar">
+          <Search aria-hidden="true" />
+          <div className="query">{QUERY.slice(0, typed)}<span className="caret" /></div>
+          <span className="rc-badge ai"><Sparkles size={12} style={{ marginRight: 4 }} />AI</span>
+        </div>
+        <div className="rc-window-body">
+          <div className="rc-list" role="listbox" aria-label="Live violations">
+            <div className="rc-list-label">Live violations</div>
+            {VIOLATIONS.map((row, i) => {
+              const Icon = row.icon
+              return (
+                <button key={row.title} role="option" aria-selected={i === active} className={`rc-row ${i === active ? "active" : ""}`} onClick={() => setActive(i)}>
+                  <span className="rc-row-icon"><Icon /></span>
+                  <span style={{ minWidth: 0 }}>
+                    <span className="rc-row-title" style={{ display: "block" }}>{row.title}</span>
+                    <span className="rc-row-sub" style={{ display: "block" }}>{row.svc} · {row.time}</span>
+                  </span>
+                  <span className={`rc-badge ${row.sev === "HIGH" ? "warm" : ""}`}>{row.sev}</span>
+                </button>
+              )
+            })}
+          </div>
+          <div className="rc-detail">
+            <div key={active} className="rc-detail-swap" style={{ display: "grid", gap: 16 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <span className={`rc-badge ${v.sev === "HIGH" ? "warm" : ""}`}>{v.sev}</span>
+                <span className="rc-badge">OPEN</span>
+              </div>
+              <div className="rc-h3" style={{ fontSize: 18 }}>{v.title}</div>
+              <dl>
+                <div><dt>Rule</dt><dd>{v.rule}</dd></div>
+                <div><dt>Statute</dt><dd>DPDPA 2023 · reasonable security safeguards</dd></div>
+                <div><dt>Fields</dt><dd className="mono">{v.fields}</dd></div>
+                <div><dt>Evidence</dt><dd className="mono">sha256 {v.hash} <span style={{ color: "var(--color-success-green)" }}>· chain valid</span></dd></div>
+              </dl>
+            </div>
+          </div>
+        </div>
+        <div className="rc-window-foot">
+          <span className="left"><span className="rc-live" />Live · 4 agents connected</span>
+          <span className="right">
+            <span>Open case <span className="rc-kbd"><CornerDownLeft size={12} /></span></span>
+            <span>Actions <span className="rc-kbd">⌘</span><span className="rc-kbd">K</span></span>
+          </span>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ─── Install terminal ─────────────────────────────────────────────────────────
+function InstallTerminal() {
+  const [step, setStep] = useState(0)
+  const s = INSTALL[step]
+  return (
+    <div className="rc-term">
+      <div className="rc-steps" role="tablist" aria-label="Installation steps">
+        {INSTALL.map((it, i) => (
+          <button key={it.title} role="tab" aria-selected={i === step} className={`rc-step ${i === step ? "active" : ""}`} onClick={() => setStep(i)}>
+            <span className="n">0{i + 1}</span>
+            <span><b>{it.title}</b><span>{it.desc}</span></span>
+          </button>
+        ))}
+      </div>
+      <div className="rc-code" role="tabpanel">
+        <div className="rc-code-head"><i /><i /><i /><span className="file">{s.file}</span></div>
+        <pre key={step} className="rc-detail-swap">
+          {s.code.map((l, i) => {
+            if (l.t === "gap") return <div key={i} style={{ height: 12 }} />
+            if (l.t === "prop") return <div key={i}><span className="key">{l.k}:</span> <span className="val">{l.v}</span></div>
+            return <div key={i} className={l.t === "plain" ? "val" : l.t}>{l.s}</div>
+          })}
+        </pre>
+      </div>
+    </div>
+  )
+}
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
+export default function VeritasPage() {
+  return (
+    <div className={`rc ${inter.variable} ${geistMono.variable}`}>
+      <Nav />
+
+      {/* ── HERO ── */}
+      <header className="rc-hero">
+        <div className="rc-hero-art" aria-hidden="true">
+          <div className="wash" />
+          <div className="bar blue" />
+          <div className="bar coral-1" />
+          <div className="bar coral-2" />
+          <div className="edge e1" />
+          <div className="edge e2" />
+          <div className="grain" />
+          <div className="fade" />
+        </div>
+        <div className="rc-container">
+          <div className="rc-hero-copy">
+            <span className="rc-pill"><span className="rc-badge warm">NEW</span>DPDPA compliance platform · v1.0.16</span>
+            <h1 className="rc-display">Stop guessing.<br />Start proving DPDPA compliance.</h1>
+            <p className="rc-body-lg rc-hero-lede">
               Veritas automatically detects personal data violations in your application logs, records tamper-evident evidence, and gives your compliance team a live dashboard to investigate every case  -  entirely on your own infrastructure.
             </p>
-            <div className="mt-7 flex flex-wrap gap-4">
-              {[
-                { dot: "#10b981", label: "v1.0.16", sub: "LATEST RELEASE" },
-                { dot: "#3b82f6", label: "On-Premise", sub: "YOUR INFRA" },
-                { dot: "#8b5cf6", label: "DPDPA 2023", sub: "INDIA" },
-              ].map(({ dot, label, sub }) => (
-                <div key={label} className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: dot }} />
-                  <span className="text-sm text-black/70">{label}</span>
-                  <span className="font-pixel text-[9px] text-black/30 tracking-widest">{sub}</span>
-                </div>
-              ))}
+            <div className="rc-actions">
+              <Link href="/book-demo" className="rc-btn rc-btn-primary rc-btn-lg">Book a demo</Link>
+              <Link href="/how-it-works" className="rc-btn rc-btn-ghost rc-btn-lg">How it works <ArrowRight size={16} /></Link>
             </div>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/book-demo" className="px-8 py-3.5 bg-[#111] text-white text-sm rounded-xl hover:bg-[#2a2a2a] transition-colors tracking-widest font-medium">
-                BOOK A DEMO
-              </Link>
-              <Link href="/how-it-works" className="px-8 py-3.5 border border-black/15 text-black/70 text-sm rounded-xl hover:border-black/30 hover:text-black transition-all tracking-widest">
-                HOW IT WORKS →
-              </Link>
-            </div>
+            <div className="rc-meta rc-mono"><span>v1.0.16</span><span>On-premise · your infra</span><span>DPDPA 2023 · India</span></div>
+          </div>
+          <ProductWindow />
+        </div>
+      </header>
+
+      {/* ── THE PROBLEM ── */}
+      <section className="rc-section">
+        <div className="rc-container">
+          <SectionHead
+            eyebrow="The problem"
+            title="DPDPA 2023 requires you to detect violations before they become breaches."
+            lede="Every organisation subject to DPDPA must track where personal data goes, why it's being used, how long it's retained, and prove compliance to auditors. Doing this manually across hundreds of services is impossible."
+          />
+          <div className="rc-grid rc-grid-3">
+            {PROBLEMS.map((p, i) => {
+              const Icon = p.icon
+              return (
+                <Reveal key={p.title} className="rc-card" delay={i * 80}>
+                  <span className="rc-icon"><Icon /></span>
+                  <h3 className="rc-h3">{p.title}</h3>
+                  <p className="rc-small">{p.desc}</p>
+                </Reveal>
+              )
+            })}
           </div>
         </div>
       </section>
 
-      {/* ── THE PROBLEM ─────────────────────────────────────────────────────── */}
-      <section className="py-32 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
-        <div className="max-w-6xl mx-auto">
-          <Tag>THE PROBLEM</Tag>
-          <RevealText className="mt-5 text-4xl md:text-5xl lg:text-6xl font-light tracking-tight leading-[1.05] max-w-4xl">
-            {"DPDPA 2023 requires you to\ndetect violations before\nthey become breaches."}
-          </RevealText>
-          <p className="mt-8 text-base text-black/45 leading-relaxed max-w-2xl">
-            Every organisation subject to DPDPA must track where personal data goes, why it&apos;s being used, how long it&apos;s retained, and prove compliance to auditors. Doing this manually across hundreds of services is impossible.
-          </p>
-          <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-3">
-            {[
-              { n: "01", icon: "platform" as const, title: "Personal data leaks into logs", desc: "A debug line dumps a customer record. Without automated scanning, you'll never know  -  until an auditor finds it.", delay: 0 },
-              { n: "02", icon: "workflow" as const, title: "Data used beyond declared purpose", desc: "An API call accesses fields your privacy policy doesn't permit for that service. Purpose limitation violated silently.", delay: 60 },
-              { n: "03", icon: "integrations" as const, title: "Retention windows exceeded", desc: "Data from 3 years ago sits in a system that's only allowed to keep it for 6 months. Every day is a fresh violation.", delay: 120 },
-            ].map((item) => (
-              <BentoCard key={item.n} className="p-7" delay={item.delay}>
-                <div className="mb-5">
-                  <PixelIcon type={item.icon} size={36} />
+      {/* ── CAPABILITIES ── */}
+      <section className="rc-section">
+        <div className="rc-container">
+          <SectionHead eyebrow="Capabilities" title="Everything you need for DPDPA compliance." />
+          <div className="rc-grid rc-grid-3">
+            <Reveal className="rc-card warm rc-span-2">
+              <span className="rc-icon"><ScanSearch /></span>
+              <span className="rc-eyebrow">PII detection engine</span>
+              <h3 className="rc-h3">Detects personal data in your application logs</h3>
+              <p className="rc-small">Automatically scans logs and API traffic for personal data across dozens of entity types. Every detection is validated to eliminate false positives. Runs fully on your server  -  no external API calls.</p>
+              <div className="rc-log" aria-label="Example log line with personal data flagged">
+                <div><span className="k">level=</span>info <span className="k">svc=</span>payments-api <span className="k">route=</span>/v1/kyc/submit</div>
+                <div><span className="k">name=</span><span className="pii">&quot;Priya Sharma&quot;</span><span className="tag">NAME</span> <span className="k">aadhaar=</span><span className="pii">&quot;4821 7730 1956&quot;</span><span className="tag">AADHAAR</span></div>
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                {["Aadhaar", "PAN Card", "Phone Numbers", "Names", "Email", "Address"].map(t => <span key={t} className="rc-badge">{t}</span>)}
+              </div>
+            </Reveal>
+
+            <Reveal className="rc-card" delay={80}>
+              <span className="rc-icon"><ShieldCheck /></span>
+              <span className="rc-eyebrow">Data residency</span>
+              <h3 className="rc-h3">Zero data leaves your network</h3>
+              <p className="rc-small">Server, evidence store, and dashboard all run on your infrastructure. No cloud dependency. The only optional egress is AI investigation  -  and it sends no raw PII.</p>
+              <span className="rc-badge ok" style={{ alignSelf: "flex-start" }}>Your data. Your network. Your control.</span>
+            </Reveal>
+
+            <Reveal className="rc-card rc-span-2">
+              <span className="rc-icon"><Eye /></span>
+              <span className="rc-eyebrow">DPDPA rule engine</span>
+              <h3 className="rc-h3">4 rules. Every violation caught.</h3>
+              <div className="rc-rules">
+                {RULES.map(r => (
+                  <div key={r.title} className="rc-rule">
+                    <div><b>{r.title}</b><span>{r.label}</span></div>
+                    <span className={`rc-badge ${r.severity === "HIGH" ? "warm" : ""}`}>{r.severity}</span>
+                  </div>
+                ))}
+              </div>
+            </Reveal>
+
+            <Reveal className="rc-card" delay={80}>
+              <span className="rc-icon"><Link2 /></span>
+              <span className="rc-eyebrow">Tamper-evident evidence</span>
+              <h3 className="rc-h3">SHA-256 hash chain</h3>
+              <p className="rc-small">Every verdict links to the previous via SHA-256 hash. Verify the chain at any time. Export a signed PDF audit report for regulators.</p>
+              <div className="rc-log">
+                <div><span className="k">verdict_hash:</span> sha256(prev + verdict)</div>
+                <div><span className="k">chain_valid:</span> <span style={{ color: "var(--color-success-green)" }}>true</span></div>
+              </div>
+            </Reveal>
+
+            <Reveal className="rc-card rc-span-2">
+              <span className="rc-icon"><LayoutDashboard /></span>
+              <span className="rc-eyebrow">Investigation dashboard</span>
+              <h3 className="rc-h3">Live violations. Full case lifecycle.</h3>
+              <p className="rc-small">Violations appear live via WebSocket. Open cases, investigate with optional AI explanations (no raw PII sent), annotate, and move OPEN → ACKNOWLEDGED → RESOLVED.</p>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                {["Live Stream", "Audit Ledger", "Agent Management", "PDF Export"].map(f => <span key={f} className="rc-badge">{f}</span>)}
+              </div>
+            </Reveal>
+
+            <Reveal className="rc-card" delay={80}>
+              <span className="rc-icon"><Sparkles /></span>
+              <span style={{ display: "flex", alignItems: "center", gap: 8 }}><span className="rc-eyebrow">Optional</span><span className="rc-badge ai">AI</span></span>
+              <h3 className="rc-h3">Plain-language violation explanations</h3>
+              <p className="rc-small">Connect OpenAI, Anthropic, or a local Ollama model. Get statute-referenced explanations of each violation. Raw PII never sent  -  only field names and rule text.</p>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      {/* ── WHO IT'S FOR ── */}
+      <section className="rc-section">
+        <div className="rc-container">
+          <SectionHead eyebrow="Who it's for" title="Built for every team responsible for data compliance." />
+          <div className="rc-grid rc-grid-2">
+            {AUDIENCES.map((a, i) => {
+              const Icon = a.icon
+              return (
+                <Reveal key={a.label} className="rc-card" delay={(i % 2) * 80}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                    <span className="rc-icon"><Icon /></span>
+                    <span className="rc-eyebrow">{a.label}</span>
+                  </div>
+                  <h3 className="rc-h3">{a.title}</h3>
+                  <p className="rc-small">{a.desc}</p>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: "auto" }}>
+                    {a.badges.map(b => <span key={b} className="rc-badge">{b}</span>)}
+                  </div>
+                </Reveal>
+              )
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ── INSTALLATION ── */}
+      <section className="rc-section">
+        <div className="rc-container">
+          <SectionHead eyebrow="Installation" title="From install to first violation in four steps." lede="Install the server, activate your license, point an agent at your logs, and upload your data policy." />
+          <Reveal><InstallTerminal /></Reveal>
+        </div>
+      </section>
+
+      {/* ── DEPLOYMENT ── */}
+      <section className="rc-section">
+        <div className="rc-container">
+          <SectionHead
+            eyebrow="Deployment"
+            title="Deploys on your infrastructure."
+            lede="Veritas is a licensed software package that installs directly on your existing servers. Linux, macOS, and Windows supported  -  with Kubernetes agent deployment for containerised environments."
+          />
+          <div className="rc-grid rc-grid-3">
+            {PLATFORMS.map((p, i) => {
+              const Icon = p.icon
+              return (
+                <Reveal key={p.os} className="rc-card" delay={i * 80}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                    <span className="rc-icon"><Icon /></span>
+                    <div>
+                      <div className="rc-h3" style={{ fontSize: 16 }}>{p.os}</div>
+                      <div className="rc-mono" style={{ marginTop: 4 }}>{p.pkg}</div>
+                    </div>
+                  </div>
+                </Reveal>
+              )
+            })}
+          </div>
+          <div style={{ height: 16 }} />
+          <Reveal className="rc-card" delay={0}>
+            <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 24, justifyContent: "space-between" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 16, flex: "1 1 320px", minWidth: 0 }}>
+                <span className="rc-icon"><Boxes /></span>
+                <div>
+                  <span className="rc-eyebrow">Kubernetes</span>
+                  <p className="rc-small" style={{ marginTop: 8 }}>Deploy the Veritas Agent as a DaemonSet  -  one agent per node, log forwarding stays entirely inside your cluster.</p>
                 </div>
-                <div className="font-pixel text-[10px] text-black/20 tracking-widest mb-4">{item.n}</div>
-                <h3 className="text-base font-light mb-3 leading-snug">{item.title}</h3>
-                <p className="text-sm text-black/45 leading-relaxed">{item.desc}</p>
-              </BentoCard>
+              </div>
+              <Link href="/documentation" className="rc-btn rc-btn-ghost">View installation guide <ArrowRight size={16} /></Link>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ── CTA ── */}
+      <section className="rc-cta">
+        <div className="glow" aria-hidden="true" />
+        <div className="rc-container" style={{ display: "grid", justifyItems: "center", gap: 24 }}>
+          <span className="rc-eyebrow">Get started</span>
+          <h2 className="rc-h2">Ready to automate<br />your DPDPA compliance?</h2>
+          <p className="rc-body-lg" style={{ maxWidth: 520 }}>Book a demo and see Veritas detect a real DPDPA violation  -  from agent deployment to evidence export.</p>
+          <div className="rc-actions">
+            <Link href="/book-demo" className="rc-btn rc-btn-primary rc-btn-lg">Book a demo</Link>
+            <Link href="/how-it-works" className="rc-btn rc-btn-ghost rc-btn-lg">How it works</Link>
+            <Link href="/documentation" className="rc-btn rc-btn-ghost rc-btn-lg">Documentation</Link>
+          </div>
+          <div className="rc-meta rc-mono"><span>v1.0.16</span><span>Ubuntu 22.04+ · macOS 12+ · Windows 10+</span><span>sudo apt install ./veritas_1.0.16_amd64.deb</span></div>
+        </div>
+      </section>
+
+      {/* ── FOOTER ── */}
+      <footer className="rc-footer">
+        <div className="rc-container">
+          <div className="rc-footer-top">
+            <div style={{ display: "grid", gap: 16, alignContent: "start" }}>
+              <Link href="/" className="rc-logo"><span className="rc-logo-mark" aria-hidden="true" />Veritas</Link>
+              <p className="rc-small" style={{ maxWidth: 220 }}>Trustworthy AI agent orchestration. Open source.</p>
+              <span className="rc-badge" style={{ justifySelf: "start" }}><Users size={12} style={{ marginRight: 6 }} />BETA</span>
+            </div>
+            {FOOTER_COLS.map(col => (
+              <div key={col.heading}>
+                <h4>{col.heading}</h4>
+                <ul>
+                  {col.links.map(l => (
+                    <li key={l.label}>
+                      {"external" in l && l.external
+                        ? <a href={l.href} target="_blank" rel="noopener noreferrer">{l.label}</a>
+                        : <Link href={l.href}>{l.label}</Link>}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* ── CAPABILITIES BENTO ──────────────────────────────────────────────── */}
-      <section className="py-32 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
-        <div className="max-w-6xl mx-auto">
-          <Tag>CAPABILITIES</Tag>
-          <RevealText className="mt-5 text-4xl md:text-5xl lg:text-6xl font-light tracking-tight leading-[1.05]">
-            {"Everything you need\nfor DPDPA compliance."}
-          </RevealText>
-
-          <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-
-            {/* PII Detection  -  large with iridescent image */}
-            <BentoCard className="md:col-span-2 overflow-hidden" delay={0}>
-              <div className="relative min-h-[280px]">
-                {/* Iridescent image right side */}
-                <div className="hidden md:block absolute inset-y-0 right-0 w-1/2 pointer-events-none">
-                  <img
-                    src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/researcher-CvhqOuV6irGwBOnJoTGFlXdbyYBRjb.png"
-                    alt="PII Detection"
-                    className="w-full h-full object-cover object-center"
-                  />
-                  <div className="absolute inset-0" style={{ background: "linear-gradient(to right, white 0%, transparent 55%)" }} />
-                </div>
-                <div className="relative z-10 p-8 md:max-w-[58%]">
-                  <div className="mb-4"><PixelIcon type="platform" size={36} /></div>
-                  <div className="font-pixel text-[10px] text-black/25 tracking-widest mb-3">PII DETECTION ENGINE</div>
-                  <h3 className="text-xl font-light mb-3">Detects personal data in your application logs</h3>
-                  <p className="text-sm text-black/45 leading-relaxed mb-5">
-                    Automatically scans logs and API traffic for personal data across dozens of entity types. Every detection is validated to eliminate false positives. Runs fully on your server  -  no external API calls.
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {["Aadhaar", "PAN Card", "Phone Numbers", "Names", "Email", "Address"].map(t => (
-                      <span key={t} className="text-[10px] px-2.5 py-1 rounded-full bg-black/[0.04] text-black/45 border border-black/[0.06] font-pixel tracking-widest">{t}</span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </BentoCard>
-
-            {/* On-premise */}
-            <BentoCard className="p-8" delay={80}>
-              <div className="mb-4"><PixelIcon type="agents" size={36} /></div>
-              <div className="font-pixel text-[10px] text-black/25 tracking-widest mb-3">DATA RESIDENCY</div>
-              <h3 className="text-xl font-light mb-3">Zero data leaves your network</h3>
-              <p className="text-sm text-black/45 leading-relaxed">
-                Server, evidence store, and dashboard all run on your infrastructure. No cloud dependency. The only optional egress is AI investigation  -  and it sends no raw PII.
-              </p>
-              <div className="mt-5 p-3 rounded-xl bg-emerald-50 border border-emerald-200/60">
-                <p className="text-xs text-emerald-700 font-medium">Your data. Your network. Your control.</p>
-              </div>
-            </BentoCard>
-
-            {/* 4 DPDPA Rules */}
-            <BentoCard className="p-8 md:col-span-1 lg:col-span-2" delay={0}>
-              <div className="mb-4"><PixelIcon type="workflow" size={36} /></div>
-              <div className="font-pixel text-[10px] text-black/25 tracking-widest mb-3">DPDPA RULE ENGINE</div>
-              <h3 className="text-xl font-light mb-5">4 rules. Every violation caught.</h3>
-              <div className="space-y-2.5">
-                <RuleBadge title="Data Exposure" severity="HIGH" label="Personal data appears where it must never appear  -  logs, debug output, API responses" />
-                <RuleBadge title="Purpose Violation" severity="HIGH" label="Data used in a system whose declared consent scope doesn&apos;t permit it" />
-                <RuleBadge title="Retention Exceeded" severity="MEDIUM" label="Data held past the permitted retention window for that field" />
-                <RuleBadge title="Re-identification Risk" severity="MEDIUM" label="Individually harmless fields appearing together that could identify a person" />
-              </div>
-            </BentoCard>
-
-            {/* Evidence chain */}
-            <BentoCard className="p-8" delay={80}>
-              <div className="mb-4"><PixelIcon type="pricing" size={36} /></div>
-              <div className="font-pixel text-[10px] text-black/25 tracking-widest mb-3">TAMPER-EVIDENT EVIDENCE</div>
-              <h3 className="text-xl font-light mb-3">SHA-256 hash chain</h3>
-              <p className="text-sm text-black/45 leading-relaxed mb-4">
-                Every verdict links to the previous via SHA-256 hash. Verify the chain at any time. Export a signed PDF audit report for regulators.
-              </p>
-              <div className="font-mono text-[10px] text-black/25 leading-relaxed bg-black/[0.02] rounded-lg p-3 border border-black/[0.05]">
-                <div>verdict_hash: <span className="text-black/40">sha256(prev + verdict)</span></div>
-                <div className="mt-1">chain_valid: <span className="text-emerald-600">true</span></div>
-              </div>
-            </BentoCard>
-
-            {/* Dashboard  -  large with iridescent image */}
-            <BentoCard className="md:col-span-2 overflow-hidden" delay={0}>
-              <div className="relative min-h-[260px]">
-                <div className="hidden md:block absolute inset-y-0 right-0 w-1/2 pointer-events-none">
-                  <img
-                    src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/analyst-Ysxnqg7Fpy2cfA56PiIttv1KximMhT.png"
-                    alt="Investigation Dashboard"
-                    className="w-full h-full object-cover object-center"
-                  />
-                  <div className="absolute inset-0" style={{ background: "linear-gradient(to right, white 0%, transparent 55%)" }} />
-                </div>
-                <div className="relative z-10 p-8 md:max-w-[58%]">
-                  <div className="mb-4"><PixelIcon type="integrations" size={36} /></div>
-                  <div className="font-pixel text-[10px] text-black/25 tracking-widest mb-3">INVESTIGATION DASHBOARD</div>
-                  <h3 className="text-xl font-light mb-3">Live violations. Full case lifecycle.</h3>
-                  <p className="text-sm text-black/45 leading-relaxed mb-5">
-                    Violations appear live via WebSocket. Open cases, investigate with optional AI explanations (no raw PII sent), annotate, and move OPEN → ACKNOWLEDGED → RESOLVED.
-                  </p>
-                  <div className="grid grid-cols-2 gap-2">
-                    {["Live Stream", "Audit Ledger", "Agent Management", "PDF Export"].map(f => (
-                      <div key={f} className="p-2.5 rounded-xl bg-black/[0.03] border border-black/[0.05] text-center">
-                        <div className="text-xs text-black/50">{f}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </BentoCard>
-
-            {/* Optional LLM */}
-            <BentoCard className="p-8" delay={80}>
-              <div className="mb-4"><PixelIcon type="agents" size={36} /></div>
-              <div className="font-pixel text-[10px] text-black/25 tracking-widest mb-3">OPTIONAL AI</div>
-              <h3 className="text-xl font-light mb-3">Plain-language violation explanations</h3>
-              <p className="text-sm text-black/45 leading-relaxed">
-                Connect OpenAI, Anthropic, or a local Ollama model. Get statute-referenced explanations of each violation. Raw PII never sent  -  only field names and rule text.
-              </p>
-            </BentoCard>
+          <div className="rc-footer-bottom">
+            <span className="rc-mono">© 2024 Veritas. Open-source project.</span>
+            <div className="rc-meta rc-mono"><span>v1.0.16</span><span>DPDPA 2023</span><span>On-premise</span></div>
           </div>
         </div>
-      </section>
-
-      {/* ── STACKING CARDS  -  who it's for ───────────────────────────────────── */}
-      <section className="py-32 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
-        <div className="max-w-6xl mx-auto">
-          <Tag>WHO IT&apos;S FOR</Tag>
-          <RevealText className="mt-5 text-4xl md:text-5xl lg:text-6xl font-light tracking-tight leading-[1.05] mb-16">
-            {"Built for every team\nresponsible for\ndata compliance."}
-          </RevealText>
-          <StackingAgentCards />
-        </div>
-      </section>
-
-      {/* ── DEVEX / INSTALLATION ────────────────────────────────────────────── */}
-      <DevExSection />
-
-      {/* ── DEPLOYMENT OPTIONS ──────────────────────────────────────────────── */}
-      <section className="py-32 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
-        <div className="max-w-6xl mx-auto">
-          <Tag>DEPLOYMENT</Tag>
-          <RevealText className="mt-5 text-4xl md:text-5xl lg:text-6xl font-light tracking-tight leading-[1.05]">
-            {"Deploys on your\ninfrastructure."}
-          </RevealText>
-          <p className="mt-8 text-base text-black/45 max-w-xl leading-relaxed">
-            Veritas is a licensed software package that installs directly on your existing servers. Linux, macOS, and Windows supported  -  with Kubernetes agent deployment for containerised environments.
-          </p>
-
-          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-3">
-            {[
-              { os: "Linux", pkg: "Ubuntu 22.04+", delay: 0 },
-              { os: "macOS", pkg: "macOS 12+ (Apple Silicon)", delay: 80 },
-              { os: "Windows", pkg: "Windows 10/11, Server 2019+", delay: 160 },
-            ].map((item) => (
-              <BentoCard key={item.os} className="p-7" delay={item.delay}>
-                <div className="font-pixel text-[10px] text-black/25 tracking-widest mb-3">{item.os.toUpperCase()}</div>
-                <div className="text-sm font-light text-black/60">{item.pkg}</div>
-              </BentoCard>
-            ))}
-          </div>
-
-          <div className="mt-6">
-            <BentoCard className="p-7" delay={0}>
-              <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
-                <div className="flex-1">
-                  <div className="font-pixel text-[10px] text-black/25 tracking-widest mb-2">KUBERNETES</div>
-                  <p className="text-sm text-black/50 leading-relaxed">Deploy the Veritas Agent as a DaemonSet  -  one agent per node, log forwarding stays entirely inside your cluster.</p>
-                </div>
-                <Link
-                  href="/documentation"
-                  className="shrink-0 px-6 py-3 bg-[#111] text-white text-xs rounded-xl hover:bg-[#2a2a2a] transition-colors tracking-widest font-medium"
-                >
-                  VIEW INSTALLATION GUIDE →
-                </Link>
-              </div>
-            </BentoCard>
-          </div>
-        </div>
-      </section>
-
-      {/* ── GLITCH CTA ──────────────────────────────────────────────────────── */}
-      <section
-        className="relative min-h-[520px] flex flex-col items-center justify-center overflow-hidden border-t border-black/[0.06] bg-black"
-        onMouseEnter={() => setCtaHovered(true)}
-        onMouseLeave={() => setCtaHovered(false)}
-      >
-        <GlitchBackground isHovered={ctaHovered} />
-        <div className="relative z-10 flex flex-col items-center justify-center text-center px-6 py-24 max-w-3xl mx-auto">
-          <Tag>GET STARTED</Tag>
-          <h2 className="mt-8 text-4xl md:text-5xl lg:text-6xl font-light tracking-tight leading-[1.05] text-white">
-            Ready to automate<br />your DPDPA compliance?
-          </h2>
-          <p className="mt-6 text-base text-white/50 max-w-md leading-relaxed">
-            Book a demo and see Veritas detect a real DPDPA violation  -  from agent deployment to evidence export.
-          </p>
-          <div className="mt-10 flex flex-wrap gap-3 justify-center">
-            <Link href="/book-demo" className="px-10 py-4 bg-white text-black text-sm rounded-xl hover:bg-white/90 transition-colors tracking-widest font-medium">
-              BOOK A DEMO
-            </Link>
-            <Link href="/how-it-works" className="px-10 py-4 border border-white/20 text-white/70 text-sm rounded-xl hover:border-white/40 hover:text-white transition-all tracking-widest">
-              HOW IT WORKS
-            </Link>
-            <Link href="/documentation" className="px-10 py-4 border border-white/20 text-white/70 text-sm rounded-xl hover:border-white/40 hover:text-white transition-all tracking-widest">
-              DOCUMENTATION
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <VeritasFooter />
+      </footer>
     </div>
   )
 }
