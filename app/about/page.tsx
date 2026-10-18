@@ -21,7 +21,7 @@ function useInView(threshold = 0.1) {
 function BentoCard({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
   const { ref, inView } = useInView()
   return (
-    <div ref={ref} className={`rounded-2xl border border-black/[0.07] bg-white overflow-hidden hover:border-black/[0.14] hover:bg-[#fafaf8] transition-colors ${className}`}
+    <div ref={ref} className={`rounded-2xl border border-white/[0.09] bg-[#0e0f11] overflow-hidden hover:border-white/[0.18] hover:bg-[#141617] transition-colors ${className}`}
       style={{ opacity: inView ? 1 : 0, transform: inView ? "translateY(0)" : "translateY(24px)", transition: `opacity 0.7s ease ${delay}ms, transform 0.7s ease ${delay}ms, border-color 0.3s` }}>
       {children}
     </div>
@@ -29,12 +29,12 @@ function BentoCard({ children, className = "", delay = 0 }: { children: React.Re
 }
 
 function Tag({ children }: { children: React.ReactNode }) {
-  return <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] tracking-widest text-black/40 bg-black/[0.04]">{children}</span>
+  return <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] tracking-widest text-white/55 bg-white/[0.06]">{children}</span>
 }
 
 export default function AboutPage() {
   return (
-    <div className="bg-[#F5F4F0] text-[#111] min-h-screen font-sans antialiased">
+    <div className="bg-black text-white min-h-screen font-sans antialiased">
       <MobileNav />
 
       {/* Hero */}
@@ -44,14 +44,14 @@ export default function AboutPage() {
           <RevealText className="mt-5 text-5xl md:text-6xl lg:text-7xl font-light tracking-tight leading-[1.02]">
             {"Compliance,\nwithout compromise."}
           </RevealText>
-          <p className="mt-8 text-base text-black/45 leading-relaxed max-w-xl">
+          <p className="mt-8 text-base text-white/60 leading-relaxed max-w-xl">
             Veritas began with India&apos;s Digital Personal Data Protection Act 2023 - a real, urgent compliance challenge with no good on-premise tooling to solve it. The platform is built to be equally relevant for any organisation subject to modern personal data protection law.
           </p>
         </div>
       </section>
 
       {/* Mission */}
-      <section className="py-8 pb-24 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
+      <section className="py-8 pb-24 px-6 md:px-12 lg:px-20 border-t border-white/[0.08]">
         <div className="max-w-6xl mx-auto">
           <BentoCard className="p-10 md:p-14 overflow-hidden relative" delay={0}>
             {/* Iridescent image accent */}
@@ -61,9 +61,9 @@ export default function AboutPage() {
                 alt=""
                 className="w-full h-full object-cover object-center"
               />
-              <div className="absolute inset-0" style={{ background: "linear-gradient(to right, white 0%, transparent 60%)" }} />
+              <div className="absolute inset-0" style={{ background: "linear-gradient(to right, #0e0f11 0%, transparent 60%)" }} />
             </div>
-            <p className="relative z-10 text-2xl md:text-3xl font-light leading-relaxed text-black/70 max-w-2xl">
+            <p className="relative z-10 text-2xl md:text-3xl font-light leading-relaxed text-white/80 max-w-2xl">
               &ldquo;Every organisation processing personal data is now legally required to detect violations, maintain auditable records, and prove compliance. Doing this manually across hundreds of microservices is impossible. Veritas automates it - on your own infrastructure, with your data never leaving your network.&rdquo;
             </p>
           </BentoCard>
@@ -71,7 +71,7 @@ export default function AboutPage() {
       </section>
 
       {/* The problem we solve */}
-      <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
+      <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-white/[0.08]">
         <div className="max-w-6xl mx-auto">
           <Tag>THE PROBLEM WE SOLVE</Tag>
           <RevealText className="mt-5 text-4xl md:text-5xl font-light tracking-tight leading-[1.05] mb-12">
@@ -108,7 +108,7 @@ export default function AboutPage() {
               <BentoCard key={item.title} className="p-8" delay={item.delay}>
                 <div className="mb-4"><PixelIcon type={item.icon} size={32} /></div>
                 <h3 className="text-lg font-light mb-4">{item.title}</h3>
-                <p className="text-sm text-black/50 leading-relaxed">{item.desc}</p>
+                <p className="text-sm text-white/65 leading-relaxed">{item.desc}</p>
               </BentoCard>
             ))}
           </div>
@@ -116,7 +116,7 @@ export default function AboutPage() {
       </section>
 
       {/* Design principles */}
-      <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
+      <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-white/[0.08]">
         <div className="max-w-6xl mx-auto">
           <Tag>DESIGN PRINCIPLES</Tag>
           <RevealText className="mt-5 text-4xl md:text-5xl font-light tracking-tight leading-[1.05] mb-12">{"How we built it."}</RevealText>
@@ -168,9 +168,9 @@ export default function AboutPage() {
             ].map((item) => (
               <BentoCard key={item.n} className="p-7" delay={item.delay}>
                 <div className="mb-4"><PixelIcon type={item.icon} size={32} /></div>
-                <div className="font-pixel text-[10px] text-black/20 tracking-widest mb-3">{item.n}</div>
+                <div className="font-pixel text-[10px] text-white/35 tracking-widest mb-3">{item.n}</div>
                 <h3 className="text-base font-light mb-3 leading-snug">{item.title}</h3>
-                <p className="text-sm text-black/45 leading-relaxed">{item.desc}</p>
+                <p className="text-sm text-white/60 leading-relaxed">{item.desc}</p>
               </BentoCard>
             ))}
           </div>
@@ -178,7 +178,7 @@ export default function AboutPage() {
       </section>
 
       {/* Technical status */}
-      <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
+      <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-white/[0.08]">
         <div className="max-w-6xl mx-auto">
           <Tag>PROJECT STATUS</Tag>
           <RevealText className="mt-5 text-4xl md:text-5xl font-light tracking-tight leading-[1.05] mb-10">{"v1.0.16. Production-quality.\nHonest about what&apos;s next."}</RevealText>
@@ -186,7 +186,7 @@ export default function AboutPage() {
           <BentoCard className="p-8 md:p-10" delay={0}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
               <div>
-                <div className="font-pixel text-[10px] text-emerald-600 tracking-widest mb-5">BUILT AND VERIFIED</div>
+                <div className="font-pixel text-[10px] text-[#00cbaa] tracking-widest mb-5">BUILT AND VERIFIED</div>
                 <div className="space-y-2">
                   {[
                     "PII detection with custom recognizers",
@@ -201,14 +201,14 @@ export default function AboutPage() {
                     "Kubernetes DaemonSet agent",
                     "412 automated tests across Ubuntu, macOS, Windows CI",
                   ].map(f => (
-                    <div key={f} className="flex items-center gap-2.5 text-sm text-black/55">
-                      <span className="text-emerald-600 shrink-0">+</span> {f}
+                    <div key={f} className="flex items-center gap-2.5 text-sm text-white/70">
+                      <span className="text-[#00cbaa] shrink-0">+</span> {f}
                     </div>
                   ))}
                 </div>
               </div>
               <div>
-                <div className="font-pixel text-[10px] text-amber-600 tracking-widest mb-5">IN PROGRESS / PLANNED</div>
+                <div className="font-pixel text-[10px] text-amber-300 tracking-widest mb-5">IN PROGRESS / PLANNED</div>
                 <div className="space-y-2">
                   {[
                     "Ingest queue and worker pool for high-throughput deployments",
@@ -217,14 +217,14 @@ export default function AboutPage() {
                     "Offline hardening (bundle fonts and PDF library locally)",
                     "Simulated enterprise demo environment",
                   ].map(f => (
-                    <div key={f} className="flex items-center gap-2.5 text-sm text-black/55">
-                      <span className="text-amber-500 shrink-0">·</span> {f}
+                    <div key={f} className="flex items-center gap-2.5 text-sm text-white/70">
+                      <span className="text-amber-300 shrink-0">·</span> {f}
                     </div>
                   ))}
                 </div>
-                <div className="mt-8 p-5 rounded-xl border border-black/[0.07] bg-black/[0.02]">
-                  <p className="text-xs text-black/45 leading-relaxed">
-                    <span className="font-medium text-black/60">Known limitation:</span> Veritas uses a single server process and SQLite. It is well-suited for pilots and mid-sized deployments. For horizontal scale, the planned ingest queue and worker pool should be in place first.
+                <div className="mt-8 p-5 rounded-xl border border-white/[0.09] bg-white/[0.04]">
+                  <p className="text-xs text-white/60 leading-relaxed">
+                    <span className="font-medium text-white/72">Known limitation:</span> Veritas uses a single server process and SQLite. It is well-suited for pilots and mid-sized deployments. For horizontal scale, the planned ingest queue and worker pool should be in place first.
                   </p>
                 </div>
               </div>
@@ -234,10 +234,10 @@ export default function AboutPage() {
       </section>
 
       {/* CTAs */}
-      <section className="py-20 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
+      <section className="py-20 px-6 md:px-12 lg:px-20 border-t border-white/[0.08]">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row gap-3">
-          <Link href="/book-demo" className="flex-1 px-8 py-4 bg-[#111] text-white text-sm rounded-xl hover:bg-[#333] transition-colors tracking-widest font-medium text-center">BOOK A DEMO</Link>
-          <Link href="/contact" className="flex-1 px-8 py-4 border border-black/10 text-black/60 text-sm rounded-xl hover:border-black/25 hover:text-black transition-all tracking-widest text-center">CONTACT US</Link>
+          <Link href="/book-demo" className="flex-1 px-8 py-4 bg-[#eef35f] text-black font-medium text-sm rounded-full hover:bg-[#f4f78a] transition-colors tracking-[0.012em] text-center">BOOK A Demo</Link>
+          <Link href="/contact" className="flex-1 px-8 py-4 border border-white/15 text-white/72 text-sm rounded-full font-medium hover:border-white/30 hover:text-white transition-all tracking-[0.012em] text-center">Contact Us</Link>
         </div>
       </section>
 

@@ -22,7 +22,7 @@ function useInView(threshold = 0.15) {
 function BentoCard({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
   const { ref, inView } = useInView(0.1)
   return (
-    <div ref={ref} className={`rounded-2xl border border-black/[0.07] bg-white overflow-hidden ${className}`}
+    <div ref={ref} className={`rounded-2xl border border-white/[0.09] bg-[#0e0f11] overflow-hidden ${className}`}
       style={{ opacity: inView ? 1 : 0, transform: inView ? "translateY(0)" : "translateY(24px)", transition: `opacity 0.7s ease ${delay}ms, transform 0.7s ease ${delay}ms` }}>
       {children}
     </div>
@@ -30,12 +30,12 @@ function BentoCard({ children, className = "", delay = 0 }: { children: React.Re
 }
 
 function Tag({ children }: { children: React.ReactNode }) {
-  return <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] tracking-widest text-black/40 bg-black/[0.04]">{children}</span>
+  return <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] tracking-widest text-white/55 bg-white/[0.06]">{children}</span>
 }
 
 export default function UserGuidePage() {
   return (
-    <div className="bg-[#F5F4F0] text-[#111] min-h-screen font-sans antialiased">
+    <div className="bg-black text-white min-h-screen font-sans antialiased">
       <MobileNav />
 
       <section className="pt-40 pb-16 px-6 md:px-12 lg:px-20">
@@ -44,11 +44,11 @@ export default function UserGuidePage() {
           <RevealText className="mt-5 text-5xl md:text-6xl font-light tracking-tight leading-[1.02]">
             {"Core concepts."}
           </RevealText>
-          <p className="mt-6 text-base text-black/45 leading-relaxed max-w-xl">
+          <p className="mt-6 text-base text-white/60 leading-relaxed max-w-xl">
             A deep dive into how Veritas works  -  agents, tools, audit logs, access boundaries, and verification rules.
           </p>
-          <div className="mt-6 p-4 rounded-xl border border-amber-200/60 bg-amber-50">
-            <p className="text-xs text-amber-700">This guide is being written alongside the beta. Some sections are more complete than others. Last updated: October 2024.</p>
+          <div className="mt-6 p-4 rounded-xl border border-amber-400/20 bg-amber-400/10">
+            <p className="text-xs text-amber-300">This guide is being written alongside the beta. Some sections are more complete than others. Last updated: October 2024.</p>
           </div>
         </div>
       </section>
@@ -139,16 +139,16 @@ If verification fails, the run status is set to "verified_failed" and the failur
             <h2 id={concept.id} className="text-2xl font-light mb-4">{concept.title}</h2>
             <div className="space-y-3">
               {concept.content.split("\n\n").map((para, j) => (
-                <p key={j} className="text-sm text-black/55 leading-relaxed whitespace-pre-line">{para}</p>
+                <p key={j} className="text-sm text-white/70 leading-relaxed whitespace-pre-line">{para}</p>
               ))}
             </div>
           </BentoCard>
         ))}
 
         {/* Nav */}
-        <div className="pt-6 flex items-center justify-between border-t border-black/[0.06]">
-          <Link href="/documentation/quickstart" className="text-xs text-black/40 hover:text-black tracking-widest transition-colors">← Quickstart</Link>
-          <Link href="/documentation/troubleshooting" className="text-xs text-black/40 hover:text-black tracking-widest transition-colors">Troubleshooting →</Link>
+        <div className="pt-6 flex items-center justify-between border-t border-white/[0.08]">
+          <Link href="/documentation/quickstart" className="text-xs text-white/55 hover:text-white tracking-widest transition-colors">← Quickstart</Link>
+          <Link href="/documentation/troubleshooting" className="text-xs text-white/55 hover:text-white tracking-widest transition-colors">Troubleshooting →</Link>
         </div>
       </div>
 

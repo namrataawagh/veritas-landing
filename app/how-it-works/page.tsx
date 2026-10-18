@@ -23,7 +23,7 @@ function useInView(threshold = 0.1) {
 function BentoCard({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
   const { ref, inView } = useInView()
   return (
-    <div ref={ref} className={`rounded-2xl border border-black/[0.07] bg-white overflow-hidden ${className}`}
+    <div ref={ref} className={`rounded-2xl border border-white/[0.09] bg-[#0e0f11] overflow-hidden ${className}`}
       style={{ opacity: inView ? 1 : 0, transform: inView ? "translateY(0)" : "translateY(24px)", transition: `opacity 0.7s ease ${delay}ms, transform 0.7s ease ${delay}ms` }}>
       {children}
     </div>
@@ -31,16 +31,16 @@ function BentoCard({ children, className = "", delay = 0 }: { children: React.Re
 }
 
 function Tag({ children }: { children: React.ReactNode }) {
-  return <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] tracking-widest text-black/40 bg-black/[0.04]">{children}</span>
+  return <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] tracking-widest text-white/55 bg-white/[0.06]">{children}</span>
 }
 
 function Code({ children }: { children: React.ReactNode }) {
-  return <code className="text-[11px] font-mono bg-black/[0.05] px-1.5 py-0.5 rounded text-black/60">{children}</code>
+  return <code className="text-[11px] font-mono bg-white/[0.07] px-1.5 py-0.5 rounded text-white/72">{children}</code>
 }
 
 export default function HowItWorksPage() {
   return (
-    <div className="bg-[#F5F4F0] text-[#111] min-h-screen font-sans antialiased">
+    <div className="bg-black text-white min-h-screen font-sans antialiased">
       <MobileNav />
 
       {/* Hero */}
@@ -50,14 +50,14 @@ export default function HowItWorksPage() {
           <RevealText className="mt-5 text-5xl md:text-6xl lg:text-7xl font-light tracking-tight leading-[1.02]">
             {"Every violation.\nDetected. Recorded.\nResolved."}
           </RevealText>
-          <p className="mt-8 text-base text-black/45 leading-relaxed max-w-xl">
+          <p className="mt-8 text-base text-white/60 leading-relaxed max-w-xl">
             The complete path of a personal data violation  -  from a log line written by your application to a tamper-evident verdict in your compliance team&apos;s dashboard.
           </p>
         </div>
       </section>
 
       {/* Architecture overview */}
-      <section className="py-16 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
+      <section className="py-16 px-6 md:px-12 lg:px-20 border-t border-white/[0.08]">
         <div className="max-w-6xl mx-auto">
           <Tag>ARCHITECTURE</Tag>
           <h2 className="mt-5 text-3xl md:text-4xl font-light tracking-tight mb-10">Two components. Everything inside your network.</h2>
@@ -66,15 +66,15 @@ export default function HowItWorksPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
               <div>
                 <div className="mb-4"><PixelIcon type="platform" size={32} /></div>
-                <div className="font-pixel text-[10px] text-black/25 tracking-widest mb-4">VERITAS SERVER</div>
+                <div className="font-pixel text-[10px] text-white/40 tracking-widest mb-4">VERITAS SERVER</div>
                 <h3 className="text-lg font-light mb-3">The compliance brain</h3>
-                <p className="text-sm text-black/50 leading-relaxed mb-5">
+                <p className="text-sm text-white/65 leading-relaxed mb-5">
                   Runs on one machine in your network. Receives events from agents, detects PII, evaluates DPDPA rules, stores the evidence chain, and serves the investigation dashboard.
                 </p>
                 <div className="space-y-2">
                   {["Receives agent events via HTTP", "PII detection engine (Presidio + spaCy)", "DPDPA rule evaluation (4 rules)", "Append-only SHA-256 hash chain evidence store", "Investigation dashboard (WebSocket live feed)", "RBAC (4 roles)", "Optional LLM investigation"].map(f => (
-                    <div key={f} className="flex items-center gap-2.5 text-xs text-black/50">
-                      <div className="w-1 h-1 rounded-full bg-black/25 shrink-0" />
+                    <div key={f} className="flex items-center gap-2.5 text-xs text-white/65">
+                      <div className="w-1 h-1 rounded-full bg-white/25 shrink-0" />
                       {f}
                     </div>
                   ))}
@@ -82,15 +82,15 @@ export default function HowItWorksPage() {
               </div>
               <div>
                 <div className="mb-4"><PixelIcon type="agents" size={32} /></div>
-                <div className="font-pixel text-[10px] text-black/25 tracking-widest mb-4">VERITAS AGENT</div>
+                <div className="font-pixel text-[10px] text-white/40 tracking-widest mb-4">VERITAS AGENT</div>
                 <h3 className="text-lg font-light mb-3">The lightweight forwarder</h3>
-                <p className="text-sm text-black/50 leading-relaxed mb-5">
+                <p className="text-sm text-white/65 leading-relaxed mb-5">
                   Deployed on every application host or Kubernetes node. Tails log files and Docker container logs, forwards each line to the Veritas Server using a per-agent token, and buffers then retries when the server is unreachable.
                 </p>
                 <div className="space-y-2">
                   {["File and Docker log tailing", "Per-agent bearer token auth", "Retry with bounded buffer (survives server restarts)", "Docker image, .deb package, Kubernetes DaemonSet", "128 MB RAM", "Revocable from the dashboard instantly"].map(f => (
-                    <div key={f} className="flex items-center gap-2.5 text-xs text-black/50">
-                      <div className="w-1 h-1 rounded-full bg-black/25 shrink-0" />
+                    <div key={f} className="flex items-center gap-2.5 text-xs text-white/65">
+                      <div className="w-1 h-1 rounded-full bg-white/25 shrink-0" />
                       {f}
                     </div>
                   ))}
@@ -99,16 +99,16 @@ export default function HowItWorksPage() {
             </div>
 
             {/* Network flow */}
-            <div className="mt-10 pt-8 border-t border-black/[0.06]">
-              <div className="font-pixel text-[10px] text-black/25 tracking-widest mb-5">NETWORK FLOW  -  EVERYTHING STAYS INSIDE YOUR NETWORK</div>
-              <div className="flex flex-wrap items-center gap-2 text-xs text-black/50">
+            <div className="mt-10 pt-8 border-t border-white/[0.08]">
+              <div className="font-pixel text-[10px] text-white/40 tracking-widest mb-5">NETWORK FLOW  -  EVERYTHING STAYS INSIDE YOUR NETWORK</div>
+              <div className="flex flex-wrap items-center gap-2 text-xs text-white/65">
                 {["Your App Servers", "→", "Veritas Agent", "→", "Veritas Server (your VM)", "→", "Evidence Store (your disk)", "→", "Dashboard (your browser)"].map((item, i) => (
-                  <span key={i} className={item === "→" ? "text-black/20" : "px-3 py-1.5 rounded-lg bg-black/[0.04] border border-black/[0.06]"}>
+                  <span key={i} className={item === "→" ? "text-white/35" : "px-3 py-1.5 rounded-lg bg-white/[0.06] border border-white/[0.08]"}>
                     {item}
                   </span>
                 ))}
               </div>
-              <p className="mt-4 text-xs text-black/35">
+              <p className="mt-4 text-xs text-white/50">
                 Optional: AI investigation call → OpenAI / Anthropic / Local Ollama (sends <span className="font-medium">only field names + statute text</span>, never raw PII)
               </p>
             </div>
@@ -117,7 +117,7 @@ export default function HowItWorksPage() {
       </section>
 
       {/* 6-step event path */}
-      <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
+      <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-white/[0.08]">
         <div className="max-w-6xl mx-auto">
           <Tag>THE PATH OF ONE EVENT</Tag>
           <h2 className="mt-5 text-3xl md:text-4xl font-light tracking-tight mb-12">From log line to resolved case.</h2>
@@ -171,12 +171,12 @@ export default function HowItWorksPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                   <div>
                     <div className="flex items-center gap-3 mb-4">
-                      <span className="font-pixel text-[11px] text-black/20 tracking-widest">{step.n}</span>
+                      <span className="font-pixel text-[11px] text-white/35 tracking-widest">{step.n}</span>
                       <h3 className="text-xl font-light">{step.title}</h3>
                     </div>
-                    <p className="text-sm text-black/50 leading-relaxed">{step.desc}</p>
+                    <p className="text-sm text-white/65 leading-relaxed">{step.desc}</p>
                   </div>
-                  <div className="bg-[#111] rounded-xl p-5">
+                  <div className="bg-[#141617] rounded-xl p-5">
                     <pre className="text-[11px] font-mono text-white/55 leading-relaxed whitespace-pre-wrap overflow-x-auto">{step.example}</pre>
                   </div>
                 </div>
@@ -187,19 +187,19 @@ export default function HowItWorksPage() {
       </section>
 
       {/* Org config */}
-      <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
+      <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-white/[0.08]">
         <div className="max-w-6xl mx-auto">
           <Tag>ORG CONFIG</Tag>
           <h2 className="mt-5 text-3xl md:text-4xl font-light tracking-tight mb-4">Describe your data policy in YAML.</h2>
-          <p className="mt-3 mb-10 text-sm text-black/45 max-w-xl leading-relaxed">
+          <p className="mt-3 mb-10 text-sm text-white/60 max-w-xl leading-relaxed">
             Each organisation uploads a YAML config describing what personal data each system holds, why it holds it, and how long it may retain it. No code change or redeploy needed. Updating the policy creates a versioned file  -  so policy changes are themselves auditable.
           </p>
           <BentoCard className="p-0 overflow-hidden" delay={0}>
-            <div className="flex items-center justify-between px-5 py-3.5 border-b border-black/[0.06]">
-              <span className="font-pixel text-[10px] text-black/30 tracking-widest">acme_retail_config.yaml</span>
-              <span className="text-[10px] text-black/25 tracking-widest">ORG CONFIG</span>
+            <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/[0.08]">
+              <span className="font-pixel text-[10px] text-white/45 tracking-widest">acme_retail_config.yaml</span>
+              <span className="text-[10px] text-white/40 tracking-widest">ORG CONFIG</span>
             </div>
-            <pre className="p-6 text-[12px] font-mono text-black/55 leading-relaxed overflow-x-auto whitespace-pre">{`org_id: acme_retail
+            <pre className="p-6 text-[12px] font-mono text-white/70 leading-relaxed overflow-x-auto whitespace-pre">{`org_id: acme_retail
 fields:
   - field_name: phone
     pii_category: phone
@@ -219,20 +219,20 @@ fields:
 linkage_rules:
   - fields: [name, phone, delivery_address]  # together they identify a person`}</pre>
           </BentoCard>
-          <p className="mt-4 text-xs text-black/35 leading-relaxed">
+          <p className="mt-4 text-xs text-white/50 leading-relaxed">
             When you update this config, the old version is kept. Every version is timestamped and auditable  -  your compliance team can prove what your policy was at any point in time.
           </p>
         </div>
       </section>
 
       {/* Data lifecycle */}
-      <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
+      <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-white/[0.08]">
         <div className="max-w-6xl mx-auto">
           <Tag>DATA LIFECYCLE</Tag>
           <h2 className="mt-5 text-3xl md:text-4xl font-light tracking-tight mb-10">What is stored. What is not.</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <BentoCard className="p-8" delay={0}>
-              <div className="font-pixel text-[10px] text-emerald-600 tracking-widest mb-5">WHAT VERITAS STORES</div>
+              <div className="font-pixel text-[10px] text-[#00cbaa] tracking-widest mb-5">WHAT VERITAS STORES</div>
               <div className="space-y-3">
                 {[
                   "The rule that fired (e.g. EXPOSURE_001)",
@@ -244,14 +244,14 @@ linkage_rules:
                   "Case status: OPEN / ACKNOWLEDGED / RESOLVED",
                   "Compliance team comments and timestamps",
                 ].map(item => (
-                  <div key={item} className="flex items-start gap-2.5 text-sm text-black/55">
-                    <span className="text-emerald-600 mt-0.5 shrink-0">✓</span> {item}
+                  <div key={item} className="flex items-start gap-2.5 text-sm text-white/70">
+                    <span className="text-[#00cbaa] mt-0.5 shrink-0">✓</span> {item}
                   </div>
                 ))}
               </div>
             </BentoCard>
             <BentoCard className="p-8" delay={80}>
-              <div className="font-pixel text-[10px] text-red-500 tracking-widest mb-5">WHAT VERITAS NEVER STORES</div>
+              <div className="font-pixel text-[10px] text-red-400 tracking-widest mb-5">WHAT VERITAS NEVER STORES</div>
               <div className="space-y-3">
                 {[
                   "Raw PII values (Aadhaar numbers, PAN, phone numbers, names)",
@@ -261,13 +261,13 @@ linkage_rules:
                   "Any data on Veritas servers  -  everything is on your disk",
                   "Anything that crosses your network boundary (except optional LLM call)",
                 ].map(item => (
-                  <div key={item} className="flex items-start gap-2.5 text-sm text-black/55">
+                  <div key={item} className="flex items-start gap-2.5 text-sm text-white/70">
                     <span className="text-red-400 mt-0.5 shrink-0">✗</span> {item}
                   </div>
                 ))}
               </div>
-              <div className="mt-6 p-4 rounded-xl bg-blue-50 border border-blue-200/60">
-                <p className="text-xs text-blue-700 leading-relaxed">
+              <div className="mt-6 p-4 rounded-xl bg-[#b6abff]/10 border border-[#b6abff]/25">
+                <p className="text-xs text-[#b6abff] leading-relaxed">
                   <span className="font-medium">Optional LLM call:</span> If you enable AI investigation, the model receives <Code>rule_id</Code>, <Code>field_name</Code>, and <Code>statute_text</Code> only. No raw PII is ever sent.
                 </p>
               </div>
@@ -277,7 +277,7 @@ linkage_rules:
       </section>
 
       {/* RBAC */}
-      <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
+      <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-white/[0.08]">
         <div className="max-w-6xl mx-auto">
           <Tag>ACCESS CONTROL</Tag>
           <h2 className="mt-5 text-3xl md:text-4xl font-light tracking-tight mb-10">Four roles. Server-enforced.</h2>
@@ -290,26 +290,26 @@ linkage_rules:
             ].map((item) => (
               <BentoCard key={item.role} className="p-6" delay={item.delay}>
                 <div className="mb-3"><PixelIcon type={item.icon} size={28} /></div>
-                <div className="font-pixel text-[9px] text-black/30 tracking-widest mb-3">{item.role}</div>
-                <p className="text-xs text-black/50 leading-relaxed">{item.desc}</p>
+                <div className="font-pixel text-[9px] text-white/45 tracking-widest mb-3">{item.role}</div>
+                <p className="text-xs text-white/65 leading-relaxed">{item.desc}</p>
               </BentoCard>
             ))}
           </div>
-          <p className="mt-4 text-xs text-black/35">Role checks are enforced server-side. The browser cannot grant itself elevated access by changing its request.</p>
+          <p className="mt-4 text-xs text-white/50">Role checks are enforced server-side. The browser cannot grant itself elevated access by changing its request.</p>
         </div>
       </section>
 
       {/* CTAs */}
-      <section className="py-20 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
+      <section className="py-20 px-6 md:px-12 lg:px-20 border-t border-white/[0.08]">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row gap-3">
-          <Link href="/documentation" className="flex-1 px-8 py-4 bg-[#111] text-white text-sm rounded-xl hover:bg-[#333] transition-colors tracking-widest font-medium text-center">
-            INSTALLATION GUIDE
+          <Link href="/documentation" className="flex-1 px-8 py-4 bg-[#eef35f] text-black font-medium text-sm rounded-full hover:bg-[#f4f78a] transition-colors tracking-[0.012em] text-center">
+            Installation Guide
           </Link>
-          <Link href="/book-demo" className="flex-1 px-8 py-4 border border-black/10 text-black/60 text-sm rounded-xl hover:border-black/25 hover:text-black transition-all tracking-widest text-center">
-            BOOK A DEMO
+          <Link href="/book-demo" className="flex-1 px-8 py-4 border border-white/15 text-white/72 text-sm rounded-full font-medium hover:border-white/30 hover:text-white transition-all tracking-[0.012em] text-center">
+            Book a Demo
           </Link>
-          <Link href="/product" className="flex-1 px-8 py-4 border border-black/10 text-black/60 text-sm rounded-xl hover:border-black/25 hover:text-black transition-all tracking-widest text-center">
-            PRODUCT DETAILS
+          <Link href="/product" className="flex-1 px-8 py-4 border border-white/15 text-white/72 text-sm rounded-full font-medium hover:border-white/30 hover:text-white transition-all tracking-[0.012em] text-center">
+            Product Details
           </Link>
         </div>
       </section>

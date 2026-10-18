@@ -21,7 +21,7 @@ function useInView(threshold = 0.1) {
 function BentoCard({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
   const { ref, inView } = useInView()
   return (
-    <div ref={ref} className={`rounded-2xl border border-black/[0.07] bg-white overflow-hidden ${className}`}
+    <div ref={ref} className={`rounded-2xl border border-white/[0.09] bg-[#0e0f11] overflow-hidden ${className}`}
       style={{ opacity: inView ? 1 : 0, transform: inView ? "translateY(0)" : "translateY(24px)", transition: `opacity 0.7s ease ${delay}ms, transform 0.7s ease ${delay}ms` }}>
       {children}
     </div>
@@ -29,7 +29,7 @@ function BentoCard({ children, className = "", delay = 0 }: { children: React.Re
 }
 
 function Tag({ children }: { children: React.ReactNode }) {
-  return <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] tracking-widest text-black/40 bg-black/[0.04]">{children}</span>
+  return <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] tracking-widest text-white/55 bg-white/[0.06]">{children}</span>
 }
 
 const USE_CASES = [
@@ -115,7 +115,7 @@ export default function UseCasesPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null)
 
   return (
-    <div className="bg-[#F5F4F0] text-[#111] min-h-screen font-sans antialiased">
+    <div className="bg-black text-white min-h-screen font-sans antialiased">
       <MobileNav />
 
       {/* Hero */}
@@ -125,37 +125,37 @@ export default function UseCasesPage() {
           <RevealText className="mt-5 text-5xl md:text-6xl lg:text-7xl font-light tracking-tight leading-[1.02]">
             {"Who Veritas\nis built for."}
           </RevealText>
-          <p className="mt-8 text-base text-black/45 leading-relaxed max-w-xl">
+          <p className="mt-8 text-base text-white/60 leading-relaxed max-w-xl">
             Any organisation processing Indian personal data under DPDPA 2023. These are the three industries where Veritas delivers immediate, measurable compliance value.
           </p>
         </div>
       </section>
 
       {/* Use cases */}
-      <section className="py-8 pb-24 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
+      <section className="py-8 pb-24 px-6 md:px-12 lg:px-20 border-t border-white/[0.08]">
         <div className="max-w-6xl mx-auto space-y-4">
           {USE_CASES.map((uc) => (
             <BentoCard key={uc.tag} className="p-8 md:p-10" delay={uc.delay}>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
                 <div>
-                  <div className="font-pixel text-[10px] text-black/25 tracking-widest mb-4">{uc.tag}</div>
+                  <div className="font-pixel text-[10px] text-white/40 tracking-widest mb-4">{uc.tag}</div>
                   <h2 className="text-2xl font-light mb-5 leading-snug">{uc.title}</h2>
-                  <p className="text-sm text-black/50 leading-relaxed mb-6">{uc.problem}</p>
+                  <p className="text-sm text-white/65 leading-relaxed mb-6">{uc.problem}</p>
                   <div className="space-y-2">
                     {uc.capabilities.map(c => (
-                      <div key={c} className="flex items-start gap-2.5 text-sm text-black/55">
-                        <span className="text-emerald-600 shrink-0 mt-0.5">✓</span> {c}
+                      <div key={c} className="flex items-start gap-2.5 text-sm text-white/70">
+                        <span className="text-[#00cbaa] shrink-0 mt-0.5">✓</span> {c}
                       </div>
                     ))}
                   </div>
                   <div className="mt-6">
-                    <Link href={uc.ctaHref} className="text-xs text-black/40 hover:text-black tracking-widest transition-colors">{uc.cta}</Link>
+                    <Link href={uc.ctaHref} className="text-xs text-white/55 hover:text-white tracking-widest transition-colors">{uc.cta}</Link>
                   </div>
                 </div>
                 <div>
-                  <div className="font-pixel text-[10px] text-black/25 tracking-widest mb-4">EXAMPLE SCENARIO</div>
-                  <div className="p-6 rounded-xl bg-black/[0.03] border border-black/[0.06]">
-                    <p className="text-sm text-black/55 leading-relaxed italic">{uc.scenario}</p>
+                  <div className="font-pixel text-[10px] text-white/40 tracking-widest mb-4">EXAMPLE SCENARIO</div>
+                  <div className="p-6 rounded-xl bg-white/[0.05] border border-white/[0.08]">
+                    <p className="text-sm text-white/70 leading-relaxed italic">{uc.scenario}</p>
                   </div>
                 </div>
               </div>
@@ -165,24 +165,24 @@ export default function UseCasesPage() {
       </section>
 
       {/* Prerequisites */}
-      <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
+      <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-white/[0.08]">
         <div className="max-w-6xl mx-auto">
           <Tag>PREREQUISITES</Tag>
           <h2 className="mt-5 text-3xl font-light tracking-tight mb-10">What you need to get started.</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <BentoCard className="p-7" delay={0}>
-              <div className="font-pixel text-[10px] text-black/25 tracking-widest mb-5">VERITAS SERVER</div>
-              <div className="space-y-3 text-sm text-black/55">
+              <div className="font-pixel text-[10px] text-white/40 tracking-widest mb-5">VERITAS SERVER</div>
+              <div className="space-y-3 text-sm text-white/70">
                 {["One VM, server, or physical machine inside your network", "Ubuntu 22.04+, macOS 12+, or Windows 10/11", "2 GB RAM minimum (4 GB recommended)", "2 GB free disk space", "A Veritas license (.vlic file  -  issued by us after install)"].map(r => (
-                  <div key={r} className="flex items-start gap-2.5"><span className="text-black/30 shrink-0">·</span>{r}</div>
+                  <div key={r} className="flex items-start gap-2.5"><span className="text-white/45 shrink-0">·</span>{r}</div>
                 ))}
               </div>
             </BentoCard>
             <BentoCard className="p-7" delay={80}>
-              <div className="font-pixel text-[10px] text-black/25 tracking-widest mb-5">VERITAS AGENT</div>
-              <div className="space-y-3 text-sm text-black/55">
+              <div className="font-pixel text-[10px] text-white/40 tracking-widest mb-5">VERITAS AGENT</div>
+              <div className="space-y-3 text-sm text-white/70">
                 {["One agent per application server you want to monitor", "Ubuntu 18.04+ or any Linux; or Docker; or Kubernetes", "128 MB RAM per agent", "Outbound network access to the Veritas Server (port of your choice)", "A registration key (issued from the Veritas dashboard)"].map(r => (
-                  <div key={r} className="flex items-start gap-2.5"><span className="text-black/30 shrink-0">·</span>{r}</div>
+                  <div key={r} className="flex items-start gap-2.5"><span className="text-white/45 shrink-0">·</span>{r}</div>
                 ))}
               </div>
             </BentoCard>
@@ -191,7 +191,7 @@ export default function UseCasesPage() {
       </section>
 
       {/* FAQ */}
-      <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
+      <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-white/[0.08]">
         <div className="max-w-4xl mx-auto">
           <Tag>FAQ</Tag>
           <h2 className="mt-5 text-3xl font-light tracking-tight mb-10">Common questions.</h2>
@@ -199,18 +199,18 @@ export default function UseCasesPage() {
             {FAQS.map((faq, i) => {
               const isOpen = openFaq === i
               return (
-                <div key={i} className="rounded-2xl border border-black/[0.07] bg-white overflow-hidden">
+                <div key={i} className="rounded-2xl border border-white/[0.09] bg-[#0e0f11] overflow-hidden">
                   <button
                     onClick={() => setOpenFaq(isOpen ? null : i)}
-                    className="w-full flex items-center justify-between p-6 text-left hover:bg-[#fafaf8] transition-colors"
+                    className="w-full flex items-center justify-between p-6 text-left hover:bg-[#141617] transition-colors"
                   >
                     <span className="text-sm font-light leading-snug pr-6">{faq.q}</span>
-                    <span className="text-black/25 transition-transform duration-200 shrink-0" style={{ transform: isOpen ? "rotate(45deg)" : "none" }}>
+                    <span className="text-white/40 transition-transform duration-200 shrink-0" style={{ transform: isOpen ? "rotate(45deg)" : "none" }}>
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                     </span>
                   </button>
                   <div style={{ maxHeight: isOpen ? "400px" : "0px", overflow: "hidden", transition: "max-height 0.3s ease" }}>
-                    <p className="px-6 pb-6 text-sm text-black/50 leading-relaxed">{faq.a}</p>
+                    <p className="px-6 pb-6 text-sm text-white/65 leading-relaxed">{faq.a}</p>
                   </div>
                 </div>
               )
@@ -220,10 +220,10 @@ export default function UseCasesPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
+      <section className="py-20 px-6 md:px-12 lg:px-20 border-t border-white/[0.08]">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row gap-3">
-          <Link href="/book-demo" className="flex-1 px-8 py-4 bg-[#111] text-white text-sm rounded-xl hover:bg-[#333] transition-colors tracking-widest font-medium text-center">DISCUSS YOUR USE CASE</Link>
-          <Link href="/how-it-works" className="flex-1 px-8 py-4 border border-black/10 text-black/60 text-sm rounded-xl hover:border-black/25 hover:text-black transition-all tracking-widest text-center">HOW IT WORKS</Link>
+          <Link href="/book-demo" className="flex-1 px-8 py-4 bg-[#eef35f] text-black font-medium text-sm rounded-full hover:bg-[#f4f78a] transition-colors tracking-[0.012em] text-center">DISCUSS Your Use Case</Link>
+          <Link href="/how-it-works" className="flex-1 px-8 py-4 border border-white/15 text-white/72 text-sm rounded-full font-medium hover:border-white/30 hover:text-white transition-all tracking-[0.012em] text-center">HOW It Works</Link>
         </div>
       </section>
 

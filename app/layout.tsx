@@ -1,13 +1,11 @@
 import React from "react"
 import type { Metadata } from 'next'
-import { Geist, Geist_Mono, IBM_Plex_Sans } from 'next/font/google'
-import { Courier_Prime } from 'next/font/google'
+import { Inter, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
 
-const _geist = Geist({ subsets: ["latin"] });
-const _geistMono = Geist_Mono({ subsets: ["latin"] });
-const _courierPrime = Courier_Prime({ weight: ["400", "700"], subsets: ["latin"] });
-const _ibmPlexSans = IBM_Plex_Sans({ weight: ["300", "400", "500", "600"], subsets: ["latin"] });
+// Same typefaces as the homepage theme (Inter for text, JetBrains Mono for labels and code)
+const inter = Inter({ subsets: ["latin"], weight: ["300", "400", "500", "600"], variable: "--font-inter" });
+const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-jetbrains-mono" });
 
 export const metadata: Metadata = {
   title: 'Veritas  -  Trustworthy AI Agent Orchestration',
@@ -50,7 +48,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
       <body className={`font-sans antialiased`}>
         {children}
       </body>

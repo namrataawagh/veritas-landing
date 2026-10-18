@@ -116,15 +116,6 @@ function Reveal({ children, className = "", delay = 0 }: { children: React.React
   )
 }
 
-function VeritasMark() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" aria-hidden="true">
-      <path d="M12 2.5 20 6v6c0 4.6-3.3 8.4-8 9.5C7.3 20.4 4 16.6 4 12V6l8-3.5Z" />
-      <path d="m8.5 12 2.4 2.4 4.6-4.8" strokeLinecap="round" />
-    </svg>
-  )
-}
-
 // ─── Hero diagram: log packets flow from services into Veritas ───────────────
 const C = 280
 // Round so server and browser trig output render identical attributes
@@ -343,21 +334,12 @@ export default function VeritasPage() {
 
   return (
     <div className={`tg ${inter.variable} ${mono.variable}`}>
-      {/* ── Utility bar ── */}
-      <div className="tg-utility">
-        <div className="tg-container">
-          <span>Veritas v1.0.16 is out</span>
-          <span className="tag">On-premise</span>
-          <span className="tag">DPDPA 2023</span>
-          <Link href="/documentation/quickstart">Read the quickstart <ChevronRight size={14} /></Link>
-        </div>
-      </div>
 
       {/* ── Header ── */}
       <header className="tg-header">
         <div className="tg-container">
           <nav className="tg-nav" aria-label="Main">
-            <Link href="/" className="tg-logo"><VeritasMark />Veritas</Link>
+            <Link href="/" className="tg-logo" aria-label="Veritas home"><img src="/veritas-wordmark.png" alt="Veritas" width={1726} height={375} /></Link>
             <div className="tg-nav-links">
               {NAV_LINKS.map(l => <Link key={l.label} href={l.href}>{l.label}</Link>)}
             </div>
@@ -598,7 +580,7 @@ export default function VeritasPage() {
         <div className="tg-container">
           <div className="tg-footer-top">
             <div style={{ display: "grid", gap: 16, alignContent: "start" }}>
-              <Link href="/" className="tg-logo"><VeritasMark />Veritas</Link>
+              <Link href="/" className="tg-logo" aria-label="Veritas home"><img src="/veritas-wordmark.png" alt="Veritas" width={1726} height={375} /></Link>
               <p className="tg-body-sm" style={{ maxWidth: 240 }}>Trustworthy AI agent orchestration. Open source.</p>
               <span className="tg-pill" style={{ justifySelf: "start" }}>BETA</span>
             </div>

@@ -22,7 +22,7 @@ function BentoCard({ children, className = "", delay = 0, highlight = false }: {
   const { ref, inView } = useInView()
   return (
     <div ref={ref}
-      className={`rounded-2xl border overflow-hidden transition-colors ${highlight ? "border-black/20 bg-[#111] text-white" : "border-black/[0.07] bg-white"} ${className}`}
+      className={`rounded-2xl border overflow-hidden transition-colors ${highlight ? "border-[#eef35f]/40 bg-[#21223a] text-white" : "border-white/[0.09] bg-[#0e0f11]"} ${className}`}
       style={{ opacity: inView ? 1 : 0, transform: inView ? "translateY(0)" : "translateY(24px)", transition: `opacity 0.7s ease ${delay}ms, transform 0.7s ease ${delay}ms` }}>
       {children}
     </div>
@@ -30,7 +30,7 @@ function BentoCard({ children, className = "", delay = 0, highlight = false }: {
 }
 
 function Tag({ children, light = false }: { children: React.ReactNode; light?: boolean }) {
-  return <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] tracking-widest ${light ? "text-white/40 bg-white/[0.08]" : "text-black/40 bg-black/[0.04]"}`}>{children}</span>
+  return <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] tracking-widest ${light ? "text-white/40 bg-white/[0.08]" : "text-white/55 bg-white/[0.06]"}`}>{children}</span>
 }
 
 const TIERS = [
@@ -135,7 +135,7 @@ export default function PricingPage() {
   const [billingNote, setBillingNote] = useState(false)
 
   return (
-    <div className="bg-[#F5F4F0] text-[#111] min-h-screen font-sans antialiased">
+    <div className="bg-black text-white min-h-screen font-sans antialiased">
       <MobileNav />
 
       {/* Hero */}
@@ -145,18 +145,18 @@ export default function PricingPage() {
           <RevealText className="mt-5 text-5xl md:text-6xl lg:text-7xl font-light tracking-tight leading-[1.02]">
             {"Simple pricing.\nNo surprises."}
           </RevealText>
-          <p className="mt-8 text-base text-black/45 leading-relaxed max-w-xl">
+          <p className="mt-8 text-base text-white/60 leading-relaxed max-w-xl">
             Every tier includes a one-time setup and licensing fee, then an annual subscription. All plans include the full Veritas compliance platform - deployed on your own infrastructure.
           </p>
           <div className="mt-6 flex flex-wrap gap-4">
             {[
-              { dot: "#10b981", label: "On-premise deployment" },
-              { dot: "#3b82f6", label: "Annual billing" },
-              { dot: "#8b5cf6", label: "Full platform included" },
+              { dot: "#00cbaa", label: "On-premise deployment" },
+              { dot: "#b6abff", label: "Annual billing" },
+              { dot: "#eef35f", label: "Full platform included" },
             ].map(({ dot, label }) => (
               <div key={label} className="flex items-center gap-2">
                 <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: dot }} />
-                <span className="text-sm text-black/55">{label}</span>
+                <span className="text-sm text-white/70">{label}</span>
               </div>
             ))}
           </div>
@@ -164,7 +164,7 @@ export default function PricingPage() {
       </section>
 
       {/* Tiers */}
-      <section className="py-8 pb-24 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
+      <section className="py-8 pb-24 px-6 md:px-12 lg:px-20 border-t border-white/[0.08]">
         <div className="max-w-6xl mx-auto">
 
           {/* Popular badge */}
@@ -172,7 +172,7 @@ export default function PricingPage() {
             <div className="grid grid-cols-3 gap-3 w-full">
               <div />
               <div className="flex justify-center">
-                <span className="px-3 py-1 rounded-full bg-[#111] text-white text-[10px] tracking-widest">MOST POPULAR</span>
+                <span className="px-3 py-1 rounded-full bg-[#eef35f] text-black text-[10px] tracking-widest">MOST POPULAR</span>
               </div>
               <div />
             </div>
@@ -187,40 +187,40 @@ export default function PricingPage() {
                     <div className="mb-3">
                       <PixelIcon type={tier.icon} size={32} />
                     </div>
-                    <div className={`font-pixel text-[10px] tracking-widest mb-2 ${tier.highlight ? "text-white/35" : "text-black/25"}`}>{tier.agents.toUpperCase()} - {tier.telemetry.split(" ")[0].toUpperCase() + " " + tier.telemetry.split(" ").slice(1).join(" ").toUpperCase()}</div>
-                    <h2 className={`text-2xl font-light mb-1 ${tier.highlight ? "text-white" : "text-black"}`}>{tier.name}</h2>
-                    <p className={`text-sm ${tier.highlight ? "text-white/50" : "text-black/45"}`}>{tier.tagline}</p>
+                    <div className={`font-pixel text-[10px] tracking-widest mb-2 ${tier.highlight ? "text-white/35" : "text-white/40"}`}>{tier.agents.toUpperCase()} - {tier.telemetry.split(" ")[0].toUpperCase() + " " + tier.telemetry.split(" ").slice(1).join(" ").toUpperCase()}</div>
+                    <h2 className={`text-2xl font-light mb-1 ${tier.highlight ? "text-white" : "text-white"}`}>{tier.name}</h2>
+                    <p className={`text-sm ${tier.highlight ? "text-white/50" : "text-white/60"}`}>{tier.tagline}</p>
                   </div>
 
                   {/* Setup fee */}
-                  <div className={`p-4 rounded-xl mb-4 ${tier.highlight ? "bg-white/[0.07]" : "bg-black/[0.03]"} border ${tier.highlight ? "border-white/10" : "border-black/[0.06]"}`}>
-                    <div className={`font-pixel text-[9px] tracking-widest mb-2 ${tier.highlight ? "text-white/30" : "text-black/25"}`}>ONE-TIME</div>
-                    <div className={`text-3xl font-light ${tier.highlight ? "text-white" : "text-black"}`}>{tier.setup}</div>
-                    <div className={`text-xs mt-1 ${tier.highlight ? "text-white/40" : "text-black/40"}`}>{tier.setupNote}</div>
+                  <div className={`p-4 rounded-xl mb-4 ${tier.highlight ? "bg-white/[0.07]" : "bg-white/[0.05]"} border ${tier.highlight ? "border-white/10" : "border-white/[0.08]"}`}>
+                    <div className={`font-pixel text-[9px] tracking-widest mb-2 ${tier.highlight ? "text-white/30" : "text-white/40"}`}>ONE-TIME</div>
+                    <div className={`text-3xl font-light ${tier.highlight ? "text-white" : "text-white"}`}>{tier.setup}</div>
+                    <div className={`text-xs mt-1 ${tier.highlight ? "text-white/40" : "text-white/55"}`}>{tier.setupNote}</div>
                   </div>
 
                   {/* Annual */}
-                  <div className={`p-4 rounded-xl mb-6 ${tier.highlight ? "bg-white/[0.07]" : "bg-black/[0.03]"} border ${tier.highlight ? "border-white/10" : "border-black/[0.06]"}`}>
-                    <div className={`font-pixel text-[9px] tracking-widest mb-2 ${tier.highlight ? "text-white/30" : "text-black/25"}`}>ANNUAL SUBSCRIPTION</div>
+                  <div className={`p-4 rounded-xl mb-6 ${tier.highlight ? "bg-white/[0.07]" : "bg-white/[0.05]"} border ${tier.highlight ? "border-white/10" : "border-white/[0.08]"}`}>
+                    <div className={`font-pixel text-[9px] tracking-widest mb-2 ${tier.highlight ? "text-white/30" : "text-white/40"}`}>ANNUAL SUBSCRIPTION</div>
                     <div className="flex items-baseline gap-2">
-                      <span className={`text-3xl font-light ${tier.highlight ? "text-white" : "text-black"}`}>{tier.annual}</span>
-                      <span className={`text-xs ${tier.highlight ? "text-white/40" : "text-black/40"}`}>/ year</span>
+                      <span className={`text-3xl font-light ${tier.highlight ? "text-white" : "text-white"}`}>{tier.annual}</span>
+                      <span className={`text-xs ${tier.highlight ? "text-white/40" : "text-white/55"}`}>/ year</span>
                     </div>
-                    <div className={`text-xs mt-1 ${tier.highlight ? "text-white/40" : "text-black/40"}`}>{tier.monthly} / month equivalent</div>
+                    <div className={`text-xs mt-1 ${tier.highlight ? "text-white/40" : "text-white/55"}`}>{tier.monthly} / month equivalent</div>
                   </div>
 
                   {/* Features */}
                   <div className="flex-1 space-y-2.5 mb-8">
                     {tier.features.map(f => (
                       <div key={f} className="flex items-start gap-2.5">
-                        <span className={`text-sm shrink-0 mt-0.5 ${tier.highlight ? "text-emerald-400" : "text-emerald-600"}`}>+</span>
-                        <span className={`text-xs leading-relaxed ${tier.highlight ? "text-white/60" : "text-black/55"}`}>{f}</span>
+                        <span className={`text-sm shrink-0 mt-0.5 ${tier.highlight ? "text-[#00cbaa]" : "text-[#00cbaa]"}`}>+</span>
+                        <span className={`text-xs leading-relaxed ${tier.highlight ? "text-white/60" : "text-white/70"}`}>{f}</span>
                       </div>
                     ))}
                     {tier.notIncluded.map(f => (
                       <div key={f} className="flex items-start gap-2.5">
-                        <span className={`text-sm shrink-0 mt-0.5 ${tier.highlight ? "text-white/20" : "text-black/20"}`}>-</span>
-                        <span className={`text-xs leading-relaxed ${tier.highlight ? "text-white/25" : "text-black/25"}`}>{f}</span>
+                        <span className={`text-sm shrink-0 mt-0.5 ${tier.highlight ? "text-white/20" : "text-white/35"}`}>-</span>
+                        <span className={`text-xs leading-relaxed ${tier.highlight ? "text-white/25" : "text-white/40"}`}>{f}</span>
                       </div>
                     ))}
                   </div>
@@ -228,13 +228,13 @@ export default function PricingPage() {
                   {/* CTA */}
                   <Link
                     href={tier.ctaHref}
-                    className={`block text-center py-3.5 rounded-xl text-sm tracking-widest font-medium transition-colors ${
+                    className={`block text-center py-3.5 rounded-full text-sm tracking-[0.012em] font-medium transition-colors ${
                       tier.highlight
-                        ? "bg-white text-black hover:bg-white/90"
-                        : "bg-[#111] text-white hover:bg-[#333]"
+                        ? "bg-[#eef35f] text-black hover:bg-[#f4f78a]"
+                        : "bg-white text-black hover:bg-white/90"
                     }`}
                   >
-                    {tier.cta.toUpperCase()}
+                    {tier.cta}
                   </Link>
                 </div>
               </BentoCard>
@@ -244,15 +244,15 @@ export default function PricingPage() {
       </section>
 
       {/* Enterprise tier */}
-      <section className="py-8 pb-24 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
+      <section className="py-8 pb-24 px-6 md:px-12 lg:px-20 border-t border-white/[0.08]">
         <div className="max-w-6xl mx-auto">
           <BentoCard className="p-8 md:p-12" delay={0}>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
               <div>
                 <div className="mb-4"><PixelIcon type="pricing" size={36} /></div>
-                <div className="font-pixel text-[10px] text-black/25 tracking-widest mb-3">ENTERPRISE - CUSTOM MODEL</div>
+                <div className="font-pixel text-[10px] text-white/40 tracking-widest mb-3">ENTERPRISE - CUSTOM MODEL</div>
                 <h2 className="text-3xl font-light mb-4">Custom deployment. Custom pricing.</h2>
-                <p className="text-sm text-black/50 leading-relaxed mb-6">
+                <p className="text-sm text-white/65 leading-relaxed mb-6">
                   For organisations with large-scale telemetry, specific compliance requirements, or infrastructure constraints that require a tailored deployment. Includes a dedicated support engineer, custom SLA, and a deployment model designed around your environment.
                 </p>
                 <div className="space-y-2">
@@ -266,23 +266,23 @@ export default function PricingPage() {
                     "Custom compliance rule development",
                   ].map(f => (
                     <div key={f} className="flex items-start gap-2.5">
-                      <span className="text-emerald-600 shrink-0 mt-0.5">+</span>
-                      <span className="text-sm text-black/55">{f}</span>
+                      <span className="text-[#00cbaa] shrink-0 mt-0.5">+</span>
+                      <span className="text-sm text-white/70">{f}</span>
                     </div>
                   ))}
                 </div>
               </div>
               <div className="flex flex-col gap-4">
-                <div className="p-6 rounded-2xl bg-black/[0.03] border border-black/[0.06]">
-                  <div className="font-pixel text-[10px] text-black/25 tracking-widest mb-3">PRICING</div>
+                <div className="p-6 rounded-2xl bg-white/[0.05] border border-white/[0.08]">
+                  <div className="font-pixel text-[10px] text-white/40 tracking-widest mb-3">PRICING</div>
                   <div className="text-2xl font-light mb-2">Custom quote</div>
-                  <p className="text-sm text-black/45 leading-relaxed">Pricing is based on agent count, telemetry volume, deployment complexity, and SLA requirements. Contact us for a scoping call.</p>
+                  <p className="text-sm text-white/60 leading-relaxed">Pricing is based on agent count, telemetry volume, deployment complexity, and SLA requirements. Contact us for a scoping call.</p>
                 </div>
-                <Link href="/book-demo" className="block text-center py-4 bg-[#111] text-white text-sm rounded-xl hover:bg-[#333] transition-colors tracking-widest font-medium">
-                  CONTACT US FOR ENTERPRISE
+                <Link href="/book-demo" className="block text-center py-4 bg-[#eef35f] text-black font-medium text-sm rounded-full hover:bg-[#f4f78a] transition-colors tracking-[0.012em]">
+                  Contact Us for Enterprise
                 </Link>
-                <Link href="/contact" className="block text-center py-3.5 border border-black/10 text-black/60 text-sm rounded-xl hover:border-black/25 hover:text-black transition-all tracking-widest">
-                  GET IN TOUCH
+                <Link href="/contact" className="block text-center py-3.5 border border-white/15 text-white/72 text-sm rounded-full font-medium hover:border-white/30 hover:text-white transition-all tracking-[0.012em]">
+                  Get in Touch
                 </Link>
               </div>
             </div>
@@ -291,7 +291,7 @@ export default function PricingPage() {
       </section>
 
       {/* What is included in every plan */}
-      <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
+      <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-white/[0.08]">
         <div className="max-w-6xl mx-auto">
           <Tag>EVERY PLAN INCLUDES</Tag>
           <h2 className="mt-5 text-3xl font-light tracking-tight mb-12">The full Veritas platform. No feature gating.</h2>
@@ -307,7 +307,7 @@ export default function PricingPage() {
               <BentoCard key={item.title} className="p-7" delay={item.delay}>
                 <div className="mb-4"><PixelIcon type={item.icon} size={32} /></div>
                 <h3 className="text-base font-light mb-2 leading-snug">{item.title}</h3>
-                <p className="text-sm text-black/45 leading-relaxed">{item.desc}</p>
+                <p className="text-sm text-white/60 leading-relaxed">{item.desc}</p>
               </BentoCard>
             ))}
           </div>
@@ -315,7 +315,7 @@ export default function PricingPage() {
       </section>
 
       {/* FAQ */}
-      <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
+      <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-white/[0.08]">
         <div className="max-w-4xl mx-auto">
           <Tag>PRICING FAQ</Tag>
           <h2 className="mt-5 text-3xl font-light tracking-tight mb-10">Common questions.</h2>
@@ -348,15 +348,15 @@ export default function PricingPage() {
             ].map((faq, i) => {
               const [open, setOpen] = useState(false)
               return (
-                <div key={i} className="rounded-2xl border border-black/[0.07] bg-white overflow-hidden">
-                  <button onClick={() => setOpen(v => !v)} className="w-full flex items-center justify-between p-6 text-left hover:bg-[#fafaf8] transition-colors">
+                <div key={i} className="rounded-2xl border border-white/[0.09] bg-[#0e0f11] overflow-hidden">
+                  <button onClick={() => setOpen(v => !v)} className="w-full flex items-center justify-between p-6 text-left hover:bg-[#141617] transition-colors">
                     <span className="text-sm font-light leading-snug pr-6">{faq.q}</span>
-                    <span className="text-black/25 shrink-0 transition-transform duration-200" style={{ transform: open ? "rotate(45deg)" : "none" }}>
+                    <span className="text-white/40 shrink-0 transition-transform duration-200" style={{ transform: open ? "rotate(45deg)" : "none" }}>
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                     </span>
                   </button>
                   <div style={{ maxHeight: open ? "300px" : "0", overflow: "hidden", transition: "max-height 0.3s ease" }}>
-                    <p className="px-6 pb-6 text-sm text-black/50 leading-relaxed">{faq.a}</p>
+                    <p className="px-6 pb-6 text-sm text-white/65 leading-relaxed">{faq.a}</p>
                   </div>
                 </div>
               )
@@ -366,10 +366,10 @@ export default function PricingPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
+      <section className="py-20 px-6 md:px-12 lg:px-20 border-t border-white/[0.08]">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row gap-3">
-          <Link href="/book-demo" className="flex-1 px-8 py-4 bg-[#111] text-white text-sm rounded-xl hover:bg-[#333] transition-colors tracking-widest font-medium text-center">BOOK A DEMO</Link>
-          <Link href="/contact" className="flex-1 px-8 py-4 border border-black/10 text-black/60 text-sm rounded-xl hover:border-black/25 hover:text-black transition-all tracking-widest text-center">CONTACT US</Link>
+          <Link href="/book-demo" className="flex-1 px-8 py-4 bg-[#eef35f] text-black font-medium text-sm rounded-full hover:bg-[#f4f78a] transition-colors tracking-[0.012em] text-center">BOOK A Demo</Link>
+          <Link href="/contact" className="flex-1 px-8 py-4 border border-white/15 text-white/72 text-sm rounded-full font-medium hover:border-white/30 hover:text-white transition-all tracking-[0.012em] text-center">Contact Us</Link>
         </div>
       </section>
 

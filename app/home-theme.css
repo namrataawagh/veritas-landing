@@ -99,15 +99,12 @@
 .tg-chip { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: var(--radius-badges); background: var(--color-carbon); box-shadow: var(--shadow-subtle); color: var(--color-silver); font-size: 12px; font-weight: 500; line-height: 1.3; white-space: nowrap; }
 .tg-chip.high { color: var(--color-signal-violet); background: var(--color-slate); }
 
-/* ── Utility bar + nav ── */
-.tg-utility { background: var(--color-signal-violet); color: #000; font-size: 14px; font-weight: 500; }
-.tg-utility .tg-container { display: flex; align-items: center; justify-content: center; gap: 12px; min-height: 40px; flex-wrap: wrap; padding-block: 8px; text-align: center; line-height: 1.3; }
-.tg-utility .tag { padding: 2px 8px; border-radius: 50px; background: rgba(0, 0, 0, 0.12); font-size: 12px; }
-.tg-utility a { display: inline-flex; align-items: center; gap: 2px; text-decoration: underline; text-underline-offset: 3px; }
+/* ── Nav ── */
 .tg-header { position: sticky; top: 0; z-index: 50; background: rgba(0, 0, 0, 0.82); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: rgba(255, 255, 255, 0.08) 0px -0.5px 0px 0px inset; }
 .tg-nav { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-block: 16px; }
 .tg-logo { display: inline-flex; align-items: center; gap: 10px; color: var(--color-paper-white); font-weight: 500; font-size: 18px; letter-spacing: -0.02em; }
-.tg-logo svg { width: 22px; height: 22px; color: var(--color-paper-white); }
+.tg-logo img { display: block; height: 24px; width: auto; }
+.tg-footer .tg-logo img { height: 28px; }
 .tg-nav-links { display: flex; gap: 28px; }
 .tg-nav-links a { font-size: 14px; font-weight: 500; color: var(--color-paper-white); opacity: 0.86; transition: opacity 0.2s; }
 .tg-nav-links a:hover { opacity: 1; }

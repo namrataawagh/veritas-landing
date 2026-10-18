@@ -29,7 +29,7 @@ function Section({ children, id, delay = 0 }: { children: React.ReactNode; id: s
 
 export default function PrivacyPage() {
   return (
-    <div className="bg-[#F5F4F0] text-[#111] min-h-screen font-sans antialiased">
+    <div className="bg-black text-white min-h-screen font-sans antialiased">
       <MobileNav />
 
       <div className="pt-40 pb-24 px-6 md:px-12 lg:px-20">
@@ -37,21 +37,21 @@ export default function PrivacyPage() {
 
           {/* Header */}
           <div className="mb-16">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] tracking-widest text-black/40 bg-black/[0.04] mb-5">PRIVACY</span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] tracking-widest text-white/55 bg-white/[0.06] mb-5">PRIVACY</span>
             <h1 className="text-5xl md:text-6xl font-light tracking-tight leading-[1.02] mb-6">Privacy Policy</h1>
-            <p className="text-sm text-black/45 leading-relaxed mb-4">
+            <p className="text-sm text-white/60 leading-relaxed mb-4">
               Last updated: October 2024
             </p>
-            <div className="p-5 rounded-2xl border border-black/[0.07] bg-white">
-              <p className="text-sm text-black/60 leading-relaxed">
+            <div className="p-5 rounded-2xl border border-white/[0.09] bg-[#0e0f11]">
+              <p className="text-sm text-white/72 leading-relaxed">
                 Veritas is an open-source, self-hosted tool. <strong className="font-medium">By default, Veritas does not collect, transmit, or store any data on external servers.</strong> All audit logs are written to your local filesystem. Nothing leaves your environment unless you configure it to.
               </p>
             </div>
           </div>
 
           {/* TOC */}
-          <div className="mb-12 p-5 rounded-xl border border-black/[0.07] bg-white">
-            <div className="text-[10px] text-black/30 tracking-widest uppercase mb-3">Contents</div>
+          <div className="mb-12 p-5 rounded-xl border border-white/[0.09] bg-[#0e0f11]">
+            <div className="text-[10px] text-white/45 tracking-widest uppercase mb-3">Contents</div>
             <div className="space-y-1.5">
               {[
                 ["what-we-collect", "What data Veritas collects"],
@@ -62,7 +62,7 @@ export default function PrivacyPage() {
                 ["changes", "Changes to this policy"],
                 ["contact", "Contact"],
               ].map(([id, label]) => (
-                <a key={id} href={`#${id}`} className="flex text-sm text-black/45 hover:text-black transition-colors">
+                <a key={id} href={`#${id}`} className="flex text-sm text-white/60 hover:text-white transition-colors">
                   {label}
                 </a>
               ))}
@@ -74,19 +74,19 @@ export default function PrivacyPage() {
 
             <Section id="what-we-collect" delay={0}>
               <h2 className="text-2xl font-light mb-4">What data Veritas collects</h2>
-              <div className="space-y-3 text-sm text-black/55 leading-relaxed">
-                <p>Veritas the software (the SDK and CLI) <strong className="text-black/70">does not collect any personal data</strong>. It does not send telemetry, usage statistics, or crash reports to any server.</p>
+              <div className="space-y-3 text-sm text-white/70 leading-relaxed">
+                <p>Veritas the software (the SDK and CLI) <strong className="text-white/80">does not collect any personal data</strong>. It does not send telemetry, usage statistics, or crash reports to any server.</p>
                 <p>Veritas the website (this site) may log standard server access logs (IP address, browser, request path) via the hosting provider. These logs are used only for operational purposes and are not sold or shared.</p>
               </div>
             </Section>
 
             <Section id="local-data" delay={40}>
               <h2 className="text-2xl font-light mb-4">Local data storage</h2>
-              <div className="space-y-3 text-sm text-black/55 leading-relaxed">
-                <p>When you run a Veritas agent, it writes an audit log to your local filesystem (in the configured <code className="bg-black/[0.05] px-1.5 py-0.5 rounded font-mono text-[12px]">logDir</code>). This log contains:</p>
+              <div className="space-y-3 text-sm text-white/70 leading-relaxed">
+                <p>When you run a Veritas agent, it writes an audit log to your local filesystem (in the configured <code className="bg-white/[0.07] px-1.5 py-0.5 rounded font-mono text-[12px]">logDir</code>). This log contains:</p>
                 <ul className="space-y-1.5 ml-4">
                   {["Agent task inputs and configuration", "Tool calls with arguments (sensitive fields are redacted per your config)", "Agent decisions and outputs", "Timestamps and metadata"].map(item => (
-                    <li key={item} className="flex items-start gap-2.5"><span className="w-1 h-1 rounded-full bg-black/30 mt-2 shrink-0" />{item}</li>
+                    <li key={item} className="flex items-start gap-2.5"><span className="w-1 h-1 rounded-full bg-white/30 mt-2 shrink-0" />{item}</li>
                   ))}
                 </ul>
                 <p>This data is stored only on your machine or server. Veritas has no access to it.</p>
@@ -95,7 +95,7 @@ export default function PrivacyPage() {
 
             <Section id="no-telemetry" delay={80}>
               <h2 className="text-2xl font-light mb-4">No telemetry by default</h2>
-              <div className="space-y-3 text-sm text-black/55 leading-relaxed">
+              <div className="space-y-3 text-sm text-white/70 leading-relaxed">
                 <p>Veritas does not include any telemetry, analytics, or tracking code. There are no calls to external analytics services from the SDK or CLI.</p>
                 <p>If future versions include an opt-in telemetry feature, it will be clearly documented and disabled by default.</p>
               </div>
@@ -103,7 +103,7 @@ export default function PrivacyPage() {
 
             <Section id="contact-forms" delay={120}>
               <h2 className="text-2xl font-light mb-4">Contact form data</h2>
-              <div className="space-y-3 text-sm text-black/55 leading-relaxed">
+              <div className="space-y-3 text-sm text-white/70 leading-relaxed">
                 <p>If you submit a contact or demo request form on this website, the information you provide (name, email, message) is used only to respond to your inquiry. It is not sold, shared with third parties, or added to marketing lists.</p>
                 <p>We retain contact form submissions only as long as necessary to respond and follow up.</p>
               </div>
@@ -111,22 +111,22 @@ export default function PrivacyPage() {
 
             <Section id="third-parties" delay={160}>
               <h2 className="text-2xl font-light mb-4">Third-party services</h2>
-              <div className="space-y-3 text-sm text-black/55 leading-relaxed">
-                <p>This website is hosted on Vercel. Vercel may process standard access logs. See <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer" className="underline hover:text-black/70">Vercel&apos;s privacy policy</a>.</p>
+              <div className="space-y-3 text-sm text-white/70 leading-relaxed">
+                <p>This website is hosted on Vercel. Vercel may process standard access logs. See <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer" className="underline hover:text-white/80">Vercel&apos;s privacy policy</a>.</p>
                 <p>Veritas the software may call LLM provider APIs (e.g., OpenAI, Anthropic) on your behalf, depending on your configuration. Your data is subject to those providers&apos; privacy policies when you use them.</p>
               </div>
             </Section>
 
             <Section id="changes" delay={200}>
               <h2 className="text-2xl font-light mb-4">Changes to this policy</h2>
-              <p className="text-sm text-black/55 leading-relaxed">We may update this policy as the project evolves. Material changes will be noted with an updated date at the top of this page.</p>
+              <p className="text-sm text-white/70 leading-relaxed">We may update this policy as the project evolves. Material changes will be noted with an updated date at the top of this page.</p>
             </Section>
 
             <Section id="contact" delay={240}>
               <h2 className="text-2xl font-light mb-4">Contact</h2>
-              <div className="space-y-3 text-sm text-black/55 leading-relaxed">
+              <div className="space-y-3 text-sm text-white/70 leading-relaxed">
                 <p>Questions about this privacy policy?</p>
-                <Link href="/contact" className="inline-flex items-center gap-2 text-sm text-black/60 hover:text-black tracking-widest transition-colors underline">
+                <Link href="/contact" className="inline-flex items-center gap-2 text-sm text-white/72 hover:text-white tracking-widest transition-colors underline">
                   Contact us →
                 </Link>
               </div>

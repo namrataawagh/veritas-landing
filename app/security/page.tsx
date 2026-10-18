@@ -22,7 +22,7 @@ function useInView(threshold = 0.15) {
 function BentoCard({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
   const { ref, inView } = useInView(0.1)
   return (
-    <div ref={ref} className={`rounded-2xl border border-black/[0.07] bg-white overflow-hidden ${className}`}
+    <div ref={ref} className={`rounded-2xl border border-white/[0.09] bg-[#0e0f11] overflow-hidden ${className}`}
       style={{ opacity: inView ? 1 : 0, transform: inView ? "translateY(0)" : "translateY(24px)", transition: `opacity 0.7s ease ${delay}ms, transform 0.7s ease ${delay}ms` }}>
       {children}
     </div>
@@ -30,12 +30,12 @@ function BentoCard({ children, className = "", delay = 0 }: { children: React.Re
 }
 
 function Tag({ children }: { children: React.ReactNode }) {
-  return <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] tracking-widest text-black/40 bg-black/[0.04]">{children}</span>
+  return <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] tracking-widest text-white/55 bg-white/[0.06]">{children}</span>
 }
 
 export default function SecurityPage() {
   return (
-    <div className="bg-[#F5F4F0] text-[#111] min-h-screen font-sans antialiased">
+    <div className="bg-black text-white min-h-screen font-sans antialiased">
       <MobileNav />
 
       {/* Hero */}
@@ -45,11 +45,11 @@ export default function SecurityPage() {
           <RevealText className="mt-5 text-5xl md:text-6xl lg:text-7xl font-light tracking-tight leading-[1.02]">
             {"Security posture."}
           </RevealText>
-          <p className="mt-8 text-base text-black/45 leading-relaxed max-w-xl">
+          <p className="mt-8 text-base text-white/60 leading-relaxed max-w-xl">
             Veritas is a self-hosted, open-source tool. Security is a core design principle. Here is an honest account of where we are today.
           </p>
-          <div className="mt-6 p-5 rounded-2xl border border-amber-200/60 bg-amber-50">
-            <p className="text-sm text-amber-700 leading-relaxed">
+          <div className="mt-6 p-5 rounded-2xl border border-amber-400/20 bg-amber-400/10">
+            <p className="text-sm text-amber-300 leading-relaxed">
               <span className="font-medium">Beta notice:</span> Veritas is currently in beta. Our security posture is improving rapidly. Some hardening is still in progress. We are transparent about this below.
             </p>
           </div>
@@ -57,7 +57,7 @@ export default function SecurityPage() {
       </section>
 
       {/* What we do today */}
-      <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
+      <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-white/[0.08]">
         <div className="max-w-6xl mx-auto">
           <div className="mb-12">
             <Tag>WHAT WE DO TODAY</Tag>
@@ -107,11 +107,11 @@ export default function SecurityPage() {
               <BentoCard key={item.title} className="p-8" delay={item.delay}>
                 <div className="flex items-start justify-between mb-4">
                   <h3 className="text-base font-light">{item.title}</h3>
-                  <span className={`shrink-0 text-[10px] px-2 py-0.5 rounded-full border tracking-widest ${item.status === "available" ? "bg-emerald-50 text-emerald-700 border-emerald-200/60" : "bg-amber-50 text-amber-600 border-amber-200/60"}`}>
+                  <span className={`shrink-0 text-[10px] px-2 py-0.5 rounded-full border tracking-widest ${item.status === "available" ? "bg-[#00cbaa]/10 text-[#00cbaa] border-[#00cbaa]/25" : "bg-amber-400/10 text-amber-300 border-amber-400/20"}`}>
                     {item.status === "available" ? "Active" : "Beta"}
                   </span>
                 </div>
-                <p className="text-sm text-black/45 leading-relaxed">{item.desc}</p>
+                <p className="text-sm text-white/60 leading-relaxed">{item.desc}</p>
               </BentoCard>
             ))}
           </div>
@@ -119,7 +119,7 @@ export default function SecurityPage() {
       </section>
 
       {/* What we don't claim */}
-      <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
+      <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-white/[0.08]">
         <div className="max-w-6xl mx-auto">
           <div className="mb-12">
             <Tag>HONEST LIMITATIONS</Tag>
@@ -128,7 +128,7 @@ export default function SecurityPage() {
             </RevealText>
           </div>
           <BentoCard className="p-8 md:p-10" delay={0}>
-            <p className="text-sm text-black/55 leading-relaxed mb-8 max-w-2xl">
+            <p className="text-sm text-white/70 leading-relaxed mb-8 max-w-2xl">
               We do not make security claims we cannot support. The following are not currently in place for Veritas:
             </p>
             <div className="space-y-5">
@@ -138,12 +138,12 @@ export default function SecurityPage() {
                 { label: "Penetration testing", note: "We have not conducted a formal third-party penetration test. This is planned before a v1.0 release." },
                 { label: "Bug bounty program", note: "No formal bug bounty program is in place yet. We encourage responsible disclosure via the contact form (see below)." },
               ].map((item) => (
-                <div key={item.label} className="flex items-start gap-5 pb-5 border-b border-black/[0.05] last:border-0 last:pb-0">
+                <div key={item.label} className="flex items-start gap-5 pb-5 border-b border-white/[0.07] last:border-0 last:pb-0">
                   <div className="flex items-center gap-2 shrink-0 w-44">
                     <span className="text-sm text-red-400">✗</span>
-                    <span className="text-sm font-light text-black/70">{item.label}</span>
+                    <span className="text-sm font-light text-white/80">{item.label}</span>
                   </div>
-                  <p className="text-sm text-black/40 leading-relaxed">{item.note}</p>
+                  <p className="text-sm text-white/55 leading-relaxed">{item.note}</p>
                 </div>
               ))}
             </div>
@@ -152,7 +152,7 @@ export default function SecurityPage() {
       </section>
 
       {/* Responsible disclosure */}
-      <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
+      <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-white/[0.08]">
         <div className="max-w-6xl mx-auto">
           <div className="mb-12">
             <Tag>RESPONSIBLE DISCLOSURE</Tag>
@@ -163,11 +163,11 @@ export default function SecurityPage() {
           <BentoCard className="p-8 md:p-10" delay={0}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
-                <p className="text-sm text-black/55 leading-relaxed mb-6">
+                <p className="text-sm text-white/70 leading-relaxed mb-6">
                   If you discover a security vulnerability in Veritas, please report it responsibly. We aim to respond to security reports within 48 hours and to have a fix or mitigation in place within 7 days for critical issues.
                 </p>
                 <div className="space-y-4">
-                  <div className="text-[10px] text-black/30 tracking-widest uppercase">How to report</div>
+                  <div className="text-[10px] text-white/45 tracking-widest uppercase">How to report</div>
                   <ol className="space-y-3">
                     {[
                       "Use the contact form with subject line: Security Issue",
@@ -175,8 +175,8 @@ export default function SecurityPage() {
                       "Do not publicly disclose until we have had a chance to respond",
                       "We will credit you in the security advisory (if you wish)",
                     ].map((step, i) => (
-                      <li key={i} className="flex items-start gap-3 text-sm text-black/55">
-                        <span className="font-pixel text-[10px] text-black/20 tracking-widest shrink-0">{String(i + 1).padStart(2, "0")}</span>
+                      <li key={i} className="flex items-start gap-3 text-sm text-white/70">
+                        <span className="font-pixel text-[10px] text-white/35 tracking-widest shrink-0">{String(i + 1).padStart(2, "0")}</span>
                         {step}
                       </li>
                     ))}
@@ -184,19 +184,19 @@ export default function SecurityPage() {
                 </div>
               </div>
               <div className="flex flex-col gap-3">
-                <Link href="/contact" className="px-8 py-4 bg-[#111] text-white text-sm rounded-xl hover:bg-[#333] transition-colors tracking-widest font-medium text-center">
-                  REPORT A VULNERABILITY
+                <Link href="/contact" className="px-8 py-4 bg-[#eef35f] text-black font-medium text-sm rounded-full hover:bg-[#f4f78a] transition-colors tracking-[0.012em] text-center">
+                  Report a Vulnerability
                 </Link>
                 <a
                   href="https://github.com/shreyaaassss/Veritas/security/advisories"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-8 py-4 border border-black/10 text-black/60 text-sm rounded-xl hover:border-black/25 hover:text-black transition-all tracking-widest text-center"
+                  className="px-8 py-4 border border-white/15 text-white/72 text-sm rounded-full font-medium hover:border-white/30 hover:text-white transition-all tracking-[0.012em] text-center"
                 >
-                  VIEW SECURITY ADVISORIES ↗
+                  View Security Advisories ↗
                 </a>
-                <div className="p-4 rounded-xl bg-black/[0.02] border border-black/[0.06]">
-                  <p className="text-xs text-black/35 leading-relaxed">Expected response time: 48 hours for initial acknowledgement, 7 days for critical issues.</p>
+                <div className="p-4 rounded-xl bg-white/[0.04] border border-white/[0.08]">
+                  <p className="text-xs text-white/50 leading-relaxed">Expected response time: 48 hours for initial acknowledgement, 7 days for critical issues.</p>
                 </div>
               </div>
             </div>

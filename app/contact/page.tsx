@@ -24,7 +24,7 @@ function BentoCard({ children, className = "", delay = 0 }: { children: React.Re
   return (
     <div
       ref={ref}
-      className={`group relative rounded-2xl border border-black/[0.07] bg-white overflow-hidden hover:border-black/[0.15] hover:bg-[#fafaf8] ${className}`}
+      className={`group relative rounded-2xl border border-white/[0.09] bg-[#0e0f11] overflow-hidden hover:border-white/[0.19] hover:bg-[#141617] ${className}`}
       style={{
         opacity: inView ? 1 : 0,
         transform: inView ? "translateY(0)" : "translateY(28px)",
@@ -38,7 +38,7 @@ function BentoCard({ children, className = "", delay = 0 }: { children: React.Re
 
 function Tag({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] tracking-widest font-sans text-black/40 bg-black/[0.04]">
+    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] tracking-widest font-sans text-white/55 bg-white/[0.06]">
       {children}
     </span>
   )
@@ -63,7 +63,7 @@ export default function ContactPage() {
   }
 
   return (
-    <div className="bg-[#F5F4F0] text-[#111] min-h-screen font-sans antialiased">
+    <div className="bg-black text-white min-h-screen font-sans antialiased">
       <MobileNav />
 
       {/* ── PAGE HERO ────────────────────────────────────────────────────── */}
@@ -73,7 +73,7 @@ export default function ContactPage() {
           <RevealText className="mt-5 text-5xl md:text-6xl lg:text-7xl font-light tracking-tight leading-[1.02]">
             {"Get in touch."}
           </RevealText>
-          <p className="mt-8 text-base text-black/45 leading-relaxed max-w-lg">
+          <p className="mt-8 text-base text-white/60 leading-relaxed max-w-lg">
             Have a question about Veritas, a bug to report, or want to contribute? We&apos;d love to hear from you.
           </p>
         </div>
@@ -114,15 +114,15 @@ export default function ContactPage() {
               ].map((card) => (
                 <BentoCard key={card.label} className="p-7" delay={card.delay}>
                   <div className="flex items-start gap-4">
-                    <div className="w-9 h-9 rounded-xl border border-black/10 flex items-center justify-center shrink-0 mt-0.5">
+                    <div className="w-9 h-9 rounded-xl border border-white/15 flex items-center justify-center shrink-0 mt-0.5">
                       {card.icon}
                     </div>
                     <div>
-                      <div className="font-pixel text-[10px] tracking-widest text-black/30 mb-2">{card.label}</div>
+                      <div className="font-pixel text-[10px] tracking-widest text-white/45 mb-2">{card.label}</div>
                       <h3 className="text-base font-light mb-2">{card.title}</h3>
-                      <p className="text-xs text-black/45 leading-relaxed">{card.desc}</p>
+                      <p className="text-xs text-white/60 leading-relaxed">{card.desc}</p>
                       {card.action && (
-                        <Link href={card.action.href} className="mt-3 inline-block text-xs text-black/50 hover:text-black tracking-widest transition-colors">
+                        <Link href={card.action.href} className="mt-3 inline-block text-xs text-white/65 hover:text-white tracking-widest transition-colors">
                           {card.action.label}
                         </Link>
                       )}
@@ -131,8 +131,8 @@ export default function ContactPage() {
                 </BentoCard>
               ))}
 
-              <div className="px-4 py-3 rounded-xl border border-black/[0.06] bg-black/[0.02]">
-                <p className="text-xs text-black/35 leading-relaxed">
+              <div className="px-4 py-3 rounded-xl border border-white/[0.08] bg-white/[0.04]">
+                <p className="text-xs text-white/50 leading-relaxed">
                   Expected response time: 2–3 business days. For urgent security issues, we prioritize faster response.
                 </p>
               </div>
@@ -141,20 +141,20 @@ export default function ContactPage() {
             {/* Right: contact form */}
             <div>
               {submitted ? (
-                <div className="rounded-2xl border border-emerald-200/60 bg-emerald-50 p-10 flex flex-col items-center text-center">
-                  <div className="w-12 h-12 rounded-full bg-emerald-100 border border-emerald-200 flex items-center justify-center mb-5">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-emerald-600">
+                <div className="rounded-2xl border border-[#00cbaa]/25 bg-[#00cbaa]/10 p-10 flex flex-col items-center text-center">
+                  <div className="w-12 h-12 rounded-full bg-[#00cbaa]/15 border border-[#00cbaa]/25 flex items-center justify-center mb-5">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-[#00cbaa]">
                       <path d="M9 12l2 2 4-4"/>
                       <path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/>
                     </svg>
                   </div>
-                  <h3 className="text-xl font-light mb-3 text-emerald-800">Message sent</h3>
-                  <p className="text-sm text-emerald-700/70 leading-relaxed max-w-xs">
+                  <h3 className="text-xl font-light mb-3 text-[#00cbaa]">Message sent</h3>
+                  <p className="text-sm text-[#00cbaa]/70 leading-relaxed max-w-xs">
                     Thanks for reaching out. We&apos;ll get back to you within 2–3 business days.
                   </p>
                   <button
                     onClick={() => { setSubmitted(false); setForm({ name: "", email: "", subject: "", message: "" }) }}
-                    className="mt-6 text-xs text-emerald-600/60 hover:text-emerald-700 tracking-widest transition-colors"
+                    className="mt-6 text-xs text-[#00cbaa]/60 hover:text-[#00cbaa] tracking-widest transition-colors"
                   >
                     Send another message
                   </button>
@@ -162,54 +162,54 @@ export default function ContactPage() {
               ) : (
                 <form
                   onSubmit={handleSubmit}
-                  className="rounded-2xl border border-black/[0.07] bg-white p-8 shadow-sm"
+                  className="rounded-2xl border border-white/[0.09] bg-[#0e0f11] p-8 shadow-sm"
                 >
                   <h3 className="text-lg font-light mb-6">Send a message</h3>
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-xs text-black/45 tracking-wide mb-1.5">Name <span className="text-black/30">*</span></label>
+                        <label className="block text-xs text-white/60 tracking-wide mb-1.5">Name <span className="text-white/45">*</span></label>
                         <input
                           type="text" name="name" required value={form.name} onChange={handleChange}
                           placeholder="Your name"
-                          className="w-full bg-black/[0.02] border border-black/[0.08] rounded-xl px-4 py-3 text-sm text-[#111] placeholder:text-black/25 focus:outline-none focus:border-black/20 transition-colors"
+                          className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder:text-white/40 focus:outline-none focus:border-white/25 transition-colors"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs text-black/45 tracking-wide mb-1.5">Email <span className="text-black/30">*</span></label>
+                        <label className="block text-xs text-white/60 tracking-wide mb-1.5">Email <span className="text-white/45">*</span></label>
                         <input
                           type="email" name="email" required value={form.email} onChange={handleChange}
                           placeholder="you@example.com"
-                          className="w-full bg-black/[0.02] border border-black/[0.08] rounded-xl px-4 py-3 text-sm text-[#111] placeholder:text-black/25 focus:outline-none focus:border-black/20 transition-colors"
+                          className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder:text-white/40 focus:outline-none focus:border-white/25 transition-colors"
                         />
                       </div>
                     </div>
                     <div>
-                      <label className="block text-xs text-black/45 tracking-wide mb-1.5">Subject <span className="text-black/30">*</span></label>
+                      <label className="block text-xs text-white/60 tracking-wide mb-1.5">Subject <span className="text-white/45">*</span></label>
                       <input
                         type="text" name="subject" required value={form.subject} onChange={handleChange}
                         placeholder="What is this about?"
-                        className="w-full bg-black/[0.02] border border-black/[0.08] rounded-xl px-4 py-3 text-sm text-[#111] placeholder:text-black/25 focus:outline-none focus:border-black/20 transition-colors"
+                        className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder:text-white/40 focus:outline-none focus:border-white/25 transition-colors"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs text-black/45 tracking-wide mb-1.5">Message <span className="text-black/30">*</span></label>
+                      <label className="block text-xs text-white/60 tracking-wide mb-1.5">Message <span className="text-white/45">*</span></label>
                       <textarea
                         name="message" rows={5} required value={form.message} onChange={handleChange}
                         placeholder="Tell us more..."
-                        className="w-full bg-black/[0.02] border border-black/[0.08] rounded-xl px-4 py-3 text-sm text-[#111] placeholder:text-black/25 focus:outline-none focus:border-black/20 transition-colors resize-none"
+                        className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder:text-white/40 focus:outline-none focus:border-white/25 transition-colors resize-none"
                       />
                     </div>
                   </div>
                   <button
                     type="submit" disabled={submitting}
-                    className="mt-6 w-full py-3.5 bg-[#111] text-white text-sm rounded-xl hover:bg-[#333] transition-colors tracking-widest font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="mt-6 w-full py-3.5 bg-[#eef35f] text-black font-medium text-sm rounded-full hover:bg-[#f4f78a] transition-colors tracking-[0.012em] disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {submitting ? "SENDING..." : "SEND MESSAGE"}
+                    {submitting ? "Sending…" : "Send Message"}
                   </button>
-                  <p className="mt-4 text-[11px] text-black/30 text-center leading-relaxed">
+                  <p className="mt-4 text-[11px] text-white/45 text-center leading-relaxed">
                     We only use your contact details to reply to your message.{" "}
-                    <Link href="/privacy" className="underline hover:text-black/50 transition-colors">Privacy policy</Link>
+                    <Link href="/privacy" className="underline hover:text-white/65 transition-colors">Privacy policy</Link>
                   </p>
                 </form>
               )}
@@ -219,11 +219,11 @@ export default function ContactPage() {
       </section>
 
       {/* ── BOTTOM CTA ────────────────────────────────────────────────────── */}
-      <section className="py-16 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
+      <section className="py-16 px-6 md:px-12 lg:px-20 border-t border-white/[0.08]">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
-          <p className="text-sm text-black/45">Rather see the product in action?</p>
-          <Link href="/book-demo" className="px-8 py-3.5 bg-[#111] text-white text-sm rounded-xl hover:bg-[#333] transition-colors tracking-widest font-medium">
-            BOOK A DEMO
+          <p className="text-sm text-white/60">Rather see the product in action?</p>
+          <Link href="/book-demo" className="px-8 py-3.5 bg-[#eef35f] text-black font-medium text-sm rounded-full hover:bg-[#f4f78a] transition-colors tracking-[0.012em]">
+            Book a Demo
           </Link>
         </div>
       </section>

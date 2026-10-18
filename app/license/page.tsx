@@ -58,19 +58,19 @@ export default function LicensePage() {
   }
 
   return (
-    <div className="bg-[#F5F4F0] text-[#111] min-h-screen font-sans antialiased">
+    <div className="bg-black text-white min-h-screen font-sans antialiased">
       <MobileNav />
 
       <div className="pt-40 pb-24 px-6 md:px-12 lg:px-20">
         <div className="max-w-3xl mx-auto">
 
           <FadeIn>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] tracking-widest text-black/40 bg-black/[0.04] mb-5">LICENSE</span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] tracking-widest text-white/55 bg-white/[0.06] mb-5">LICENSE</span>
             <h1 className="text-5xl md:text-6xl font-light tracking-tight leading-[1.02] mb-6">MIT License</h1>
           </FadeIn>
 
           <FadeIn delay={80}>
-            <div className="mb-10 p-6 rounded-2xl border border-black/[0.07] bg-white">
+            <div className="mb-10 p-6 rounded-2xl border border-white/[0.09] bg-[#0e0f11]">
               <h2 className="text-lg font-light mb-3">What the MIT license means for you</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {[
@@ -82,10 +82,10 @@ export default function LicensePage() {
                   { icon: "!", label: "Keep attribution", desc: "Preserve the copyright notice in all copies." },
                 ].map((item) => (
                   <div key={item.label} className="flex items-start gap-3">
-                    <span className={`text-sm font-medium shrink-0 ${item.icon === "✓" ? "text-emerald-600" : "text-amber-600"}`}>{item.icon}</span>
+                    <span className={`text-sm font-medium shrink-0 ${item.icon === "✓" ? "text-[#00cbaa]" : "text-amber-300"}`}>{item.icon}</span>
                     <div>
-                      <div className="text-xs font-medium text-black/70 mb-0.5">{item.label}</div>
-                      <div className="text-xs text-black/40">{item.desc}</div>
+                      <div className="text-xs font-medium text-white/80 mb-0.5">{item.label}</div>
+                      <div className="text-xs text-white/55">{item.desc}</div>
                     </div>
                   </div>
                 ))}
@@ -94,14 +94,14 @@ export default function LicensePage() {
           </FadeIn>
 
           <FadeIn delay={160}>
-            <div className="rounded-2xl border border-black/[0.07] bg-white overflow-hidden">
-              <div className="flex items-center justify-between px-6 py-4 border-b border-black/[0.06]">
-                <span className="text-xs text-black/40 tracking-widest uppercase">Full License Text</span>
-                <button onClick={copy} className="text-[11px] text-black/35 hover:text-black/60 tracking-widest transition-colors">
+            <div className="rounded-2xl border border-white/[0.09] bg-[#0e0f11] overflow-hidden">
+              <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.08]">
+                <span className="text-xs text-white/55 tracking-widest uppercase">Full License Text</span>
+                <button onClick={copy} className="text-[11px] text-white/50 hover:text-white/72 tracking-widest transition-colors">
                   {copied ? "COPIED ✓" : "COPY"}
                 </button>
               </div>
-              <pre className="p-6 text-[12px] font-mono text-black/50 leading-relaxed whitespace-pre-wrap overflow-x-auto">{MIT_TEXT}</pre>
+              <pre className="p-6 text-[12px] font-mono text-white/65 leading-relaxed whitespace-pre-wrap overflow-x-auto">{MIT_TEXT}</pre>
             </div>
           </FadeIn>
 
@@ -111,12 +111,12 @@ export default function LicensePage() {
                 href="https://github.com/shreyaaassss/Veritas/blob/main/LICENSE"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-6 py-3 bg-[#111] text-white text-xs rounded-xl hover:bg-[#333] transition-colors tracking-widest text-center"
+                className="px-6 py-3 bg-[#eef35f] text-black font-medium text-xs rounded-full hover:bg-[#f4f78a] transition-colors tracking-[0.012em] text-center"
               >
-                VIEW ON GITHUB ↗
+                View on Github ↗
               </a>
-              <Link href="/contact" className="px-6 py-3 border border-black/10 text-black/60 text-xs rounded-xl hover:border-black/25 hover:text-black transition-all tracking-widest text-center">
-                QUESTIONS? CONTACT US
+              <Link href="/contact" className="px-6 py-3 border border-white/15 text-white/72 text-xs rounded-full font-medium hover:border-white/30 hover:text-white transition-all tracking-[0.012em] text-center">
+                QUESTIONS? Contact Us
               </Link>
             </div>
           </FadeIn>

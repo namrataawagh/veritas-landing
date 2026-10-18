@@ -39,22 +39,22 @@ const FOOTER_COLS = [
 
 export function VeritasFooter() {
   return (
-    <footer className="py-16 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
+    <footer className="py-16 px-6 md:px-12 lg:px-20 border-t border-white/[0.08]">
       <div className="max-w-6xl mx-auto">
         {/* Top row: logo + columns */}
         <div className="flex flex-col md:flex-row gap-12 md:gap-16">
           {/* Brand */}
           <div className="shrink-0">
-            <Link href="/" className="font-pixel text-xs tracking-[0.25em] text-black/50 hover:text-black/80 transition-colors">
-              VERITAS
+            <Link href="/" aria-label="Veritas home" className="inline-block">
+              <img src="/veritas-wordmark.png" alt="Veritas" width={1726} height={375} className="block h-6 w-auto" />
             </Link>
-            <p className="mt-4 text-xs text-black/35 leading-relaxed max-w-[180px]">
+            <p className="mt-4 text-xs text-white/50 leading-relaxed max-w-[180px]">
               Trustworthy AI agent orchestration. Open source.
             </p>
             {/* Status badge */}
-            <div className="mt-5 inline-flex items-center gap-2 px-3 py-1 rounded-full border border-black/[0.08] bg-black/[0.02]">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-500/80" />
-              <span className="text-[10px] text-black/35 tracking-widest">BETA</span>
+            <div className="mt-5 inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/[0.1] bg-white/[0.04]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#eef35f]" />
+              <span className="text-[10px] text-white/50 tracking-widest">BETA</span>
             </div>
           </div>
 
@@ -62,7 +62,7 @@ export function VeritasFooter() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 flex-1">
             {FOOTER_COLS.map(col => (
               <div key={col.heading}>
-                <div className="text-[10px] text-black/30 tracking-widest uppercase mb-4">
+                <div className="text-[10px] text-white/45 tracking-widest uppercase mb-4">
                   {col.heading}
                 </div>
                 <ul className="space-y-2.5">
@@ -73,14 +73,14 @@ export function VeritasFooter() {
                           href={l.href}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-xs text-black/40 hover:text-black/75 transition-colors tracking-wide"
+                          className="text-xs text-white/55 hover:text-white/85 transition-colors tracking-wide"
                         >
                           {l.label} ↗
                         </a>
                       ) : (
                         <Link
                           href={l.href}
-                          className="text-xs text-black/40 hover:text-black/75 transition-colors tracking-wide"
+                          className="text-xs text-white/55 hover:text-white/85 transition-colors tracking-wide"
                         >
                           {l.label}
                         </Link>
@@ -94,22 +94,22 @@ export function VeritasFooter() {
         </div>
 
         {/* Bottom row: copyright */}
-        <div className="mt-12 pt-6 border-t border-black/[0.04] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <span className="text-xs text-black/20">
+        <div className="mt-12 pt-6 border-t border-white/[0.06] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <span className="text-xs text-white/35">
             © 2024 Veritas. Open-source project.
           </span>
           <div className="flex items-center gap-6">
-            <Link href="/privacy" className="text-xs text-black/20 hover:text-black/50 transition-colors tracking-widest">
+            <Link href="/privacy" className="text-xs text-white/35 hover:text-white/65 transition-colors tracking-widest">
               Privacy
             </Link>
-            <Link href="/license" className="text-xs text-black/20 hover:text-black/50 transition-colors tracking-widest">
+            <Link href="/license" className="text-xs text-white/35 hover:text-white/65 transition-colors tracking-widest">
               License
             </Link>
             <a
               href="https://github.com/shreyaaassss/Veritas"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs text-black/20 hover:text-black/50 transition-colors tracking-widest"
+              className="text-xs text-white/35 hover:text-white/65 transition-colors tracking-widest"
             >
               GitHub
             </a>
