@@ -344,8 +344,8 @@ export function AuthControls({ variant, onAction }: { variant: "header" | "menu"
   if (!session) {
     return (
       <div className={variant === "header" ? "tg-auth" : "tg-menu-auth"}>
-        <button type="button" className="tg-btn tg-btn-text" onClick={act(login)}>Log in</button>
-        <button type="button" className="tg-btn tg-btn-outline" onClick={act(register)}>Register</button>
+        <button type="button" className="tg-btn tg-btn-brand-outline" onClick={act(login)}>Log in</button>
+        <button type="button" className="tg-btn tg-btn-brand" onClick={act(register)}>Register</button>
       </div>
     )
   }

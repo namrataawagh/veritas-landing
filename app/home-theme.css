@@ -131,7 +131,12 @@
 .tg-account-menu .danger, .tg-menu-account .danger { color: #ff8a80; }
 .tg-menu-auth { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding-top: 16px; }
 .tg-menu-auth .tg-btn { justify-content: center; }
-.tg-menu-auth .tg-btn-text { box-shadow: var(--shadow-subtle-5); }
+/* Log in / Register use the wordmark's green */
+.tg { --color-brand: #c9ea14; }
+.tg-btn-brand { background: var(--color-brand); color: #000; padding: 12px 20px; }
+.tg-btn-brand:hover { background: #d6f243; }
+.tg-btn-brand-outline { background: transparent; color: var(--color-brand); box-shadow: inset 0 0 0 1px var(--color-brand); padding: 12px 20px; }
+.tg-btn-brand-outline:hover { background: rgba(201, 234, 20, 0.1); }
 .tg-menu-account { display: grid; gap: 2px; padding-top: 12px; }
 .tg-menu-account button { padding: 12px 0; font-size: 16px; font-weight: 500; border-radius: 0; }
 .tg-menu-email { padding: 4px 0 8px; font-size: 13px; color: var(--color-cloud); overflow-wrap: anywhere; }
