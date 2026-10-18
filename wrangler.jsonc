@@ -2,11 +2,25 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "veritas-landing",
   "compatibility_date": "2026-10-01",
+  // Handles /api/* (download emails); every other path is served from ./out
+  "main": "worker/index.ts",
   "assets": {
     "directory": "./out",
+    "binding": "ASSETS",
     "html_handling": "auto-trailing-slash",
-    "not_found_handling": "404-page"
+    "not_found_handling": "404-page",
+    "run_worker_first": ["/api/*"]
+  },
+  "vars": {
+    "SUPABASE_URL": "https://pbdzggynnwyirupypiro.supabase.co",
+    "SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBiZHpnZ3lubnd5aXJ1cHlwaXJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIzMTc4NDgsImV4cCI6MjEwNzg5Mzg0OH0.tT9x3bFAT6PBtt0-nVPEzRzmAVCOHeydxzm0WAGPC4Q",
+    // agentveritas.in is verified in Resend
+    "EMAIL_FROM": "Veritas <noreply@agentveritas.in>"
+    // Optional: direct installer links included as a button in the email
+    // "DOWNLOAD_URL_LINUX": "https://…/veritas_1.0.16_amd64.deb",
+    // "DOWNLOAD_URL_MACOS": "https://…/Veritas-1.0.16.pkg",
+    // "DOWNLOAD_URL_WINDOWS": "https://…/VeritasSetup-1.0.16.exe"
   }
-  // Custom domain — uncomment and set once the zone is on Cloudflare:
-  // "routes": [{ "pattern": "example.com", "custom_domain": true }]
+  // RESEND_API_KEY is a secret: `.dev.vars` locally, `npx wrangler secret put RESEND_API_KEY` for production.
+  // Custom domains (agentveritas.in, www) are attached in the Cloudflare dashboard
 }

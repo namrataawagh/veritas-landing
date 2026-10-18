@@ -40,7 +40,7 @@ export default function PrivacyPage() {
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] tracking-widest text-white/55 bg-white/[0.06] mb-5">PRIVACY</span>
             <h1 className="text-5xl md:text-6xl font-light tracking-tight leading-[1.02] mb-6">Privacy Policy</h1>
             <p className="text-sm text-white/60 leading-relaxed mb-4">
-              Last updated: October 2024
+              Last updated: October 2026
             </p>
             <div className="p-5 rounded-2xl border border-white/[0.09] bg-[#0e0f11]">
               <p className="text-sm text-white/72 leading-relaxed">
@@ -57,6 +57,7 @@ export default function PrivacyPage() {
                 ["what-we-collect", "What data Veritas collects"],
                 ["local-data", "Local data storage"],
                 ["no-telemetry", "No telemetry by default"],
+                ["accounts", "Accounts and download requests"],
                 ["contact-forms", "Contact form data"],
                 ["third-parties", "Third-party services"],
                 ["changes", "Changes to this policy"],
@@ -101,6 +102,24 @@ export default function PrivacyPage() {
               </div>
             </Section>
 
+            <Section id="accounts" delay={100}>
+              <h2 className="text-2xl font-light mb-4">Accounts and download requests</h2>
+              <div className="space-y-3 text-sm text-white/70 leading-relaxed">
+                <p>To download Veritas you register with your Google account. Before sign-in we show a consent notice under India&apos;s Digital Personal Data Protection Act, 2023, and we only proceed once you tick the consent box. We record when you consented and which version of the notice you saw.</p>
+                <ul className="space-y-1.5 ml-4">
+                  {[
+                    "What we collect: your name and Gmail address from Google, and the operating system and time of each download request.",
+                    "Why: to email you the installation guide for the OS you choose, and to keep a record of requests so we can support your installation and licensing. Not for marketing, and never sold.",
+                    "Who processes it for us: Google (sign-in), Supabase (account and request records), Resend (email delivery) and Cloudflare (hosting).",
+                    "How long: until you withdraw consent or delete your account.",
+                  ].map(item => (
+                    <li key={item} className="flex items-start gap-2.5"><span className="w-1 h-1 rounded-full bg-white/30 mt-2 shrink-0" />{item}</li>
+                  ))}
+                </ul>
+                <p>You can access, correct or erase your data, nominate someone to act on your behalf, and withdraw consent at any time. To withdraw and erase everything, sign in and choose <strong className="text-white/80">Withdraw consent &amp; delete data</strong> from the account menu. For anything else, or to raise a grievance, write to <a href="mailto:privacy@agentveritas.in" className="underline hover:text-white/80">privacy@agentveritas.in</a>. If we don&apos;t resolve your grievance, you can complain to the Data Protection Board of India.</p>
+              </div>
+            </Section>
+
             <Section id="contact-forms" delay={120}>
               <h2 className="text-2xl font-light mb-4">Contact form data</h2>
               <div className="space-y-3 text-sm text-white/70 leading-relaxed">
@@ -112,7 +131,7 @@ export default function PrivacyPage() {
             <Section id="third-parties" delay={160}>
               <h2 className="text-2xl font-light mb-4">Third-party services</h2>
               <div className="space-y-3 text-sm text-white/70 leading-relaxed">
-                <p>This website is hosted on Vercel. Vercel may process standard access logs. See <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer" className="underline hover:text-white/80">Vercel&apos;s privacy policy</a>.</p>
+                <p>This website is hosted on Cloudflare, which may process standard access logs. Accounts use Google sign-in through Supabase, and installation emails are sent with Resend. See <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener noreferrer" className="underline hover:text-white/80">Cloudflare</a>, <a href="https://supabase.com/privacy" target="_blank" rel="noopener noreferrer" className="underline hover:text-white/80">Supabase</a> and <a href="https://resend.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer" className="underline hover:text-white/80">Resend</a> privacy policies.</p>
                 <p>Veritas the software may call LLM provider APIs (e.g., OpenAI, Anthropic) on your behalf, depending on your configuration. Your data is subject to those providers&apos; privacy policies when you use them.</p>
               </div>
             </Section>

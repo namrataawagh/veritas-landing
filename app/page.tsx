@@ -7,6 +7,8 @@ import {
   ArrowRight, Boxes, Check, ChevronRight, Clock3, FileWarning, Fingerprint, LayoutDashboard,
   Link2, Lock, Menu, Monitor, ScanSearch, Search, Server, ShieldCheck, Sparkles, Target, Terminal, X,
 } from "lucide-react"
+import { DownloadButtons } from "@/components/download-buttons"
+import { AuthControls, AuthProvider } from "@/components/auth"
 import "./home-theme.css"
 
 const inter = Inter({ subsets: ["latin"], weight: ["300", "400", "500"], variable: "--tg-inter" })
@@ -19,6 +21,7 @@ const NAV_LINKS = [
   { label: "Use Cases", href: "/use-cases" },
   { label: "Docs", href: "/documentation" },
   { label: "Pricing", href: "/pricing" },
+  { label: "Download", href: "/#download" },
   { label: "About", href: "/about" },
 ]
 
@@ -334,6 +337,7 @@ export default function VeritasPage() {
 
   return (
     <div className={`tg ${inter.variable} ${mono.variable}`}>
+    <AuthProvider>
 
       {/* ── Header ── */}
       <header className="tg-header">
@@ -344,7 +348,7 @@ export default function VeritasPage() {
               {NAV_LINKS.map(l => <Link key={l.label} href={l.href}>{l.label}</Link>)}
             </div>
             <div className="tg-nav-actions">
-              <Link href="/contact" className="tg-btn tg-btn-text">Contact</Link>
+              <AuthControls variant="header" />
               <Link href="/book-demo" className="tg-btn tg-btn-white">Book a Demo</Link>
               <button className="tg-burger" onClick={() => setMenu(v => !v)} aria-label={menu ? "Close menu" : "Open menu"} aria-expanded={menu}>
                 {menu ? <X size={18} /> : <Menu size={18} />}
@@ -356,6 +360,7 @@ export default function VeritasPage() {
               {[...NAV_LINKS, { label: "Contact", href: "/contact" }, { label: "Book a Demo", href: "/book-demo" }].map(l => (
                 <Link key={l.label} href={l.href} onClick={() => setMenu(false)}>{l.label}</Link>
               ))}
+              <AuthControls variant="menu" onAction={() => setMenu(false)} />
             </div>
           )}
         </div>
@@ -539,26 +544,15 @@ export default function VeritasPage() {
         </div>
       </section>
 
-      {/* ── Deployment ── */}
-      <section className="tg-section">
+      {/* ── Download ── */}
+      <section className="tg-section" id="download">
         <div className="tg-container">
           <Reveal className="tg-head">
-            <span className="tg-eyebrow">Deployment</span>
+            <span className="tg-eyebrow">Download</span>
             <h2 className="tg-h2">Deploys on your infrastructure.</h2>
-            <p className="tg-body">Veritas is a licensed software package that installs directly on your existing servers. Linux, macOS, and Windows supported  -  with Kubernetes agent deployment for containerised environments.</p>
+            <p className="tg-body">Veritas is a licensed software package that installs directly on your existing servers. Pick your OS and we&apos;ll email you the installer guide  -  with Kubernetes agent deployment for containerised environments.</p>
           </Reveal>
-          <div className="tg-platforms">
-            {PLATFORMS.map((p, i) => {
-              const Icon = p.icon
-              return (
-                <Reveal key={p.os} className="tg-platform" delay={i * 60}>
-                  <Icon />
-                  <b>{p.os}</b>
-                  <span className="tg-body-sm">{p.pkg}</span>
-                </Reveal>
-              )
-            })}
-          </div>
+          <DownloadButtons />
         </div>
       </section>
 
@@ -609,6 +603,7 @@ export default function VeritasPage() {
           </div>
         </div>
       </footer>
+    </AuthProvider>
     </div>
   )
 }
