@@ -213,7 +213,8 @@ function Modal({ labelledBy, onClose, children }: { labelledBy: string; onClose?
   useEffect(() => {
     const prev = document.body.style.overflow
     document.body.style.overflow = "hidden"
-    (ref.current?.querySelector<HTMLElement>("input") ?? ref.current?.querySelector<HTMLElement>("button"))?.focus()
+    const first = ref.current?.querySelector<HTMLElement>("input") ?? ref.current?.querySelector<HTMLElement>("button")
+    first?.focus({ preventScroll: true })
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape" && onClose) onClose() }
     window.addEventListener("keydown", onKey)
     return () => { document.body.style.overflow = prev; window.removeEventListener("keydown", onKey) }
