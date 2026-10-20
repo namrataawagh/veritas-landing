@@ -42,8 +42,8 @@ const TIERS: Tier[] = [
   {
     name: "Starter",
     forWho: "Small teams proving compliance",
-    price: "About ₹1.5 – 2 lakh",
-    unit: "per year",
+    price: "About ₹12.5k – ₹17k",
+    unit: "per month, billed annually",
     limits: ["Up to 3 agents", "Up to 5 users", "1 organisation", "About 10 GB/month log volume analysed"],
     features: [
       { label: "Four core rules, evidence chain, PDF export", included: true },
@@ -57,8 +57,8 @@ const TIERS: Tier[] = [
   {
     name: "Professional",
     forWho: "Growing compliance teams",
-    price: "About ₹4 – 6 lakh",
-    unit: "per year",
+    price: "About ₹33k – ₹50k",
+    unit: "per month, billed annually",
     featured: true,
     limits: ["Up to 15 agents", "Up to 25 users", "1 organisation", "About 50 GB/month log volume analysed"],
     features: [
@@ -73,8 +73,8 @@ const TIERS: Tier[] = [
   {
     name: "Enterprise",
     forWho: "Broad coverage, regulated sectors",
-    price: "From about ₹12 lakh",
-    unit: "per year · multi-year options",
+    price: "From about ₹1 lakh",
+    unit: "per month, billed annually · multi-year options",
     limits: ["40+ agents, custom", "Unlimited users", "Multiple organisations", "Custom log volume"],
     features: [
       { label: "Four core rules, evidence chain, PDF export", included: true },
@@ -99,7 +99,7 @@ const COMPARE: { row: string; cells: [string, string, string, string] }[] = [
   { row: "Backups and chain verification", cells: ["Manual", "Manual", "Scheduled", "Scheduled and custom"] },
   { row: "Support", cells: ["Email", "Email, best effort", "Email, next business day", "Named contact and SLA"] },
   { row: "Onboarding", cells: ["Self-serve", "Self-serve docs", "Guided setup call", "Policy mapping included"] },
-  { row: "Price", cells: ["₹25k to ₹50k, credited if you convert", "About ₹1.5 to 2 lakh / year", "About ₹4 to 6 lakh / year", "Custom, from about ₹12 lakh / year"] },
+  { row: "Price", cells: ["₹25k to ₹50k, credited if you convert", "About ₹12.5k to ₹17k / month", "About ₹33k to ₹50k / month", "Custom, from about ₹1 lakh / month"] },
 ]
 
 const LIMITS = [
@@ -110,7 +110,7 @@ const LIMITS = [
 
 const ADD_ONS = [
   { icon: Workflow, title: "Onboarding and policy mapping", price: "One-time, about ₹50k – ₹1.5 lakh", body: "We list the personal data each system holds and turn it into your organisation config: fields, purposes, consent scope and retention." },
-  { icon: LifeBuoy, title: "Support and SLA upgrades", price: "About 10–20% of licence value per year", body: "Faster response times, a named contact and scheduled health checks." },
+  { icon: LifeBuoy, title: "Support and SLA upgrades", price: "About 10–20% of licence value", body: "Faster response times, a named contact and scheduled health checks." },
   { icon: Blocks, title: "Extra agent blocks", price: "Pro-rated from your tier price", body: "More agents beyond your plan's limit, sold in blocks of 10, without changing tier." },
   { icon: FileText, title: "Annual compliance health report", price: "Fixed fee per report", body: "A yearly review of findings, trends and recommendations, written for your DPO or board." },
   { icon: GraduationCap, title: "Training and workshops", price: "Per session", body: "Sessions for developers on keeping personal data out of logs, and for compliance teams on using the dashboard." },
@@ -120,7 +120,7 @@ const ADD_ONS = [
 const ROADMAP = ["Slack alerts", "Single sign-on", "Remediation hints", "Managed service", "Hosted lite version"]
 
 const FAQ = [
-  { q: "How is Veritas priced?", a: "An annual licence based on how many servers (agents) you monitor. Licences are signed files that expire on a date, so you renew once a year, which fits how compliance budgets already work." },
+  { q: "How is Veritas priced?", a: "A monthly price based on how many servers (agents) you monitor, billed annually. Licences are signed files that expire on a date, so you renew once a year, which fits how compliance budgets already work." },
   { q: "Why start with a paid pilot?", a: "A 60 to 90 day pilot runs Veritas on your own logs, so you see real findings from your systems before committing. The pilot fee is credited against your first annual licence if you convert." },
   { q: "What happens if we go over the log volume guide?", a: "Nothing stops. Log volume is a fair-use guideline, not a hard limit. The dashboard shows a usage meter and warns at 80%, and we discuss the right plan at renewal." },
   { q: "We need more agents mid-year. What then?", a: "Add extra agents in blocks of 10, pro-rated from your tier price, without changing plan." },
@@ -134,10 +134,10 @@ export default function PricingPage() {
       {/* ── Hero ── */}
       <section className="tg-section tg-price-hero">
         <div className="tg-container">
-          <span className="tg-pill">Annual licence · priced by monitored servers</span>
+          <span className="tg-pill">Monthly pricing · priced by monitored servers</span>
           <h1 className="tg-display">Pricing that grows with <span className="tg-wire">your servers.</span></h1>
           <p className="tg-body">
-            Pay an annual licence for the number of servers Veritas monitors. Everything runs on your own infrastructure, and every plan includes the full detection engine, all four DPDPA rules and <span className="tg-violet">tamper-evident evidence.</span>
+            Pay a monthly price for the number of servers Veritas monitors. Everything runs on your own infrastructure, and every plan includes the full detection engine, all four DPDPA rules and <span className="tg-violet">tamper-evident evidence.</span>
           </p>
           <div className="tg-hero-meta">
             <span><i />Billed annually</span>
@@ -180,7 +180,7 @@ export default function PricingPage() {
               </Reveal>
             ))}
           </div>
-          <p className="tg-caption tg-price-fine">Indicative prices, billed annually. Your quote depends on the number of agents and the onboarding scope.</p>
+          <p className="tg-caption tg-price-fine">Indicative monthly prices, billed annually. Your quote depends on the number of agents and the onboarding scope.</p>
         </div>
       </section>
 
