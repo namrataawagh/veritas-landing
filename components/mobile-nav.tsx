@@ -59,7 +59,7 @@ export function MobileNav() {
               Book a Demo
             </Link>
 
-            {/* Burger — mobile only */}
+            {/* Burger: mobile only */}
             <button
               onClick={() => setOpen(v => !v)}
               className="md:hidden flex flex-col justify-center items-center w-8 h-8 gap-[5px] rounded-lg hover:bg-white/[0.06] transition-colors"

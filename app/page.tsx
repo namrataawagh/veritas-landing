@@ -4,36 +4,36 @@ import React, { useEffect, useState } from "react"
 import Link from "next/link"
 import {
   ArrowRight, Boxes, Check, ChevronRight, Clock3, FileWarning, Fingerprint, LayoutDashboard, Link2,
-  Lock, ScanSearch, Search, Server, ShieldCheck, Sparkles, Target,
+  Lock, ScanSearch, Search, ShieldCheck, Target,
 } from "lucide-react"
 import { DownloadButtons } from "@/components/download-buttons"
 import { Reveal, SiteShell } from "@/components/site-shell"
 
 // ─── Content ──────────────────────────────────────────────────────────────────
 const PROBLEMS = [
-  { icon: FileWarning, title: "Personal data leaks into logs", lead: "A debug line dumps a customer record.", rest: " Without automated scanning, you'll never know  -  until an auditor finds it." },
-  { icon: Target, title: "Data used beyond declared purpose", lead: "Purpose limitation violated silently.", rest: " An API call accesses fields your privacy policy doesn't permit for that service." },
-  { icon: Clock3, title: "Retention windows exceeded", lead: "Every day is a fresh violation.", rest: " Data from 3 years ago sits in a system that's only allowed to keep it for 6 months." },
+  { icon: FileWarning, title: "Personal data leaks into logs", lead: "One debug line can carry a customer record.", rest: " Nobody chose to log it, and nobody is watching the file it lands in." },
+  { icon: Target, title: "Data turns up where nobody declared it", lead: "A new column, an API field, a second system.", rest: " The policy says one thing while the systems quietly do another." },
+  { icon: Fingerprint, title: "Screenshots are not evidence", lead: "Someone will ask what you saw and what you did.", rest: " A spreadsheet can be edited after the fact. A record needs to show that it was not." },
 ]
 
 const RULES = [
-  { title: "Data Exposure", severity: "HIGH", label: "Personal data in logs, debug output, API responses" },
-  { title: "Purpose Violation", severity: "HIGH", label: "Data used outside its declared consent scope" },
-  { title: "Retention Exceeded", severity: "MEDIUM", label: "Held past the permitted retention window" },
-  { title: "Re-identification Risk", severity: "MEDIUM", label: "Harmless fields that together identify a person" },
+  { title: "Personal data where it should not be", severity: "BY DATA KIND", label: "Logs, and systems declared to hold none" },
+  { title: "Data without a matching declaration", severity: "BY DATA KIND", label: "Fields, columns and API responses the policy never named" },
+  { title: "Held longer than declared", severity: "BY DATA KIND", label: "Still seen after its declared retention period" },
+  { title: "An erased identifier came back", severity: "HIGH", label: "Seen again after an erasure request was closed" },
 ]
 
 const CASES = [
-  { icon: FileWarning, title: "Aadhaar number in application logs", meta: "payments-api · 14:02 · OPEN" },
-  { icon: Target, title: "KYC data read by marketing-sync", meta: "marketing-sync · 13:31 · ACKNOWLEDGED" },
-  { icon: Clock3, title: "Retention window exceeded", meta: "crm-sync · 11:20 · RESOLVED" },
+  { icon: FileWarning, title: "Aadhaar and phone in support logs", meta: "support-ticketing · Support team · OPEN" },
+  { icon: Target, title: "Undeclared column customers.aadhaar_no", meta: "loan-db · schema change · OPEN" },
+  { icon: Clock3, title: "Resolved debug line came back", meta: "payments-service · Platform team · RECURRED" },
 ]
 
 const AUDIENCES = [
-  { icon: LayoutDashboard, label: "Compliance Officer", title: "Live violation detection", desc: "Every DPDPA violation appears on your dashboard the moment it's detected — via WebSocket live feed. Open a case, investigate with AI-assisted explanations, annotate, and resolve. Full case lifecycle in one view.", badges: ["Live Stream", "Case lifecycle"] },
-  { icon: Link2, label: "DPO / Auditor", title: "Tamper-evident evidence chain", desc: "Every verdict is linked by SHA-256 hash to the previous one. The chain can be verified at any time — proving no record was altered. Export a signed PDF audit report for regulators on demand.", badges: ["Hash chain", "PDF export"] },
-  { icon: Boxes, label: "Engineering Team", title: "Agent deployment and monitoring", desc: "Deploy the Veritas Agent as a Docker container, .deb package, or Kubernetes DaemonSet. Each agent appears with a heartbeat status. Revoke any agent instantly from the dashboard.", badges: ["Docker", "Kubernetes DaemonSet"] },
-  { icon: Lock, label: "CTO / Security", title: "Zero data leaves your network", desc: "Everything runs on your infrastructure — server, evidence store, dashboard. No data transmitted to us. RBAC with 4 server-enforced roles. TLS by default. Machine-bound RSA-PSS licensing.", badges: ["On-premise", "RBAC"] },
+  { icon: LayoutDashboard, label: "DPO and compliance team", title: "Incidents with owners, not alerts", desc: "Thousands of findings collapse into a short list of incidents, each routed to the team that owns the system. Rights requests, retention reviews and notice coverage are tracked against the policy you declared.", badges: ["Owned incidents", "Rights requests"] },
+  { icon: Link2, label: "Auditors and customers", title: "Evidence they can check themselves", desc: "Every record is chained to the one before it, and signed checkpoints are kept by witnesses outside the server. The audit pack verifies offline with a stand-alone tool and states plainly what it does not prove.", badges: ["Signed checkpoints", "Audit pack"] },
+  { icon: Boxes, label: "Engineering team", title: "Stopped at the source and in the pipeline", desc: "Agents read files, containers and syslog on each host and mask personal data before a line leaves it. A pipeline gate fails a migration or API spec that adds undeclared personal data, before it ships.", badges: ["Masking at source", "Pipeline gate"] },
+  { icon: Lock, label: "CTO and security", title: "Runs entirely on your infrastructure", desc: "Server, evidence store and dashboard run on your own machines, on Linux, macOS or Windows. Roles are enforced on the server, traffic uses TLS, and the machine-bound licence is verified offline.", badges: ["Self-hosted", "Offline licence"] },
 ]
 
 type CodeLine = { t: "c" | "cmd" | "out" | "ok" | "url" | "gap" | "plain"; s?: string } | { t: "prop"; k: string; v: string }
@@ -41,25 +41,26 @@ const INSTALL: { tab: string; code: CodeLine[] }[] = [
   {
     tab: "Server",
     code: [
-      { t: "c", s: "# Install the Veritas Server (.deb)" }, { t: "cmd", s: "sudo apt install ./veritas_1.0.16_amd64.deb" }, { t: "gap" },
-      { t: "c", s: "# Get your machine fingerprint" }, { t: "cmd", s: "sudo veritas fingerprint" }, { t: "gap" },
-      { t: "out", s: "v2:a3f8c2d1e9b47f6c..." }, { t: "c", s: "# Send this hash to your Veritas contact" },
+      { t: "c", s: "# Install the Veritas server (Ubuntu or Debian)" }, { t: "cmd", s: "sudo apt install ./veritas_<version>_amd64.deb" }, { t: "gap" },
+      { t: "c", s: "# Print this machine's fingerprint" }, { t: "cmd", s: "sudo veritas fingerprint" }, { t: "gap" },
+      { t: "out", s: "v2:a3f8c2d1e9b47f6c..." }, { t: "c", s: "# Send it to your Veritas contact for a licence" },
     ],
   },
   {
     tab: "License",
     code: [
-      { t: "c", s: "# Install your signed license file" }, { t: "cmd", s: "sudo veritas license ./veritas.vlic" }, { t: "gap" },
-      { t: "ok", s: "✓ License valid" }, { t: "ok", s: "✓ Machine fingerprint matched" }, { t: "ok", s: "✓ Veritas service started" }, { t: "gap" },
-      { t: "url", s: "  → Dashboard: http://localhost:8000" },
+      { t: "c", s: "# Install the signed licence file" }, { t: "cmd", s: "sudo veritas license ./veritas.vlic" }, { t: "gap" },
+      { t: "ok", s: "Licence valid for this machine" }, { t: "ok", s: "Veritas service started" }, { t: "gap" },
+      { t: "url", s: "  Dashboard: https://localhost:8000" },
     ],
   },
   {
     tab: "Agent",
     code: [
-      { t: "c", s: "# agent-config.yaml" }, { t: "prop", k: "veritas_address", v: "'https://veritas.your-company.internal'" },
+      { t: "c", s: "# /etc/veritas-agent/config.yaml" }, { t: "prop", k: "veritas_address", v: "'https://veritas.your-company.internal:8000'" },
       { t: "prop", k: "registration_key", v: "'KEY-FROM-DASHBOARD'" }, { t: "plain", s: "sources:" }, { t: "plain", s: "  - type: file" },
-      { t: "prop", k: "    path", v: "'/var/log/your-app/*.log'" }, { t: "plain", s: "  - type: docker" }, { t: "prop", k: "    container", v: "'order-service'" },
+      { t: "prop", k: "    path", v: "'/var/log/app/application.log'" }, { t: "prop", k: "    source_system", v: "'support-ticketing'" },
+      { t: "plain", s: "redaction:" }, { t: "prop", k: "  categories", v: "{ aadhaar: mask, phone: hash, email: mask }" },
     ],
   },
   {
@@ -67,7 +68,7 @@ const INSTALL: { tab: string; code: CodeLine[] }[] = [
     code: [
       { t: "prop", k: "org_id", v: "'acme_retail'" }, { t: "plain", s: "fields:" }, { t: "plain", s: "  - field_name: aadhaar" },
       { t: "prop", k: "    declared_purpose", v: "'onboarding_kyc'" }, { t: "prop", k: "    retention_days", v: "180" },
-      { t: "prop", k: "    source_system", v: "'partner-service'" }, { t: "gap" }, { t: "ok", s: "✓ Policy active — violations now detected" },
+      { t: "prop", k: "    source_system", v: "'partner-service'" }, { t: "gap" }, { t: "ok", s: "Policy active. Every finding is checked against it." },
     ],
   },
 ]
@@ -87,12 +88,6 @@ const SERVICES = [
 ]
 
 function NetworkDiagram() {
-  const [seen, setSeen] = useState(18204)
-  useEffect(() => {
-    const t = setInterval(() => setSeen(n => n + 1 + Math.floor(Math.random() * 3)), 800)
-    return () => clearInterval(t)
-  }, [])
-
   const R = 200
   const nodes = SERVICES.map((s, i) => {
     const a = (-60 + i * 60) * (Math.PI / 180)
@@ -100,7 +95,7 @@ function NetworkDiagram() {
   })
 
   return (
-    <div className="tg-diagram" aria-label="Diagram: log lines from six services flow into Veritas, which flags and locks the ones carrying personal data">
+    <div className="tg-diagram" aria-label="Diagram: log lines from your services flow into Veritas, which masks and locks the ones carrying personal data">
       <svg viewBox="0 0 560 560" role="img">
         <circle className="ring dash" cx={C} cy={C} r={258} />
         <circle className="ring" cx={C} cy={C} r={R} />
@@ -160,11 +155,6 @@ function NetworkDiagram() {
           <path d={`M${C + 31} ${C - 32}l3.4 3.4 6-6.4`} />
         </g>
       </svg>
-      <div className="tg-float" aria-live="off">
-        <span className="dot" />
-        <strong>{seen.toLocaleString("en-IN")}</strong>
-        <span>log lines inspected today<br />on your own servers</span>
-      </div>
     </div>
   )
 }
@@ -178,17 +168,17 @@ function DetectionMock() {
   }, [])
   return (
     <div className="tg-ui">
-      <div className="tg-ui-head"><b>payments-api · app.log</b><span><i className="live" />Scanning</span></div>
+      <div className="tg-ui-head"><b>support-ticketing · on the host</b><span><i className="live" />{masked ? "Masked" : "Raw line"}</span></div>
       <div className="tg-ui-body">
         <div className="tg-log">
-          <div><span className="k">level=</span>info <span className="k">route=</span>/v1/kyc/submit</div>
-          <div><span className="k">name=</span><span className={`hit ${masked ? "masked" : ""}`}>{masked ? '"P•••• S•••••"' : '"Priya Sharma"'}</span><span className="tag">NAME</span></div>
-          <div><span className="k">aadhaar=</span><span className={`hit ${masked ? "masked" : ""}`}>{masked ? '"XXXX XXXX 1956"' : '"4821 7730 1956"'}</span><span className="tag">AADHAAR</span></div>
-          <div><span className="k">phone=</span><span className={`hit ${masked ? "masked" : ""}`}>{masked ? '"+91 •••• •4517"' : '"+91 98201 44517"'}</span><span className="tag">PHONE</span></div>
-          <div><span className="k">loan_amt=</span>250000</div>
+          <div><span className="k">level=</span>info <span className="k">ticket=</span>5001</div>
+          <div><span className="k">callback=</span><span className={`hit ${masked ? "masked" : ""}`}>{masked ? "[PHONE#69512b…]" : "9876543210"}</span><span className="tag">PHONE</span></div>
+          <div><span className="k">aadhaar=</span><span className={`hit ${masked ? "masked" : ""}`}>{masked ? "[AADHAAR_REDACTED]" : "2345 6789 0124"}</span><span className="tag">AADHAAR</span></div>
+          <div><span className="k">mail=</span><span className={`hit ${masked ? "masked" : ""}`}>{masked ? "[EMAIL_REDACTED]" : "asha.rao@example.com"}</span><span className="tag">EMAIL</span></div>
+          <div><span className="k">status=</span>done</div>
         </div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-          {["Aadhaar", "PAN Card", "Phone Numbers", "Names", "Email", "Address"].map(t => <span key={t} className="tg-chip">{t}</span>)}
+          {["Mask", "Hash", "Drop", "Fail closed"].map(t => <span key={t} className="tg-chip">{t}</span>)}
         </div>
       </div>
     </div>
@@ -198,7 +188,7 @@ function DetectionMock() {
 function RulesMock() {
   return (
     <div className="tg-ui">
-      <div className="tg-ui-head"><b>DPDPA rule engine</b><span>4 rules active</span></div>
+      <div className="tg-ui-head"><b>Rules in force</b><span>Two-person approval</span></div>
       <div className="tg-ui-body">
         {RULES.map(r => (
           <div key={r.title} className="tg-item">
@@ -220,9 +210,9 @@ function CasesMock() {
   }, [])
   return (
     <div className="tg-ui">
-      <div className="tg-ui-head"><b>Investigation dashboard</b><span><i className="live" />Live</span></div>
+      <div className="tg-ui-head"><b>Audit Ledger · incidents</b><span><i className="live" />Live</span></div>
       <div className="tg-ui-body">
-        <div className="tg-input"><Search /><span>Search cases, services, fields</span></div>
+        <div className="tg-input"><Search /><span>Search incidents, systems, owners</span></div>
         {CASES.map((c, i) => {
           const Icon = c.icon
           return (
@@ -240,23 +230,24 @@ function CasesMock() {
 
 function ChainMock() {
   const blocks = [
-    { n: "#00412", h: "9f2c41…e8a71e" },
-    { n: "#00411", h: "4bca07…31c441" },
-    { n: "#00410", h: "af3e92…0d2b3b" },
+    { n: "#11356", h: "9f2c41…e8a71e" },
+    { n: "#11355", h: "4bca07…31c441" },
+    { n: "#11354", h: "af3e92…0d2b3b" },
   ]
   return (
     <div className="tg-ui">
-      <div className="tg-ui-head"><b>Evidence chain</b><span style={{ color: "var(--color-circuit-teal)" }}><Check size={14} />chain_valid: true</span></div>
+      <div className="tg-ui-head"><b>Evidence chain</b><span style={{ color: "var(--color-circuit-teal)" }}><Check size={14} />verified offline</span></div>
       <div className="tg-ui-body">
         <div className="tg-chain">
           {blocks.map((b, i) => (
             <React.Fragment key={b.n}>
               {i > 0 && <div className="tg-link-line" />}
-              <div className="tg-block"><Link2 size={14} color="var(--color-circuit-teal)" /><span><b>{b.n}</b> verdict_hash</span><span>{b.h}</span></div>
+              <div className="tg-block"><Link2 size={14} color="var(--color-circuit-teal)" /><span><b>{b.n}</b> record hash</span><span>{b.h}</span></div>
             </React.Fragment>
           ))}
         </div>
-        <div className="tg-input" style={{ justifyContent: "space-between" }}><span>Signed PDF audit report</span><span className="tg-chip">Export</span></div>
+        <div className="tg-input" style={{ justifyContent: "space-between" }}><span>Signed checkpoint, held by two witnesses</span><span className="tg-chip">Witnessed</span></div>
+        <div className="tg-input" style={{ justifyContent: "space-between" }}><span>Evidence, checkpoints and verifier</span><span className="tg-chip">Audit pack</span></div>
       </div>
     </div>
   )
@@ -293,19 +284,19 @@ export default function VeritasPage() {
       <section className="tg-hero">
         <div className="tg-container tg-hero-grid">
           <div className="tg-hero-copy">
-            <Link href="/documentation/quickstart" className="tg-pill">New: on-premise DPDPA compliance <ChevronRight /></Link>
-            <h1 className="tg-display">Stop guessing.<br />Start proving<br />DPDPA <span className="tg-wire">compliance.</span></h1>
+            <Link href="/how-it-works" className="tg-pill">New: evidence you can verify offline <ChevronRight /></Link>
+            <h1 className="tg-display">Find personal data<br />at the source.<br />Prove what you <span className="tg-wire">did.</span></h1>
             <p className="tg-body">
-              Veritas automatically detects personal data violations in your application logs, records <span className="tg-violet">tamper-evident evidence</span>, and gives your compliance team a live dashboard to investigate every case  -  entirely on your own infrastructure.
+              Veritas finds personal data in your logs, API responses and database changes, masks it on the host before it travels, and turns findings into incidents with owners. Every step is kept in a <span className="tg-violet">tamper-evident record</span> that an auditor can verify without trusting us, all on your own infrastructure.
             </p>
             <div className="tg-hero-actions">
               <Link href="/book-demo" className="tg-btn tg-btn-primary">Book a Demo <ArrowRight /></Link>
               <Link href="/how-it-works" className="tg-btn tg-btn-text">How It Works <ArrowRight /></Link>
             </div>
             <div className="tg-hero-meta">
-              <span><i />v1.0.16 latest release</span>
-              <span><i />On-premise, your infra</span>
-              <span><i />DPDPA 2023, India</span>
+              <span><i />Masked before it leaves the host</span>
+              <span><i />Verifiable without our servers</span>
+              <span><i />Built for India&apos;s DPDP Act</span>
             </div>
           </div>
           <NetworkDiagram />
@@ -315,9 +306,9 @@ export default function VeritasPage() {
       {/* ── Entity strip ── */}
       <section className="tg-strip" aria-label="Personal data Veritas detects">
         <div className="tg-container">
-          <span className="tg-caption">Detects personal data across dozens of entity types, including</span>
+          <span className="tg-caption">Finds and masks Indian and global identifiers, including</span>
           <div className="tg-strip-row">
-            {["Aadhaar", "PAN", "Phone", "Email", "Names", "Address", "Bank A/C", "DOB"].map(e => <span key={e}>{e}</span>)}
+            {["Aadhaar", "PAN", "Phone numbers", "Email addresses", "Card numbers"].map(e => <span key={e}>{e}</span>)}
           </div>
         </div>
       </section>
@@ -327,8 +318,8 @@ export default function VeritasPage() {
         <div className="tg-container">
           <Reveal className="tg-head">
             <span className="tg-eyebrow">The problem</span>
-            <h2 className="tg-h2">DPDPA 2023 requires you to detect violations before they become breaches.</h2>
-            <p className="tg-body">Every organisation subject to DPDPA must track where personal data goes, why it&apos;s being used, how long it&apos;s retained, and prove compliance to auditors. Doing this manually across hundreds of services is impossible.</p>
+            <h2 className="tg-h2">Personal data spreads faster than any policy document can track.</h2>
+            <p className="tg-body">Every team that handles Indian personal data needs to know where it flows, whether that matches what was declared, how long it stays, and what was done when something went wrong. Across dozens of services, a manual review cannot keep up, and a spreadsheet cannot show that it was never changed.</p>
           </Reveal>
           <div className="tg-cols-3">
             {PROBLEMS.map((p, i) => {
@@ -350,17 +341,17 @@ export default function VeritasPage() {
         <div className="tg-container">
           <Reveal className="tg-head">
             <span className="tg-eyebrow">Capabilities</span>
-            <h2 className="tg-h2">Everything you need for DPDPA compliance.</h2>
+            <h2 className="tg-h2">From the first log line to evidence an outsider can check.</h2>
           </Reveal>
           <div className="tg-rows">
             <Reveal className="tg-row">
               <div className="tg-row-copy">
-                <span className="tg-eyebrow">PII detection engine</span>
-                <h3 className="tg-h3">Detects personal data in your application logs</h3>
-                <p className="tg-body">Automatically scans logs and API traffic for personal data across dozens of entity types. Every detection is validated to eliminate false positives. <span className="tg-violet">Runs fully on your server  -  no external API calls.</span></p>
+                <span className="tg-eyebrow">Masking at the source</span>
+                <h3 className="tg-h3">Masked on the host, before a line travels</h3>
+                <p className="tg-body">Agents read application logs, containers and syslog, and mask, hash or drop each kind of personal data on the host itself. <span className="tg-violet">If masking ever fails, the line is dropped, not sent.</span></p>
                 <ul>
-                  <li><ScanSearch /><div><b>Logs and API traffic</b><span>File, Docker and Kubernetes log sources</span></div></li>
-                  <li><ShieldCheck /><div><b>Zero data leaves your network</b><span>The only optional egress is AI investigation, and it sends no raw PII</span></div></li>
+                  <li><ScanSearch /><div><b>Logs, APIs and database changes</b><span>File, container, syslog and OpenTelemetry sources, a payload tap for API responses, and schema watch for databases</span></div></li>
+                  <li><ShieldCheck /><div><b>Keyed hashes, not raw values</b><span>Lookups and erasure checks run on keyed hashes, so the raw identifier is never stored</span></div></li>
                 </ul>
                 <Link href="/product" className="tg-link">Learn more <ChevronRight /></Link>
               </div>
@@ -369,12 +360,12 @@ export default function VeritasPage() {
 
             <Reveal className="tg-row flip">
               <div className="tg-row-copy">
-                <span className="tg-eyebrow">DPDPA rule engine</span>
-                <h3 className="tg-h3">4 rules. Every violation caught.</h3>
-                <p className="tg-body">Define your data policy once in YAML, with each field&apos;s declared purpose, retention window and source system. <span className="tg-violet">No code change needed.</span></p>
+                <span className="tg-eyebrow">Rules and approvals</span>
+                <h3 className="tg-h3">Rules that say exactly what they are</h3>
+                <p className="tg-body">Declare each system&apos;s personal data, purpose, owner and retention once. Every rule describes a possible control failure in plain language: a technical signal, not a legal conclusion. <span className="tg-violet">Core rules cannot be switched off, severity cannot fall below its floor, and every change needs a second person&apos;s approval.</span></p>
                 <ul>
-                  <li><Target /><div><b>Purpose limitation</b><span>Flags data used in a system its consent scope doesn&apos;t permit</span></div></li>
-                  <li><Fingerprint /><div><b>Re-identification risk</b><span>Catches harmless fields that together identify a person</span></div></li>
+                  <li><Target /><div><b>Declared versus observed</b><span>Flags personal data in a system, column or API that your policy never declared</span></div></li>
+                  <li><Fingerprint /><div><b>Erasure that does not hold</b><span>Raises an alert when an identifier from a closed erasure request appears again</span></div></li>
                 </ul>
                 <Link href="/how-it-works" className="tg-link">Learn more <ChevronRight /></Link>
               </div>
@@ -383,12 +374,12 @@ export default function VeritasPage() {
 
             <Reveal className="tg-row">
               <div className="tg-row-copy">
-                <span className="tg-eyebrow">Investigation dashboard</span>
-                <h3 className="tg-h3">Live violations. Full case lifecycle.</h3>
-                <p className="tg-body">Violations appear live via WebSocket. Open cases, investigate with optional AI explanations (no raw PII sent), annotate, and move <span className="tg-violet">OPEN → ACKNOWLEDGED → RESOLVED.</span></p>
+                <span className="tg-eyebrow">Incidents, not noise</span>
+                <h3 className="tg-h3">Thousands of findings, one short list with owners</h3>
+                <p className="tg-body">Findings with the same cause become a single incident, routed to the team that owns the system. Nothing is discarded, and every finding stays one click away. <span className="tg-violet">Resolve an incident, and Veritas reopens it if the fix does not hold.</span></p>
                 <ul>
-                  <li><Sparkles /><div><b>Optional AI explanations</b><span>OpenAI, Anthropic or a local Ollama model. Only field names and rule text are sent</span></div></li>
-                  <li><LayoutDashboard /><div><b>Live Stream, Audit Ledger, Agent Management, PDF Export</b><span>One dashboard for the whole compliance team</span></div></li>
+                  <li><LayoutDashboard /><div><b>Observed processing map</b><span>What Veritas has actually seen in each system, set against what you declared</span></div></li>
+                  <li><Search /><div><b>Rights requests</b><span>Look up an identifier across systems, give each owner a task, and close with a signed record</span></div></li>
                 </ul>
                 <Link href="/product" className="tg-link">Learn more <ChevronRight /></Link>
               </div>
@@ -397,9 +388,9 @@ export default function VeritasPage() {
 
             <Reveal className="tg-row flip">
               <div className="tg-row-copy">
-                <span className="tg-eyebrow">Tamper-evident evidence</span>
-                <h3 className="tg-h3">SHA-256 hash chain</h3>
-                <p className="tg-body">Every verdict links to the previous via SHA-256 hash. Verify the chain at any time. <span className="tg-violet">Export a signed PDF audit report for regulators.</span></p>
+                <span className="tg-eyebrow">Evidence an outsider can verify</span>
+                <h3 className="tg-h3">A record no one can quietly edit</h3>
+                <p className="tg-body">Every record is chained to the one before it with SHA-256, and signed checkpoints are kept by witnesses outside the server: a separate folder, your SIEM or a time-stamp authority. <span className="tg-violet">A stand-alone verifier checks the evidence against them with no server, no network and no trust in us.</span></p>
                 <Link href="/security" className="tg-link">Learn more <ChevronRight /></Link>
               </div>
               <div className="tg-showcase violet"><ChainMock /></div>
@@ -413,9 +404,9 @@ export default function VeritasPage() {
         <div className="tg-container">
           <div className="tg-stats">
             {[
-              { n: "4", t: "DPDPA rules enforced on every log line: exposure, purpose, retention and re-identification." },
-              { n: "0", t: "bytes of raw personal data sent outside your network. Server, evidence store and dashboard run on your infrastructure." },
-              { n: "4", t: "server-enforced RBAC roles, with TLS by default and machine-bound RSA-PSS licensing." },
+              { n: "At source", t: "Personal data is masked, hashed or dropped on the host before a line travels. If masking fails, the line is dropped." },
+              { n: "Offline", t: "The evidence verifies with a stand-alone tool against checkpoints held outside the server. No server, network or trust in us required." },
+              { n: "Two keys", t: "Rule changes and exceptions take effect only after a second person approves them, and every approval is recorded in the chain." },
             ].map((s, i) => (
               <Reveal key={i} className="tg-stat" delay={i * 80}>
                 <strong>{s.n}</strong>
@@ -431,13 +422,13 @@ export default function VeritasPage() {
         <div className="tg-container">
           <Reveal className="tg-head">
             <span className="tg-eyebrow">Installation</span>
-            <h2 className="tg-h2">Compliance as code, from install to first violation.</h2>
+            <h2 className="tg-h2">From install to first finding, on your own servers.</h2>
           </Reveal>
           <Reveal className="tg-code-wrap">
             <InstallCode />
             <div className="tg-side">
-              <h3 className="tg-title">Four steps on your own servers</h3>
-              <p className="tg-body">Install the server on Ubuntu 22.04+, activate your machine-bound license, deploy one agent per application server, and upload your org config. <span className="tg-violet">Policy changes need no code change.</span></p>
+              <h3 className="tg-title">A short path on your own servers</h3>
+              <p className="tg-body">Install the server on Linux, macOS or Windows, activate your machine-bound licence, place an agent on each application host, and declare your data policy. <span className="tg-violet">Policy changes need no code change and no restart.</span></p>
               <Link href="/documentation/quickstart" className="tg-btn tg-btn-outline" style={{ justifySelf: "start" }}>Open the quickstart <ArrowRight /></Link>
               <Link href="/documentation" className="tg-link violet">Explore the documentation <ChevronRight /></Link>
             </div>
@@ -450,7 +441,7 @@ export default function VeritasPage() {
         <div className="tg-container">
           <Reveal className="tg-head">
             <span className="tg-eyebrow">Who it&apos;s for</span>
-            <h2 className="tg-h2">Built for every team responsible for data compliance.</h2>
+            <h2 className="tg-h2">Built for everyone who answers for personal data.</h2>
           </Reveal>
           <div className="tg-cards">
             {AUDIENCES.map((a, i) => {
@@ -473,7 +464,7 @@ export default function VeritasPage() {
           <Reveal className="tg-head">
             <span className="tg-eyebrow">Download</span>
             <h2 className="tg-h2">Deploys on your infrastructure.</h2>
-            <p className="tg-body">Veritas is a licensed software package that installs directly on your existing servers. Pick your OS and we&apos;ll email you the installer guide  -  with Kubernetes agent deployment for containerised environments.</p>
+            <p className="tg-body">Veritas is licensed software that installs directly on your existing servers. Pick your operating system and we will email you the installation guide, including Kubernetes deployment for containerised environments.</p>
           </Reveal>
           <DownloadButtons />
         </div>
@@ -482,8 +473,8 @@ export default function VeritasPage() {
       {/* ── CTA ── */}
       <section className="tg-cta">
         <div className="tg-container">
-          <h2 className="tg-h2">Ready to automate<br />your DPDPA compliance?</h2>
-          <p className="tg-body" style={{ maxWidth: 520 }}>Book a demo and see Veritas detect a real DPDPA violation  -  from agent deployment to evidence export.</p>
+          <h2 className="tg-h2">See it run on<br />your own logs.</h2>
+          <p className="tg-body" style={{ maxWidth: 520 }}>Book a demo and watch Veritas mask personal data at the source, turn it into owned incidents, and hand an auditor evidence they can verify on their own.</p>
           <div className="tg-hero-actions" style={{ justifyContent: "center" }}>
             <Link href="/book-demo" className="tg-btn tg-btn-primary">Book a Demo <ArrowRight /></Link>
             <Link href="/how-it-works" className="tg-btn tg-btn-text">How It Works <ArrowRight /></Link>

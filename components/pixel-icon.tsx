@@ -18,7 +18,7 @@ function drawPlatform(ctx: CanvasRenderingContext2D, W: number, t: number) {
   const r  = W * 0.36
   const ps = W / 12  // pixel size
 
-  // Central node — pulsing
+  // Central node: pulsing
   const pulse = 0.6 + 0.4 * Math.sin(t * 0.003)
   ctx.fillStyle = `rgba(255,255,255,${pulse})`
   const cs = ps * 1.4
@@ -49,7 +49,7 @@ function drawPlatform(ctx: CanvasRenderingContext2D, W: number, t: number) {
 // ── Agents icon: humanoid pixel figure running ───────────────────────────────
 // Frames as 8×8 pixel masks (row-major, 1=lit)
 const AGENT_FRAMES: number[][][] = [
-  // Frame 0 — stand
+  // Frame 0: stand
   [
     [0,0,1,1,1,1,0,0],
     [0,0,1,1,1,1,0,0],
@@ -60,7 +60,7 @@ const AGENT_FRAMES: number[][][] = [
     [0,0,1,0,0,1,0,0],
     [0,0,1,0,0,1,0,0],
   ],
-  // Frame 1 — step left
+  // Frame 1: step left
   [
     [0,0,1,1,1,1,0,0],
     [0,0,1,1,1,1,0,0],
@@ -71,7 +71,7 @@ const AGENT_FRAMES: number[][][] = [
     [0,1,1,0,0,0,0,0],
     [0,0,0,0,0,1,1,0],
   ],
-  // Frame 2 — stand (same as 0)
+  // Frame 2: stand (same as 0)
   [
     [0,0,1,1,1,1,0,0],
     [0,0,1,1,1,1,0,0],
@@ -82,7 +82,7 @@ const AGENT_FRAMES: number[][][] = [
     [0,0,1,0,0,1,0,0],
     [0,0,1,0,0,1,0,0],
   ],
-  // Frame 3 — step right
+  // Frame 3: step right
   [
     [0,0,1,1,1,1,0,0],
     [0,0,1,1,1,1,0,0],
@@ -118,7 +118,7 @@ function drawAgents(ctx: CanvasRenderingContext2D, W: number, t: number) {
   })
 }
 
-// ── Workflow icon: hourglass shape — top half fills, drains to bottom ─────────
+// ── Workflow icon: hourglass shape: top half fills, drains to bottom ─────────
 function drawWorkflow(ctx: CanvasRenderingContext2D, W: number, t: number) {
   const ps   = Math.floor(W / 12)
   const cx   = W / 2
@@ -140,7 +140,7 @@ function drawWorkflow(ctx: CanvasRenderingContext2D, W: number, t: number) {
   const offX = cx - (cols * ps) / 2
   const offY = cy - (rows * ps) / 2
 
-  // Sand fill: top half empties, bottom half fills — period 2s
+  // Sand fill: top half empties, bottom half fills: period 2s
   const period = 2400
   const fill   = (t % period) / period  // 0→1
 
@@ -219,7 +219,7 @@ function drawPricing(ctx: CanvasRenderingContext2D, W: number, t: number) {
     const x  = offX + i * (bw + gap)
     const y  = W - bh - ps
 
-    // Bar body (pixelated — fill row by row)
+    // Bar body (pixelated: fill row by row)
     const rowCount = Math.floor(bh / ps)
     for (let row = 0; row < rowCount; row++) {
       const progress = 1 - row / rowCount

@@ -99,7 +99,7 @@ export default function ContactPage() {
                   icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
                   label: "SECURITY",
                   title: "Responsible disclosure",
-                  desc: "If you&apos;ve found a security vulnerability in Veritas, please report it responsibly. Use the contact form with subject line 'Security Issue' and we&apos;ll respond with priority.",
+                  desc: "If you've found a security vulnerability in Veritas, please report it responsibly. Use the contact form with the subject line 'Security Issue' and we'll respond with priority.",
                   action: null,
                   delay: 80,
                 },
@@ -133,7 +133,7 @@ export default function ContactPage() {
 
               <div className="px-4 py-3 rounded-xl border border-white/[0.08] bg-white/[0.04]">
                 <p className="text-xs text-white/50 leading-relaxed">
-                  Expected response time: 2–3 business days. For urgent security issues, we prioritize faster response.
+                  Expected response time: 2 to 3 business days. For urgent security issues, we prioritize faster response.
                 </p>
               </div>
             </div>
@@ -150,7 +150,7 @@ export default function ContactPage() {
                   </div>
                   <h3 className="text-xl font-light mb-3 text-[#00cbaa]">Message sent</h3>
                   <p className="text-sm text-[#00cbaa]/70 leading-relaxed max-w-xs">
-                    Thanks for reaching out. We&apos;ll get back to you within 2–3 business days.
+                    Thanks for reaching out. We&apos;ll get back to you within 2 to 3 business days.
                   </p>
                   <button
                     onClick={() => { setSubmitted(false); setForm({ name: "", email: "", subject: "", message: "" }) }}

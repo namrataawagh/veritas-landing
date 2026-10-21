@@ -36,14 +36,14 @@ const USE_CASES = [
   {
     tag: "FINTECH & BANKING",
     title: "KYC, Payments, and Lending Platforms",
-    problem: "Fintech platforms handle Aadhaar, PAN, bank account numbers, and credit scores - the most sensitive personal data under DPDPA. A single debug log line that dumps a customer record is a high-severity data exposure violation.",
+    problem: "Fintech platforms handle Aadhaar, PAN, bank details and credit decisions, some of the most sensitive personal data there is. A single debug line that dumps a customer record puts that data in a log file that many people can read.",
     capabilities: [
-      "Aadhaar detection with Verhoeff checksum validation",
-      "PAN card detection with structural validation",
-      "Purpose limitation for KYC data vs. marketing systems",
-      "Retention monitoring - KYC data has strict hold periods",
+      "Aadhaar validated with the Verhoeff checksum and masked on the host",
+      "PAN recognised by its structure",
+      "KYC data flagged when it reaches a system not declared to hold it",
+      "Retention reviews for data with strict holding periods",
     ],
-    scenario: "An order service fetches a customer record for a delivery address lookup. The debug log includes their Aadhaar number. Veritas detects this as a data exposure violation, records it in the evidence chain, and flags it live on the dashboard - before your compliance team's morning standup.",
+    scenario: "A lending service fetches a customer record to check an address, and a debug line includes the Aadhaar number. The agent masks it before the line leaves the host, the finding joins an incident owned by the lending team, and the record is in the evidence chain before anyone opens the dashboard.",
     cta: "See how →",
     ctaHref: "/book-demo",
     delay: 0,
@@ -51,14 +51,14 @@ const USE_CASES = [
   {
     tag: "HEALTHCARE & INSURANCE",
     title: "Patient and Policyholder Data",
-    problem: "Health data is among the most sensitive categories under DPDPA 2023. Hospitals, diagnostic labs, and insurers process patient records across dozens of systems. Retention windows are strict and purpose limitation is closely regulated.",
+    problem: "Hospitals, diagnostic labs and insurers move patient and policyholder records through many systems. Identifiers copied into an analytics warehouse or a billing system that was never declared to hold them are easy to miss and hard to explain later.",
     capabilities: [
-      "Detection of health-related personal data in logs",
-      "Retention alerts when patient records exceed the permitted storage window",
-      "Purpose violation detection when health data appears in billing or analytics systems",
-      "Re-identification risk from combined fields",
+      "Contact and identity details found in logs and API responses",
+      "Data flagged in systems that the policy does not declare",
+      "Retention reviews when records outlive their declared period",
+      "Fields that identify a person together, caught in a single event",
     ],
-    scenario: "A diagnostics platform stores patient reports in its primary system (permitted) and automatically backs them up to an analytics warehouse (not declared in consent). Veritas fires a purpose violation when the analytics system sends log events containing patient identifiers.",
+    scenario: "A diagnostics platform keeps patient reports in its primary system, as declared, and a nightly job starts copying patient identifiers into an analytics service. Veritas raises a finding the first time that service handles them, names the field, and routes it to the data team.",
     cta: "See how →",
     ctaHref: "/book-demo",
     delay: 60,
@@ -66,14 +66,14 @@ const USE_CASES = [
   {
     tag: "E-COMMERCE & LOGISTICS",
     title: "Customer and Delivery Data at Scale",
-    problem: "E-commerce platforms process names, phone numbers, delivery addresses, and payment data for millions of customers across hundreds of services. Log volume is high and PII leaks into logs constantly without automated detection.",
+    problem: "E-commerce platforms process names, phone numbers, addresses and payment details for millions of customers across many services. Log volume is high, and personal data slips into it whenever a developer debugs a live issue.",
     capabilities: [
-      "High-throughput log scanning (agents on every service)",
-      "Indian phone number detection in order and logistics logs",
-      "Address and name detection in shipping APIs",
-      "Kubernetes DaemonSet deployment for cluster-wide coverage",
+      "An agent on every service, or one per Kubernetes node",
+      "Indian phone numbers found in order and delivery logs",
+      "Card numbers masked at the agent",
+      "Incidents that reopen when a removed debug line returns",
     ],
-    scenario: "A logistics API processes thousands of delivery records per hour. A developer adds a debug log that dumps the full customer object including phone and address. Veritas agents tail those logs and detect EXPOSURE_001 within seconds of the first log line being written.",
+    scenario: "A delivery API handles thousands of orders an hour, and a developer adds a debug line that prints the customer object. Thousands of findings arrive and are grouped into one incident for the platform team. When the line is removed and later returns in a new release, the incident reopens on its own.",
     cta: "See how →",
     ctaHref: "/book-demo",
     delay: 120,
@@ -82,32 +82,36 @@ const USE_CASES = [
 
 const FAQS = [
   {
-    q: "Is Veritas a SaaS or on-premise product?",
-    a: "Veritas is exclusively on-premise. You install the Veritas Server on a machine within your network. No data is sent to us. The only optional external call is the AI investigation feature, which sends field names and statute text  -  never raw PII.",
+    q: "Is Veritas a SaaS or a self-hosted product?",
+    a: "Self-hosted. You install the Veritas server on a machine inside your network and the agents on your application hosts. Nothing about your data is sent to us. Outside the server, only signed checkpoints go to the witnesses you choose, and they carry hashes rather than personal data.",
   },
   {
-    q: "What Indian PII types does Veritas detect?",
-    a: "Veritas detects Aadhaar (with Verhoeff checksum), PAN card, Indian phone numbers, names (via spaCy NER), email addresses, and locations/addresses. The detection engine runs fully locally  -  no API calls for PII detection.",
+    q: "Which personal data does Veritas recognise?",
+    a: "Aadhaar numbers (validated with the Verhoeff checksum), PAN, Indian phone numbers, email addresses and card numbers, in logs, API responses and new database columns. You can test any sample line in the Scan Sandbox before deploying.",
   },
   {
-    q: "What are the four DPDPA rules Veritas enforces?",
-    a: "EXPOSURE_001: personal data appearing where it must not (logs, API responses). PURPOSE_001: data used beyond its declared consent scope. RETENTION_001: data held past its permitted retention window. LINKAGE_001: individually harmless fields together enabling re-identification.",
+    q: "What does Veritas check?",
+    a: "Whether personal data appears where it should not, whether it matches what your policy declares for each system, whether it is kept longer than declared, whether fields that identify a person travel together, whether an erased identifier comes back, and whether a current notice covers the data. Each rule is a technical signal, not a legal conclusion.",
+  },
+  {
+    q: "How can an auditor check the evidence without trusting you?",
+    a: "Every record is chained to the one before it, and signed checkpoints are kept by witnesses outside the server. The audit pack holds the evidence, the checkpoints, the public key and a stand-alone verifier that runs with no server and no network. It also states plainly what it does not prove.",
   },
   {
     q: "Can I deploy Veritas on Kubernetes?",
-    a: "Yes. The Veritas Agent ships as a Kubernetes DaemonSet  -  one agent per node, tailing logs and forwarding events locally to the Veritas Server. kubectl apply -f veritas-agent/k8s/ and your cluster is covered.",
+    a: "Yes. The agent ships with a Kubernetes manifest that runs one agent per node and forwards events to your Veritas server.",
   },
   {
-    q: "How does the licensing work?",
-    a: "Veritas requires a machine-bound RSA-PSS signed license file (.vlic). Install Veritas, run 'veritas fingerprint' to get your machine's hash, send it to us, and we issue a license. The license is verified locally on every startup  -  no call home required.",
+    q: "How does licensing work?",
+    a: "Install Veritas, run veritas fingerprint and send us the result. We issue a signed licence file bound to that machine. It is verified locally every time the service starts, with no call home.",
   },
   {
-    q: "What operating systems does Veritas support?",
-    a: "The Veritas Server runs on Ubuntu 22.04+, macOS 12+ (Apple Silicon), and Windows 10/11/Server 2019+. The Veritas Agent runs on Ubuntu 18.04+ and any Linux. CI tests run on all three platforms.",
+    q: "Does Veritas store raw personal data?",
+    a: "No. Findings keep masked snippets, the rule that fired, the field, the system and the owning team. Rights lookups and erasure checks use keyed hashes, so the raw identifier is never stored.",
   },
   {
-    q: "Does Veritas store raw PII?",
-    a: "No. Veritas stores only masked snippets (e.g. [PHONE_REDACTED]), the rule that fired, the field name, the source system, severity, statute reference, and the hash chain. Raw PII values are never stored in the evidence database.",
+    q: "Does Veritas replace our DPO or legal counsel?",
+    a: "No. Veritas gives your DPO, your lawyers and your engineering team evidence from the systems themselves. Decisions about the law stay with the people qualified to make them.",
   },
 ]
 
@@ -126,7 +130,7 @@ export default function UseCasesPage() {
             {"Who Veritas\nis built for."}
           </RevealText>
           <p className="mt-8 text-base text-white/60 leading-relaxed max-w-xl">
-            Any organisation processing Indian personal data under DPDPA 2023. These are the three industries where Veritas delivers immediate, measurable compliance value.
+            Any organisation that handles Indian personal data and needs to show what happened to it. These are the industries where Veritas fits most naturally.
           </p>
         </div>
       </section>
@@ -144,7 +148,7 @@ export default function UseCasesPage() {
                   <div className="space-y-2">
                     {uc.capabilities.map(c => (
                       <div key={c} className="flex items-start gap-2.5 text-sm text-white/70">
-                        <span className="text-[#00cbaa] shrink-0 mt-0.5">✓</span> {c}
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#00cbaa] shrink-0 mt-2" /> {c}
                       </div>
                     ))}
                   </div>
@@ -173,7 +177,7 @@ export default function UseCasesPage() {
             <BentoCard className="p-7" delay={0}>
               <div className="font-pixel text-[10px] text-white/40 tracking-widest mb-5">VERITAS SERVER</div>
               <div className="space-y-3 text-sm text-white/70">
-                {["One VM, server, or physical machine inside your network", "Ubuntu 22.04+, macOS 12+, or Windows 10/11", "2 GB RAM minimum (4 GB recommended)", "2 GB free disk space", "A Veritas license (.vlic file  -  issued by us after install)"].map(r => (
+                {["One VM, server or physical machine inside your network", "Ubuntu 22.04 or later, a Mac with Apple silicon, or Windows 10 or later", "2 GB RAM minimum, 4 GB recommended", "2 GB free disk space", "A Veritas licence file, issued for your machine after install"].map(r => (
                   <div key={r} className="flex items-start gap-2.5"><span className="text-white/45 shrink-0">·</span>{r}</div>
                 ))}
               </div>
@@ -181,7 +185,7 @@ export default function UseCasesPage() {
             <BentoCard className="p-7" delay={80}>
               <div className="font-pixel text-[10px] text-white/40 tracking-widest mb-5">VERITAS AGENT</div>
               <div className="space-y-3 text-sm text-white/70">
-                {["One agent per application server you want to monitor", "Ubuntu 18.04+ or any Linux; or Docker; or Kubernetes", "128 MB RAM per agent", "Outbound network access to the Veritas Server (port of your choice)", "A registration key (issued from the Veritas dashboard)"].map(r => (
+                {["One agent per application host or Kubernetes node you want to watch", "Linux, a Mac with Apple silicon, or Kubernetes", "About 128 MB of memory", "Network access to the Veritas server on the port you choose", "A one-time registration key from the Veritas dashboard"].map(r => (
                   <div key={r} className="flex items-start gap-2.5"><span className="text-white/45 shrink-0">·</span>{r}</div>
                 ))}
               </div>

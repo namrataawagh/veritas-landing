@@ -90,8 +90,8 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
           <div className="tg-footer-top">
             <div style={{ display: "grid", gap: 16, alignContent: "start" }}>
               <Link href="/" className="tg-logo" aria-label="Veritas home"><img src="/veritas-wordmark.png" alt="Veritas" width={1726} height={375} /></Link>
-              <p className="tg-body-sm" style={{ maxWidth: 240 }}>Trustworthy AI agent orchestration. Open source.</p>
-              <span className="tg-pill" style={{ justifySelf: "start" }}>BETA</span>
+              <p className="tg-body-sm" style={{ maxWidth: 240 }}>The DPDPA evidence layer for engineering teams. Self-hosted on your own infrastructure.</p>
+              <span className="tg-pill" style={{ justifySelf: "start" }}>PILOTS OPEN</span>
             </div>
             {FOOTER_COLS.map(col => (
               <div key={col.heading}>
@@ -113,8 +113,8 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
             {PLATFORMS.map(os => <span key={os} className="tg-chip"><Server size={12} style={{ marginRight: 6 }} />{os}</span>)}
           </div>
           <div className="tg-footer-bottom">
-            <span className="tg-caption">© 2024 Veritas. Open-source project.</span>
-            <span className="tg-caption tg-mono">v1.0.16</span>
+            <span className="tg-caption">© 2026 Veritas. All rights reserved.</span>
+            <span className="tg-caption tg-mono">agentveritas.in</span>
           </div>
         </div>
       </footer>

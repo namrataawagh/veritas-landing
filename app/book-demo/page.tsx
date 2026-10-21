@@ -70,20 +70,20 @@ export default function BookDemoPage() {
             <div>
               <Tag>BOOK A DEMO</Tag>
               <RevealText className="mt-5 text-5xl md:text-6xl font-light tracking-tight leading-[1.02]">
-                {"See Veritas\ndetect a real\nDPDPA violation."}
+                {"See Veritas\ncatch personal data\nat the source."}
               </RevealText>
               <p className="mt-7 text-base text-white/60 leading-relaxed">
-                In a 20-minute live walkthrough, we&apos;ll deploy Veritas in a demo environment, trigger a real DPDPA violation, and show you the full path from log line to resolved audit case.
+                In a live walkthrough of about 20 minutes, we deploy Veritas in a demo environment, write a log line carrying sample personal data, and follow it from the host to an owned incident and a verified audit pack.
               </p>
 
               <div className="mt-10 space-y-5">
                 <div className="font-pixel text-[10px] text-white/45 tracking-widest uppercase">WHAT THE DEMO COVERS</div>
                 {[
-                  { n: "01", label: "Agent deployment", desc: "We deploy the Veritas Agent and it begins tailing simulated application logs immediately." },
-                  { n: "02", label: "Live violation detection", desc: "A log line containing an Aadhaar number triggers EXPOSURE_001. You see it appear on the Live Stream in real time." },
-                  { n: "03", label: "Evidence chain", desc: "We open the Audit Ledger and verify the SHA-256 hash chain on the spot." },
-                  { n: "04", label: "Investigation workflow", desc: "Open the case, ask the AI panel 'why is this a DPDPA violation?', annotate, and resolve it." },
-                  { n: "05", label: "PDF audit report", desc: "Export a tamper-evident compliance report  -  the kind an auditor or regulator would accept." },
+                  { n: "01", label: "Masking at the source", desc: "An agent masks a sample Aadhaar number and phone number on the host, before the line is sent." },
+                  { n: "02", label: "Incidents with owners", desc: "Thousands of findings from one noisy service become a short list of incidents, each routed to the team that owns it." },
+                  { n: "03", label: "Rules and approvals", desc: "We propose a rule change and show why it waits for a second person's approval." },
+                  { n: "04", label: "Tamper-evident evidence", desc: "We change a record behind the dashboard's back and show the stand-alone verifier catching it." },
+                  { n: "05", label: "Audit pack", desc: "One click produces the pack an auditor can verify without our servers, with a summary of what it does not prove." },
                 ].map(item => (
                   <div key={item.n} className="flex items-start gap-4">
                     <span className="font-pixel text-[10px] text-white/35 tracking-widest shrink-0">{item.n}</span>
@@ -98,7 +98,7 @@ export default function BookDemoPage() {
               <div className="mt-10 p-5 rounded-2xl border border-white/[0.09] bg-[#0e0f11]">
                 <div className="font-pixel text-[10px] text-white/40 tracking-widest mb-3">WHAT TO EXPECT AFTER SUBMITTING</div>
                 <p className="text-sm text-white/65 leading-relaxed">
-                  We&apos;ll reach out within 1–2 business days to schedule a time. Demos are conducted over video call (~20 minutes). We&apos;ll prepare a demo environment tailored to your industry and use case.
+                  We&apos;ll reach out within 1 to 2 business days to schedule a time. Demos run over a video call of about 20 minutes, in a demo environment prepared for your industry and use case.
                 </p>
               </div>
             </div>
@@ -107,10 +107,10 @@ export default function BookDemoPage() {
             <div>
               {submitted ? (
                 <div className="rounded-2xl border border-[#00cbaa]/25 bg-[#00cbaa]/10 p-10 text-center">
-                  <div className="text-4xl mb-4">✓</div>
+                  <div className="w-12 h-12 mx-auto rounded-full bg-[#00cbaa]/15 border border-[#00cbaa]/25 flex items-center justify-center mb-5"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-[#00cbaa]"><path d="M9 12l2 2 4-4" /><path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z" /></svg></div>
                   <h3 className="text-xl font-light mb-3">Request received.</h3>
                   <p className="text-sm text-white/65 leading-relaxed mb-6">
-                    We&apos;ll reach out to <span className="font-medium text-white/80">{form.email}</span> within 1–2 business days to schedule your demo.
+                    We&apos;ll reach out to <span className="font-medium text-white/80">{form.email}</span> within 1 to 2 business days to schedule your demo.
                   </p>
                   <Link href="/" className="text-xs text-white/55 hover:text-white tracking-widest transition-colors">← Back to home</Link>
                 </div>
@@ -153,10 +153,10 @@ export default function BookDemoPage() {
                     <label className="block text-xs text-white/55 tracking-widest uppercase mb-1.5">Primary Use Case</label>
                     <select className={`${inputClass("useCase")} appearance-none`} value={form.useCase} onChange={e => setForm(f => ({ ...f, useCase: e.target.value }))}>
                       <option value="">Select one</option>
-                      <option>DPDPA compliance monitoring</option>
-                      <option>Audit readiness / evidence for regulators</option>
-                      <option>PII leak detection in production logs</option>
-                      <option>Purpose limitation enforcement</option>
+                      <option>Monitoring personal data under the DPDP Act</option>
+                      <option>Evidence for auditors and customers</option>
+                      <option>Personal data leaking into production logs</option>
+                      <option>Undeclared personal data in systems and APIs</option>
                       <option>Evaluating for a client deployment</option>
                     </select>
                   </div>
@@ -175,7 +175,7 @@ export default function BookDemoPage() {
                   </button>
 
                   <p className="text-[11px] text-white/45 text-center leading-relaxed">
-                    We&apos;ll reach out within 1–2 business days. We do not share your information with third parties.
+                    We&apos;ll reach out within 1 to 2 business days. We do not share your information with third parties.
                   </p>
                 </form>
               )}

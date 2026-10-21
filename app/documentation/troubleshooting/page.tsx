@@ -35,67 +35,75 @@ function Tag({ children }: { children: React.ReactNode }) {
 
 const ERRORS = [
   {
-    code: "VERITAS_CONFIG_NOT_FOUND",
-    severity: "error",
-    desc: "No veritas.config.json found in the current directory or project root.",
-    fix: "Run `npx veritas init` to create a default config, or specify the config path with --config <path>.",
-  },
-  {
-    code: "TOOL_NOT_ALLOWED",
-    severity: "warning",
-    desc: "The agent attempted to call a tool that is not in its allowedTools list.",
-    fix: "Add the tool name to the allowedTools array in your agent configuration, or remove the tool from the agent's tool list.",
-  },
-  {
-    code: "REDACTION_FIELD_MISSING",
+    code: "SERVICE_STOPS_AFTER_INSTALL",
     severity: "info",
-    desc: "A field specified in the redact array was not found in the tool call arguments.",
-    fix: "This is not an error. It means the field simply wasn't present in this particular call. No action needed.",
+    desc: "veritas status shows that the service is not running right after installation.",
+    fix: "This is expected until a licence is installed. Run sudo veritas logs to see what is missing, then install your licence with sudo veritas license /path/to/veritas.vlic.",
   },
   {
-    code: "VERIFICATION_FAILED",
+    code: "LICENCE_INVALID_OR_EXPIRED",
+    severity: "error",
+    desc: "The service stops with a licence message, or the dashboard banner warns that the licence ends soon.",
+    fix: "Run sudo veritas check. A licence is bound to one machine's fingerprint, so a new machine needs a new licence: send its fingerprint to your Veritas contact. Renew before the expiry date shown in the dashboard.",
+  },
+  {
+    code: "DASHBOARD_DOES_NOT_LOAD",
+    severity: "error",
+    desc: "The browser cannot reach https://your-server:8000.",
+    fix: "Run veritas status, then sudo veritas logs. Another program using port 8000 stops Veritas from starting.",
+  },
+  {
+    code: "AGENT_DOES_NOT_APPEAR",
     severity: "warning",
-    desc: "The agent output did not pass the configured verification rules.",
-    fix: "Check the 'verificationDetails' field in the audit log for which rule failed. Update your verification schema or adjust the agent's task prompt to produce output matching the expected schema.",
+    desc: "The agent is running but never shows up under Agents.",
+    fix: "Registration keys work once and expire after 30 minutes, so issue a fresh key if needed. Check veritas_address and registration_key in /etc/veritas-agent/config.yaml, and read sudo veritas-agent logs. On macOS, give the agent access to each log file with sudo veritas-agent grant-read.",
   },
   {
-    code: "LOG_WRITE_PERMISSION",
-    severity: "error",
-    desc: "Veritas cannot write to the configured logDir directory.",
-    fix: "Check that the logDir path exists and the process has write permission. You can change the logDir in veritas.config.json.",
+    code: "AGENT_CERTIFICATE_ERROR",
+    severity: "warning",
+    desc: "The agent log shows TLS or certificate errors when it connects.",
+    fix: "Run sudo veritas-agent fetch-cert https://your-server:8000 to fetch the server certificate, or pin it with ca_cert in the agent config.",
   },
   {
-    code: "MODEL_TIMEOUT",
-    severity: "error",
-    desc: "The LLM API call timed out. The run has been marked as failed.",
-    fix: "Check your LLM provider's status page. If the issue persists, try increasing the modelTimeout value in your config, or reduce the complexity of the agent's task.",
+    code: "AGENT_DROPPED_LINES",
+    severity: "warning",
+    desc: "The Agents page shows dropped lines for an agent.",
+    fix: "Each agent keeps a bounded buffer. When the server cannot keep up with a burst, the oldest lines are dropped and counted. Give the server more detection capacity, such as cores and memory, and check its System Health panel.",
   },
   {
-    code: "AUDIT_LOG_CORRUPT",
+    code: "UNANCHORED_TAIL",
+    severity: "info",
+    desc: "veritas-verify reports that the latest records are not covered by a signed checkpoint.",
+    fix: "Records written after the last checkpoint are not covered yet. Wait for the next checkpoint, or trigger one, then export and verify again.",
+  },
+  {
+    code: "CHECKPOINT_HEAD_MISMATCH",
     severity: "error",
-    desc: "An existing audit log file appears to be malformed or incomplete (e.g., from a crashed run).",
-    fix: "The file may be recoverable with `veritas repair <log-file>`. If not, the run will need to be re-executed. Partial logs are preserved for inspection.",
+    desc: "veritas-verify reports that the evidence does not match a signed checkpoint: records up to that point were altered or replaced.",
+    fix: "Treat this as a security incident. If you restored a backup, the restore itself is recorded, so check the audit log first. Otherwise keep the evidence and the witnesses' copies as they are, and contact us.",
   },
 ]
 
-const KNOWN_ISSUES = [
+const GOOD_TO_KNOW = [
   {
-    title: "Access boundaries not enforced on nested tool calls",
-    status: "known-beta",
-    desc: "When a tool internally calls another function, the inner call may not be subject to the allowedTools check. This is a beta limitation and is being addressed.",
-    workaround: "Avoid wrapping tool calls inside other tools for now. Each tool should be a leaf operation.",
+    title: "Detection is probabilistic",
+    desc: "A finding is evidence that something looked like personal data, not a legal finding. Some numbers in log lines, such as batch or tenant numbers, can resemble phone numbers.",
+    action: "Test sample lines in the Scan Sandbox, and record a time-bound exception for known false positives.",
   },
   {
-    title: "Streaming output logging may drop events under high throughput",
-    status: "known-beta",
-    desc: "When an agent produces a high volume of streaming output tokens, some intermediate streaming events may not appear in the audit log.",
-    workaround: "Set streaming: false in your agent config if a complete audit trail is required. Non-streaming runs are fully captured.",
+    title: "The verifier covers records up to the last checkpoint",
+    desc: "Records written after the most recent signed checkpoint are not yet covered by a signature.",
+    action: "Keep anchoring on with at least one witness, and verify after the next checkpoint.",
   },
   {
-    title: "Python SDK does not support async tool timeouts yet",
-    status: "known-beta",
-    desc: "The toolTimeout configuration option works in the TypeScript SDK but is not yet implemented in the Python SDK.",
-    workaround: "Implement timeouts manually within your Python tool functions using asyncio.wait_for().",
+    title: "The data map shows what was observed",
+    desc: "It reflects the data Veritas received, not every system or field that exists.",
+    action: "Connect agents to every system you want covered, and declare the rest in your policy.",
+  },
+  {
+    title: "Agents read new lines",
+    desc: "When an agent starts, it reads lines written from that moment on, not the history already in the file.",
+    action: "Start the agent before the activity you want to capture.",
   },
 ]
 
@@ -110,19 +118,19 @@ export default function TroubleshootingPage() {
         <div className="max-w-4xl mx-auto">
           <Tag>TROUBLESHOOTING</Tag>
           <RevealText className="mt-5 text-5xl md:text-6xl font-light tracking-tight leading-[1.02]">
-            {"Common errors\nand fixes."}
+            {"Common problems\nand fixes."}
           </RevealText>
           <p className="mt-6 text-base text-white/60 leading-relaxed max-w-xl">
-            If Veritas isn&apos;t working as expected, this guide covers the most common errors, their causes, and how to resolve them.
+            If Veritas is not behaving as expected, this guide covers the most common problems, their causes and how to resolve them.
           </p>
         </div>
       </section>
 
       <div className="max-w-4xl mx-auto px-6 md:px-12 lg:px-20 pb-20 space-y-12">
 
-        {/* Error catalog */}
+        {/* Problems */}
         <section>
-          <h2 className="text-2xl font-light mb-6">Error catalog</h2>
+          <h2 className="text-2xl font-light mb-6">Common problems</h2>
           <div className="space-y-3">
             {ERRORS.map((err) => {
               const isOpen = expanded === err.code
@@ -145,7 +153,7 @@ export default function TroubleshootingPage() {
                   <div className="overflow-hidden transition-all duration-300" style={{ maxHeight: isOpen ? "400px" : "0px" }}>
                     <div className="px-6 pb-6 space-y-3">
                       <div>
-                        <div className="text-[10px] text-white/45 tracking-widest uppercase mb-1.5">Description</div>
+                        <div className="text-[10px] text-white/45 tracking-widest uppercase mb-1.5">What you see</div>
                         <p className="text-sm text-white/70 leading-relaxed">{err.desc}</p>
                       </div>
                       <div>
@@ -160,21 +168,21 @@ export default function TroubleshootingPage() {
           </div>
         </section>
 
-        {/* Known issues */}
+        {/* Good to know */}
         <section>
-          <h2 className="text-2xl font-light mb-3">Known beta limitations</h2>
-          <p className="text-sm text-white/60 mb-6">These are known issues in the current beta. We&apos;re actively working on all of them.</p>
+          <h2 className="text-2xl font-light mb-3">Good to know</h2>
+          <p className="text-sm text-white/60 mb-6">Behaviour worth understanding before you rely on the evidence.</p>
           <div className="space-y-3">
-            {KNOWN_ISSUES.map((issue, i) => (
+            {GOOD_TO_KNOW.map((item, i) => (
               <BentoCard key={i} className="p-7" delay={i * 40}>
                 <div className="flex items-start justify-between gap-4 mb-3">
-                  <h3 className="text-base font-light">{issue.title}</h3>
-                  <span className="shrink-0 text-[10px] px-2 py-0.5 rounded-full bg-amber-400/10 text-amber-300 border border-amber-400/20 tracking-widest uppercase">Beta</span>
+                  <h3 className="text-base font-light">{item.title}</h3>
+                  <span className="shrink-0 text-[10px] px-2 py-0.5 rounded-full bg-white/[0.06] text-white/55 border border-white/[0.1] tracking-widest uppercase">Note</span>
                 </div>
-                <p className="text-sm text-white/65 leading-relaxed mb-3">{issue.desc}</p>
+                <p className="text-sm text-white/65 leading-relaxed mb-3">{item.desc}</p>
                 <div className="p-3 rounded-lg bg-white/[0.05] border border-white/[0.08]">
-                  <span className="text-[10px] text-white/45 tracking-widest uppercase">Workaround: </span>
-                  <span className="text-xs text-white/65">{issue.workaround}</span>
+                  <span className="text-[10px] text-white/45 tracking-widest uppercase">What to do: </span>
+                  <span className="text-xs text-white/65">{item.action}</span>
                 </div>
               </BentoCard>
             ))}
@@ -187,10 +195,10 @@ export default function TroubleshootingPage() {
           <BentoCard className="p-8" delay={0}>
             <div className="space-y-5">
               {[
-                { tip: "Enable verbose logging", detail: 'Set "logLevel": "verbose" in veritas.config.json to capture additional context in every event, including the full model prompt and response.' },
-                { tip: "Inspect the raw log file", detail: "The JSON audit log contains every event in the run. Opening it directly in any JSON viewer gives you the full picture  -  more than the CLI summary." },
-                { tip: "Use the sandbox for debugging", detail: "Run with `veritas run --sandbox` to execute in an isolated environment that does not write to your real log directory. Useful for testing without polluting your audit history." },
-                { tip: "Check the run exit code", detail: "Veritas exits with code 0 for success, 1 for verification failure, and 2 for runtime errors. Use this in scripts to handle each case separately." },
+                { tip: "Check the service", detail: "veritas status shows whether the service is running and healthy, and sudo veritas logs streams its log." },
+                { tip: "Run the health checks", detail: "sudo veritas check runs the product's own checks, including the licence." },
+                { tip: "Read the System Health panel", detail: "The Overview shows the evidence store, agents, licence, certificate, disk space and evidence anchoring at a glance." },
+                { tip: "Send a support bundle", detail: "sudo veritas support-bundle writes one ZIP with the diagnostics your Veritas contact needs." },
               ].map((item, i) => (
                 <div key={i} className="flex items-start gap-4 pb-5 border-b border-white/[0.07] last:border-0 last:pb-0">
                   <div className="w-1 bg-white/10 rounded-full shrink-0 self-stretch" />

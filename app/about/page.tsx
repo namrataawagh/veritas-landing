@@ -42,10 +42,10 @@ export default function AboutPage() {
         <div className="max-w-6xl mx-auto">
           <Tag>ABOUT</Tag>
           <RevealText className="mt-5 text-5xl md:text-6xl lg:text-7xl font-light tracking-tight leading-[1.02]">
-            {"Compliance,\nwithout compromise."}
+            {"Evidence,\nnot assurances."}
           </RevealText>
           <p className="mt-8 text-base text-white/60 leading-relaxed max-w-xl">
-            Veritas began with India&apos;s Digital Personal Data Protection Act 2023 - a real, urgent compliance challenge with no good on-premise tooling to solve it. The platform is built to be equally relevant for any organisation subject to modern personal data protection law.
+            Veritas began with India&apos;s Digital Personal Data Protection Act, 2023: a real and urgent problem, with no good self-hosted tooling for the engineers who live with it. We built the evidence layer we wanted, one that finds personal data where it leaks, stops it at the source, and keeps a record that anyone can check.
           </p>
         </div>
       </section>
@@ -64,7 +64,7 @@ export default function AboutPage() {
               <div className="absolute inset-0" style={{ background: "linear-gradient(to right, #0e0f11 0%, transparent 60%)" }} />
             </div>
             <p className="relative z-10 text-2xl md:text-3xl font-light leading-relaxed text-white/80 max-w-2xl">
-              &ldquo;Every organisation processing personal data is now legally required to detect violations, maintain auditable records, and prove compliance. Doing this manually across hundreds of microservices is impossible. Veritas automates it - on your own infrastructure, with your data never leaving your network.&rdquo;
+              &ldquo;Personal data moves faster than any policy document. We built Veritas so that engineering teams can see where it goes, stop it at the source, and hand anyone who asks a record they can check for themselves, without that data ever coming to us.&rdquo;
             </p>
           </BentoCard>
         </div>
@@ -75,33 +75,33 @@ export default function AboutPage() {
         <div className="max-w-6xl mx-auto">
           <Tag>THE PROBLEM WE SOLVE</Tag>
           <RevealText className="mt-5 text-4xl md:text-5xl font-light tracking-tight leading-[1.05] mb-12">
-            {"Modern data protection law\nis not optional."}
+            {"Good intentions\ndo not scale."}
           </RevealText>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {[
               {
                 icon: "platform" as const,
-                title: "The law requires detection",
-                desc: "Data protection regulation mandates that data fiduciaries implement technical and organisational measures to prevent breaches and violations. Not knowing is not a defence.",
+                title: "Policies drift away from systems",
+                desc: "The policy says which system holds which data and why. Months later, a new column, a debug line or a copied table says something different, and nobody notices.",
                 delay: 0,
               },
               {
                 icon: "workflow" as const,
                 title: "Manual review does not scale",
-                desc: "A mid-sized company with 10 services generates millions of log lines per day. No compliance team can manually review logs for personal data, purpose violations, and retention breaches in real time.",
+                desc: "A company with a handful of services writes millions of log lines a day. No team can read them for personal data, undeclared processing and retention as they happen.",
                 delay: 80,
               },
               {
                 icon: "integrations" as const,
-                title: "Generic tools need months of setup",
-                desc: "SIEM tools and DLP products are not built for jurisdiction-specific rules like DPDPA purpose limitation, retention windows, or re-identification linkage detection. They require extensive custom configuration.",
+                title: "Generic tools were not built for this",
+                desc: "SIEM and DLP products are not built around declared purposes, retention periods, erasure requests or Indian identifiers. Making them fit takes months of custom work.",
                 delay: 0,
               },
               {
                 icon: "pricing" as const,
-                title: "Regulators require tamper-evident proof",
-                desc: "When a regulator asks how you know your data was handled correctly, you need more than a spreadsheet. You need a cryptographically verifiable audit record that proves no evidence was altered.",
+                title: "Evidence has to stand on its own",
+                desc: "When someone asks how you know your data was handled correctly, a spreadsheet is not enough. The record has to show an outsider that it was never changed.",
                 delay: 80,
               },
             ].map((item) => (
@@ -126,43 +126,43 @@ export default function AboutPage() {
               {
                 n: "01",
                 icon: "agents" as const,
-                title: "Everything stays inside your network",
-                desc: "The Veritas Agent makes outbound calls only to the Veritas Server - within your infrastructure. The server has no outbound calls except the optional AI investigation, which sends no raw PII. Your compliance data is yours.",
+                title: "Personal data stays in your network",
+                desc: "Agents send only to your own Veritas server, and can mask personal data before it leaves the host. Outside the server, only signed checkpoints travel, and they carry hashes rather than data.",
                 delay: 0,
               },
               {
                 n: "02",
                 icon: "workflow" as const,
-                title: "No customer logic in code",
-                desc: "Each organisation uploads a YAML config describing their data policy. The same server binary handles every customer. Config changes are versioned, so policy changes are themselves auditable.",
+                title: "Policy, not code",
+                desc: "Each organisation declares its data policy as configuration. The same software serves every customer, and every version of the policy is kept, so policy changes are auditable too.",
                 delay: 80,
               },
               {
                 n: "03",
                 icon: "pricing" as const,
                 title: "Tamper-evident by design",
-                desc: "Every verdict links to the previous one via SHA-256 hash. This is not just logging - it is a cryptographic chain. If any record is altered, the chain breaks. Auditors can verify this themselves.",
+                desc: "Records are chained, checkpoints are signed, and witnesses outside the server keep their own copies. Auditors can check the evidence with their own tools, without trusting us.",
                 delay: 160,
               },
               {
                 n: "04",
                 icon: "platform" as const,
-                title: "Honest about limitations",
-                desc: "Veritas uses one server process and SQLite. It is suitable for pilots and mid-sized deployments. We document exactly where the limits are, and what needs to be added for horizontal scale.",
+                title: "Honest about what it shows",
+                desc: "Every rule is described as a technical signal, not a legal conclusion. The audit pack says what it does not prove, and the data map shows what was observed rather than claiming to show everything.",
                 delay: 0,
               },
               {
                 n: "05",
                 icon: "integrations" as const,
-                title: "Built for real data structures",
-                desc: "Aadhaar validation with Verhoeff checksum. PAN card structural rules. DPDPA section references in every verdict. Purpose limitation and linkage detection. Built for the actual requirements - not adapted from a generic tool.",
+                title: "Built for Indian identifiers",
+                desc: "Aadhaar validated with the Verhoeff checksum, PAN structure checks, Indian phone numbers and keyed hashes for rights requests. Built for the data Indian teams actually handle, not adapted from a generic tool.",
                 delay: 80,
               },
               {
                 n: "06",
                 icon: "agents" as const,
                 title: "Runs on what you already have",
-                desc: "A spare VM or a Windows Server box. Veritas does not require cloud infrastructure or expensive hardware. The .deb, .pkg, and .exe installers get you running in under an hour.",
+                desc: "A spare VM, a Mac or a Windows Server box. Veritas needs no cloud account and no special hardware, and installers for Linux, macOS and Windows get you running on your own machines.",
                 delay: 160,
               },
             ].map((item) => (
@@ -177,57 +177,21 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Technical status */}
+      {/* Team */}
       <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-white/[0.08]">
         <div className="max-w-6xl mx-auto">
-          <Tag>PROJECT STATUS</Tag>
-          <RevealText className="mt-5 text-4xl md:text-5xl font-light tracking-tight leading-[1.05] mb-10">{"v1.0.16. Production-quality.\nHonest about what&apos;s next."}</RevealText>
+          <Tag>TEAM</Tag>
+          <RevealText className="mt-5 text-4xl md:text-5xl font-light tracking-tight leading-[1.05] mb-10">{"Built by Demo Gods."}</RevealText>
 
           <BentoCard className="p-8 md:p-10" delay={0}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-              <div>
-                <div className="font-pixel text-[10px] text-[#00cbaa] tracking-widest mb-5">BUILT AND VERIFIED</div>
-                <div className="space-y-2">
-                  {[
-                    "PII detection with custom recognizers",
-                    "4 compliance rules (Exposure, Purpose, Retention, Linkage)",
-                    "SHA-256 hash-chained evidence store",
-                    "7-view investigation dashboard with WebSocket live feed",
-                    "Agent registration, token auth, heartbeat, revoke",
-                    "RSA-PSS machine-bound licensing (Linux v2 fingerprint)",
-                    "RBAC (4 roles, server-enforced, tested)",
-                    "Multi-organisation support",
-                    "Linux .deb, macOS .pkg, Windows installer",
-                    "Kubernetes DaemonSet agent",
-                    "412 automated tests across Ubuntu, macOS, Windows CI",
-                  ].map(f => (
-                    <div key={f} className="flex items-center gap-2.5 text-sm text-white/70">
-                      <span className="text-[#00cbaa] shrink-0">+</span> {f}
-                    </div>
-                  ))}
+            <div className="font-pixel text-[10px] text-white/40 tracking-widest mb-6">DEMO GODS</div>
+            <div className="space-y-4">
+              {["Shreyas Dhumal", "Namrata Wagh", "Manasi Patil", "Ayush Pisal"].map((name, i) => (
+                <div key={name} className="flex items-baseline gap-5 pb-4 border-b border-white/[0.07] last:border-0 last:pb-0">
+                  <span className="font-pixel text-[10px] text-white/35 tracking-widest shrink-0">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="text-xl font-light text-white/85">{name}</span>
                 </div>
-              </div>
-              <div>
-                <div className="font-pixel text-[10px] text-amber-300 tracking-widest mb-5">IN PROGRESS / PLANNED</div>
-                <div className="space-y-2">
-                  {[
-                    "Ingest queue and worker pool for high-throughput deployments",
-                    "License portal hardening (fingerprint validation, row-level security)",
-                    "macOS and Windows machine-id fingerprint parity with Linux v2",
-                    "Offline hardening (bundle fonts and PDF library locally)",
-                    "Simulated enterprise demo environment",
-                  ].map(f => (
-                    <div key={f} className="flex items-center gap-2.5 text-sm text-white/70">
-                      <span className="text-amber-300 shrink-0">·</span> {f}
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-8 p-5 rounded-xl border border-white/[0.09] bg-white/[0.04]">
-                  <p className="text-xs text-white/60 leading-relaxed">
-                    <span className="font-medium text-white/72">Known limitation:</span> Veritas uses a single server process and SQLite. It is well-suited for pilots and mid-sized deployments. For horizontal scale, the planned ingest queue and worker pool should be in place first.
-                  </p>
-                </div>
-              </div>
+              ))}
             </div>
           </BentoCard>
         </div>

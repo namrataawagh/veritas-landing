@@ -33,6 +33,93 @@ function Tag({ children }: { children: React.ReactNode }) {
   return <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] tracking-widest text-white/55 bg-white/[0.06]">{children}</span>
 }
 
+const CONCEPTS = [
+  {
+    id: "agents",
+    title: "Agents and masking",
+    content: `An agent runs on each application host. It reads log files, container logs, syslog and database statement logs, and forwards events to your Veritas server with its own token.
+
+Each agent can treat each kind of personal data differently:
+• mask: replace the value with a placeholder such as [AADHAAR_REDACTED]
+• hash: replace it with a keyed hash such as [PHONE#…], so it can still be matched later
+• drop: leave the line out entirely
+• monitor: send the line as it is
+
+If masking fails for a line, the agent drops that line rather than sending it raw. The Agents page shows each agent's heartbeat, buffer and masking mode, and you can revoke an agent at any time.`,
+  },
+  {
+    id: "incidents",
+    title: "Findings and incidents",
+    content: `Each time a rule catches personal data, Veritas records a finding with the rule, the field, the system and a masked snippet.
+
+Findings of the same kind, in the same place, are grouped into one incident and owned by the team you named for that system. Incidents move from OPEN to ACKNOWLEDGED to RESOLVED. If findings for a resolved incident appear again after the grace period, the incident reopens and is marked as recurred.
+
+Nothing is thrown away. The All findings view lists every finding behind every incident.`,
+  },
+  {
+    id: "rules",
+    title: "Rules and approvals",
+    content: `Each rule describes a possible control failure in plain language. It is a technical signal, not a legal conclusion.
+
+• Personal data where it should not be, such as in a log
+• Personal data without a matching declaration in your policy
+• Data held longer than the policy declares
+• Fields that identify a person together
+• An erased identifier that appears again
+• Data that no current notice covers
+
+Core rules cannot be switched off. You can raise a rule's severity, lower it only as far as the floor for that kind of data, add actions such as a review task, or record a time-bound exception. Every change needs a second administrator's approval and is written into the evidence chain. For any finding, Why this fired shows the rule's reasoning step by step.`,
+  },
+  {
+    id: "evidence",
+    title: "Evidence and anchoring",
+    content: `Every finding, incident change and rule approval is appended to your organisation's evidence chain. Each record stores the hash of the record before it, and the records are encrypted at rest.
+
+At intervals, Veritas signs a checkpoint of the chain and copies it to the witnesses you configure: a separate folder, a syslog server or SIEM, a mailbox or a time-stamp authority. The witnesses keep copies that the server cannot quietly rewrite.
+
+The Verify Cryptographic Hash Chain button checks the chain on the server. The stand-alone verifier, veritas-verify, goes further: it compares the evidence with the signed checkpoints, so it also catches someone who rewrote the database and recomputed every hash. Records written after the last checkpoint are covered once the next checkpoint is signed.`,
+  },
+  {
+    id: "audit-pack",
+    title: "The audit pack",
+    content: `Download audit pack, on the Audit Ledger, produces one zip that an auditor or a customer's security team can check without Veritas: no server, no network and no login.
+
+• evidence.jsonl: the whole chain
+• checkpoints.jsonl and veritas.pub: the signed checkpoints and the key that verifies them
+• SUMMARY.md: what the evidence shows, and what it does not prove
+• VERIFY.md and verify.sh: how to run the stand-alone verifier
+• MANIFEST.sha256: a hash of every file, so a changed file is noticed
+
+Every download is recorded in the audit log.`,
+  },
+  {
+    id: "rights",
+    title: "Rights requests",
+    content: `Look up an identifier, such as a phone number, to see which systems Veritas has observed it in. The lookup works on keyed hashes, so the number itself is never stored.
+
+Open a request and Veritas creates a task for each system's owner. When every task is confirmed, the request closes with a signed record that lists the evidence it rests on.
+
+After an erasure request closes, Veritas keeps watching. If the identifier appears again, in any format, it raises an alert.`,
+  },
+  {
+    id: "data-map",
+    title: "Data map, retention and notices",
+    content: `The Data map shows what Veritas has observed in each system, set against what your policy declares. It describes what was seen in the data Veritas received, not everything that exists.
+
+Retention review lists systems where data is still seen after its declared period, with a task for the owner. Notice coverage shows whether a current notice you recorded covers each kind of data that was observed.`,
+  },
+  {
+    id: "roles",
+    title: "Roles",
+    content: `• SUPER_ADMIN manages organisations, users and agents
+• COMPLIANCE_ADMIN manages users, incidents and the data policy within an organisation
+• AUDITOR reviews incidents and evidence, and downloads the audit pack
+• VIEWER has read-only access to the dashboard
+
+Roles are enforced on the server, and administrative actions are written to the audit log.`,
+  },
+]
+
 export default function UserGuidePage() {
   return (
     <div className="bg-black text-white min-h-screen font-sans antialiased">
@@ -45,96 +132,17 @@ export default function UserGuidePage() {
             {"Core concepts."}
           </RevealText>
           <p className="mt-6 text-base text-white/60 leading-relaxed max-w-xl">
-            A deep dive into how Veritas works  -  agents, tools, audit logs, access boundaries, and verification rules.
+            How Veritas works, concept by concept: agents, incidents, rules, evidence, audit packs and rights requests.
           </p>
-          <div className="mt-6 p-4 rounded-xl border border-amber-400/20 bg-amber-400/10">
-            <p className="text-xs text-amber-300">This guide is being written alongside the beta. Some sections are more complete than others. Last updated: October 2024.</p>
+          <div className="mt-6 p-4 rounded-xl border border-white/[0.09] bg-white/[0.04]">
+            <p className="text-xs text-white/60">This guide describes the current release of Veritas. Last updated: October 2026.</p>
           </div>
         </div>
       </section>
 
       <div className="max-w-4xl mx-auto px-6 md:px-12 lg:px-20 pb-20 space-y-12">
 
-        {/* Concepts */}
-        {[
-          {
-            id: "agents",
-            title: "Agents",
-            content: `An Agent in Veritas is the central orchestration unit. It receives a task, uses tools to accomplish sub-goals, makes decisions, and produces an output.
-
-Every agent has:
-• A name  -  used in logs and audit records
-• A model  -  the underlying LLM (e.g., gpt-4o, claude-3-5-sonnet)
-• Tools  -  the functions the agent is permitted to call
-• A verify flag  -  whether outputs should be validated before the run completes
-• An optional AuditLogger instance
-
-Agents are designed to be stateless between runs. All state is captured in the audit record.`,
-          },
-          {
-            id: "tools",
-            title: "Tools",
-            content: `Tools are the functions your agent calls to interact with the outside world  -  fetching data, reading files, calling APIs, and so on.
-
-In Veritas, every tool call is automatically logged with:
-• Tool name
-• Arguments passed (with redacted sensitive fields)
-• Return value
-• Duration in milliseconds
-• Timestamp
-
-You define a tool by wrapping any async function with the Tool constructor. The function signature becomes the tool's interface.
-
-Tools can be flagged as verify: true to require output validation before the result is returned to the agent.`,
-          },
-          {
-            id: "audit-logs",
-            title: "Audit Logs",
-            content: `Audit logs are the core output of every Veritas agent run. Each run produces a structured JSON document containing:
-
-• Run metadata: ID, agent name, model, start/end time, duration, status
-• Event stream: every tool call, decision point, and state transition in order
-• Output: the final result with a link to the events that produced it
-• Verification result: pass/fail and details if verify is enabled
-
-Logs are written to the configured logDir (default: ./veritas-logs). Each run gets a uniquely named file (e.g., run-20241013-001.json).
-
-You can query logs using the CLI:
-  veritas inspect <log-file>
-  veritas query --agent extractor --status success --since 2024-10-01`,
-          },
-          {
-            id: "access-boundaries",
-            title: "Access Boundaries",
-            content: `Access boundaries define what an agent is and is not allowed to do. You specify this in the agent's configuration:
-
-• allowedTools: array of tool names the agent may call
-• deniedTools: tools the agent explicitly cannot call (takes precedence)
-• maxCalls: maximum number of tool calls per run
-• timeout: maximum duration for any single tool call
-
-If an agent attempts to call a tool not in allowedTools, the attempt is blocked and logged with type: "access_denied". The run continues but the blocked call is recorded.
-
-Note: Access boundaries are a beta feature. Some edge cases are still being addressed. See the troubleshooting guide for known limitations.`,
-          },
-          {
-            id: "verification",
-            title: "Verification",
-            content: `When verify: true is set on an agent or tool, Veritas checks the output against a schema or rule before the run is marked complete.
-
-You can define verification rules in veritas.config.json:
-
-{
-  "verify": {
-    "schema": "./schemas/output.json",    // JSON schema
-    "required": ["headline", "url"],      // required fields
-    "maxOutputLength": 10000              // max characters
-  }
-}
-
-If verification fails, the run status is set to "verified_failed" and the failure details are included in the audit record. The output is still returned  -  Veritas does not block the result, it annotates it.`,
-          },
-        ].map((concept, i) => (
+        {CONCEPTS.map((concept, i) => (
           <BentoCard key={concept.id} className="p-8 md:p-10" delay={i * 40}>
             <h2 id={concept.id} className="text-2xl font-light mb-4">{concept.title}</h2>
             <div className="space-y-3">

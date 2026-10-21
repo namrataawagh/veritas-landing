@@ -27,36 +27,16 @@ function FadeIn({ children, delay = 0 }: { children: React.ReactNode; delay?: nu
   )
 }
 
-const MIT_TEXT = `MIT License
-
-Copyright (c) 2024 Veritas Contributors
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.`
+const TERMS = [
+  { label: "Per deployment", desc: "Each licence covers your organisation's Veritas server and the number of monitored servers (agents) in your plan." },
+  { label: "Signed and machine-bound", desc: "The licence file is signed by Veritas and tied to the fingerprint of the server it runs on." },
+  { label: "Verified offline", desc: "The software checks the licence locally every time it starts. Nothing calls home." },
+  { label: "Time-limited", desc: "Each licence has an expiry date and is renewed annually. The dashboard warns you before it ends." },
+  { label: "Your data stays yours", desc: "A licence never gives Veritas access to your data or your servers." },
+  { label: "Agreement terms", desc: "Your rights to install, use and copy the software are set out in your licence agreement." },
+]
 
 export default function LicensePage() {
-  const [copied, setCopied] = useState(false)
-  const copy = () => {
-    navigator.clipboard.writeText(MIT_TEXT)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
-
   return (
     <div className="bg-black text-white min-h-screen font-sans antialiased">
       <MobileNav />
@@ -66,26 +46,22 @@ export default function LicensePage() {
 
           <FadeIn>
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] tracking-widest text-white/55 bg-white/[0.06] mb-5">LICENSE</span>
-            <h1 className="text-5xl md:text-6xl font-light tracking-tight leading-[1.02] mb-6">MIT License</h1>
+            <h1 className="text-5xl md:text-6xl font-light tracking-tight leading-[1.02] mb-6">Software License</h1>
+            <p className="text-sm text-white/60 leading-relaxed mb-10 max-w-xl">
+              Veritas is commercial software, licensed to each customer for use on their own infrastructure. This page explains how licences work. The binding terms are the ones in your licence agreement.
+            </p>
           </FadeIn>
 
           <FadeIn delay={80}>
             <div className="mb-10 p-6 rounded-2xl border border-white/[0.09] bg-[#0e0f11]">
-              <h2 className="text-lg font-light mb-3">What the MIT license means for you</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {[
-                  { icon: "✓", label: "Use commercially", desc: "Use Veritas in commercial products with no restrictions." },
-                  { icon: "✓", label: "Modify freely", desc: "Modify the source code for any purpose." },
-                  { icon: "✓", label: "Distribute", desc: "Distribute copies or modified versions." },
-                  { icon: "✓", label: "Private use", desc: "Use privately without disclosure." },
-                  { icon: "✓", label: "Sublicense", desc: "Grant sublicenses to others." },
-                  { icon: "!", label: "Keep attribution", desc: "Preserve the copyright notice in all copies." },
-                ].map((item) => (
+              <h2 className="text-lg font-light mb-5">How Veritas is licensed</h2>
+              <div className="space-y-4">
+                {TERMS.map((item) => (
                   <div key={item.label} className="flex items-start gap-3">
-                    <span className={`text-sm font-medium shrink-0 ${item.icon === "✓" ? "text-[#00cbaa]" : "text-amber-300"}`}>{item.icon}</span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#00cbaa] mt-1.5 shrink-0" />
                     <div>
                       <div className="text-xs font-medium text-white/80 mb-0.5">{item.label}</div>
-                      <div className="text-xs text-white/55">{item.desc}</div>
+                      <div className="text-xs text-white/55 leading-relaxed">{item.desc}</div>
                     </div>
                   </div>
                 ))}
@@ -96,25 +72,39 @@ export default function LicensePage() {
           <FadeIn delay={160}>
             <div className="rounded-2xl border border-white/[0.09] bg-[#0e0f11] overflow-hidden">
               <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.08]">
-                <span className="text-xs text-white/55 tracking-widest uppercase">Full License Text</span>
-                <button onClick={copy} className="text-[11px] text-white/50 hover:text-white/72 tracking-widest transition-colors">
-                  {copied ? "COPIED ✓" : "COPY"}
-                </button>
+                <span className="text-xs text-white/55 tracking-widest uppercase">Getting a licence</span>
               </div>
-              <pre className="p-6 text-[12px] font-mono text-white/65 leading-relaxed whitespace-pre-wrap overflow-x-auto">{MIT_TEXT}</pre>
+              <div className="p-6 space-y-4">
+                {[
+                  "Install Veritas on the server you will use",
+                  "Run: sudo veritas fingerprint",
+                  "Send the fingerprint to your Veritas contact",
+                  "Receive your signed veritas.vlic file",
+                  "Run: sudo veritas license /path/to/veritas.vlic",
+                ].map((step, i) => (
+                  <div key={step} className="flex items-start gap-4">
+                    <span className="font-pixel text-[10px] text-white/40 tracking-widest shrink-0 w-4">{i + 1}</span>
+                    <span className="text-sm text-white/70">{step}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </FadeIn>
 
           <FadeIn delay={200}>
+            <p className="mt-8 text-xs text-white/50 leading-relaxed">
+              Veritas includes third-party open-source components, which remain under their own licences. Each release publishes a software bill of materials that lists them.
+            </p>
+          </FadeIn>
+
+          <FadeIn delay={240}>
             <div className="mt-10 flex flex-col sm:flex-row gap-3">
-              <a
-                href="https://github.com/shreyaaassss/Veritas/blob/main/LICENSE"
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href="/book-demo"
                 className="px-6 py-3 bg-[#eef35f] text-black font-medium text-xs rounded-full hover:bg-[#f4f78a] transition-colors tracking-[0.012em] text-center"
               >
-                View on Github ↗
-              </a>
+                Request a Licence
+              </Link>
               <Link href="/contact" className="px-6 py-3 border border-white/15 text-white/72 text-xs rounded-full font-medium hover:border-white/30 hover:text-white transition-all tracking-[0.012em] text-center">
                 QUESTIONS? Contact Us
               </Link>

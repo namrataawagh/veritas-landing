@@ -44,7 +44,7 @@ export default function PrivacyPage() {
             </p>
             <div className="p-5 rounded-2xl border border-white/[0.09] bg-[#0e0f11]">
               <p className="text-sm text-white/72 leading-relaxed">
-                Veritas is an open-source, self-hosted tool. <strong className="font-medium">By default, Veritas does not collect, transmit, or store any data on external servers.</strong> All audit logs are written to your local filesystem. Nothing leaves your environment unless you configure it to.
+                Veritas is self-hosted software. <strong className="font-medium">The Veritas software does not send your data to us.</strong> Findings and evidence are stored on your own servers. This policy explains that, and covers the data this website collects when you create an account, request a download or contact us.
               </p>
             </div>
           </div>
@@ -76,7 +76,7 @@ export default function PrivacyPage() {
             <Section id="what-we-collect" delay={0}>
               <h2 className="text-2xl font-light mb-4">What data Veritas collects</h2>
               <div className="space-y-3 text-sm text-white/70 leading-relaxed">
-                <p>Veritas the software (the SDK and CLI) <strong className="text-white/80">does not collect any personal data</strong>. It does not send telemetry, usage statistics, or crash reports to any server.</p>
+                <p>The Veritas software, meaning the server, the agents and the command-line tools, <strong className="text-white/80">does not send us any personal data</strong>. It does not send telemetry, usage statistics or crash reports to us.</p>
                 <p>Veritas the website (this site) may log standard server access logs (IP address, browser, request path) via the hosting provider. These logs are used only for operational purposes and are not sold or shared.</p>
               </div>
             </Section>
@@ -84,21 +84,21 @@ export default function PrivacyPage() {
             <Section id="local-data" delay={40}>
               <h2 className="text-2xl font-light mb-4">Local data storage</h2>
               <div className="space-y-3 text-sm text-white/70 leading-relaxed">
-                <p>When you run a Veritas agent, it writes an audit log to your local filesystem (in the configured <code className="bg-white/[0.07] px-1.5 py-0.5 rounded font-mono text-[12px]">logDir</code>). This log contains:</p>
+                <p>When you run Veritas, the evidence it keeps is stored on your own server. It contains:</p>
                 <ul className="space-y-1.5 ml-4">
-                  {["Agent task inputs and configuration", "Tool calls with arguments (sensitive fields are redacted per your config)", "Agent decisions and outputs", "Timestamps and metadata"].map(item => (
+                  {["Findings, with personal data values masked", "Keyed hashes used for rights lookups and erasure checks", "Incident status, comments and the administrative audit log", "The evidence chain and its signed checkpoints"].map(item => (
                     <li key={item} className="flex items-start gap-2.5"><span className="w-1 h-1 rounded-full bg-white/30 mt-2 shrink-0" />{item}</li>
                   ))}
                 </ul>
-                <p>This data is stored only on your machine or server. Veritas has no access to it.</p>
+                <p>This data stays on infrastructure you control. Veritas, the company, has no access to it. Witnesses you configure receive signed checkpoints, which carry hashes of the evidence rather than personal data.</p>
               </div>
             </Section>
 
             <Section id="no-telemetry" delay={80}>
               <h2 className="text-2xl font-light mb-4">No telemetry by default</h2>
               <div className="space-y-3 text-sm text-white/70 leading-relaxed">
-                <p>Veritas does not include any telemetry, analytics, or tracking code. There are no calls to external analytics services from the SDK or CLI.</p>
-                <p>If future versions include an opt-in telemetry feature, it will be clearly documented and disabled by default.</p>
+                <p>The Veritas software does not include telemetry, analytics or tracking code, and makes no calls to analytics services.</p>
+                <p>If a future version adds opt-in telemetry, it will be clearly documented and switched off by default.</p>
               </div>
             </Section>
 
@@ -132,13 +132,13 @@ export default function PrivacyPage() {
               <h2 className="text-2xl font-light mb-4">Third-party services</h2>
               <div className="space-y-3 text-sm text-white/70 leading-relaxed">
                 <p>This website is hosted on Cloudflare, which may process standard access logs. Accounts use Google sign-in through Supabase, and installation emails are sent with Resend. See <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener noreferrer" className="underline hover:text-white/80">Cloudflare</a>, <a href="https://supabase.com/privacy" target="_blank" rel="noopener noreferrer" className="underline hover:text-white/80">Supabase</a> and <a href="https://resend.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer" className="underline hover:text-white/80">Resend</a> privacy policies.</p>
-                <p>Veritas the software may call LLM provider APIs (e.g., OpenAI, Anthropic) on your behalf, depending on your configuration. Your data is subject to those providers&apos; privacy policies when you use them.</p>
+                <p>Optional features of the Veritas software that you choose to enable, such as AI explanations, a time-stamp authority or an email witness, contact the service you configure. Each one is off unless you turn it on, and what it sends is described in the documentation. Those services&apos; own privacy policies apply when you use them.</p>
               </div>
             </Section>
 
             <Section id="changes" delay={200}>
               <h2 className="text-2xl font-light mb-4">Changes to this policy</h2>
-              <p className="text-sm text-white/70 leading-relaxed">We may update this policy as the project evolves. Material changes will be noted with an updated date at the top of this page.</p>
+              <p className="text-sm text-white/70 leading-relaxed">We may update this policy as Veritas evolves. Material changes will be noted with an updated date at the top of this page.</p>
             </Section>
 
             <Section id="contact" delay={240}>

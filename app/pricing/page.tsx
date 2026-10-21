@@ -7,7 +7,7 @@ import {
 } from "lucide-react"
 import { Reveal, SiteShell } from "@/components/site-shell"
 
-// Tiers, limits and prices follow "Veritas: Business and Revenue Model" (sections 7–8).
+// Tiers, limits and prices follow "Veritas: Business and Revenue Model" (sections 7 and 8).
 // Agents are the only enforced limit; log volume is a fair-use guide.
 
 type Tier = {
@@ -26,12 +26,12 @@ const TIERS: Tier[] = [
   {
     name: "Pilot",
     forWho: "First evaluation on your own logs",
-    price: "₹25k – ₹50k",
-    unit: "for 60–90 days",
+    price: "₹25k to ₹50k",
+    unit: "for 60 to 90 days",
     note: "Credited to your annual licence if you convert",
     limits: ["Up to 3 agents", "Up to 5 users", "1 organisation", "Small log volume"],
     features: [
-      { label: "Four core rules, evidence chain, PDF export", included: true },
+      { label: "All rules, evidence chain and audit pack", included: true },
       { label: "AI-assisted investigation", included: true },
       { label: "Manual backups and chain verification", included: true },
       { label: "Email support", included: true },
@@ -41,12 +41,12 @@ const TIERS: Tier[] = [
   },
   {
     name: "Starter",
-    forWho: "Small teams proving compliance",
-    price: "About ₹12.5k – ₹17k",
+    forWho: "Small teams getting started",
+    price: "About ₹12.5k to ₹17k",
     unit: "per month, billed annually",
     limits: ["Up to 3 agents", "Up to 5 users", "1 organisation", "About 10 GB/month log volume analysed"],
     features: [
-      { label: "Four core rules, evidence chain, PDF export", included: true },
+      { label: "All rules, evidence chain and audit pack", included: true },
       { label: "AI-assisted investigation", included: false },
       { label: "Manual backups and chain verification", included: true },
       { label: "Email support, best effort", included: true },
@@ -57,12 +57,12 @@ const TIERS: Tier[] = [
   {
     name: "Professional",
     forWho: "Growing compliance teams",
-    price: "About ₹33k – ₹50k",
+    price: "About ₹33k to ₹50k",
     unit: "per month, billed annually",
     featured: true,
     limits: ["Up to 15 agents", "Up to 25 users", "1 organisation", "About 50 GB/month log volume analysed"],
     features: [
-      { label: "Four core rules, evidence chain, PDF export", included: true },
+      { label: "All rules, evidence chain and audit pack", included: true },
       { label: "AI-assisted investigation", included: true },
       { label: "Scheduled backups and chain verification", included: true },
       { label: "Email support, next business day", included: true },
@@ -77,7 +77,7 @@ const TIERS: Tier[] = [
     unit: "per month, billed annually · multi-year options",
     limits: ["40+ agents, custom", "Unlimited users", "Multiple organisations", "Custom log volume"],
     features: [
-      { label: "Four core rules, evidence chain, PDF export", included: true },
+      { label: "All rules, evidence chain and audit pack", included: true },
       { label: "AI-assisted investigation, with local-model setup", included: true },
       { label: "Scheduled and custom backups", included: true },
       { label: "Named contact and SLA", included: true },
@@ -88,13 +88,13 @@ const TIERS: Tier[] = [
 ]
 
 const COMPARE: { row: string; cells: [string, string, string, string] }[] = [
-  { row: "For", cells: ["First evaluation", "Small teams proving compliance", "Growing compliance teams", "Broad coverage, regulated sectors"] },
+  { row: "For", cells: ["First evaluation", "Small teams getting started", "Growing compliance teams", "Broad coverage, regulated sectors"] },
   { row: "Length", cells: ["60 to 90 days", "Annual", "Annual", "Annual, multi-year options"] },
   { row: "Agents (enforced limit)", cells: ["Up to 3", "Up to 3", "Up to 15", "40+, custom"] },
   { row: "Log volume analysed (fair-use guide)", cells: ["Small", "About 10 GB/month", "About 50 GB/month", "Custom"] },
   { row: "Organisations", cells: ["1", "1", "1", "Multiple"] },
   { row: "Users", cells: ["Up to 5", "Up to 5", "Up to 25", "Unlimited"] },
-  { row: "Four core rules, evidence chain, PDF export", cells: ["Yes", "Yes", "Yes", "Yes"] },
+  { row: "All rules, evidence chain and audit pack", cells: ["Yes", "Yes", "Yes", "Yes"] },
   { row: "AI-assisted investigation", cells: ["Yes", "No", "Yes", "Yes, with local-model setup"] },
   { row: "Backups and chain verification", cells: ["Manual", "Manual", "Scheduled", "Scheduled and custom"] },
   { row: "Support", cells: ["Email", "Email, best effort", "Email, next business day", "Named contact and SLA"] },
@@ -109,12 +109,12 @@ const LIMITS = [
 ]
 
 const ADD_ONS = [
-  { icon: Workflow, title: "Onboarding and policy mapping", price: "One-time, about ₹50k – ₹1.5 lakh", body: "We list the personal data each system holds and turn it into your organisation config: fields, purposes, consent scope and retention." },
-  { icon: LifeBuoy, title: "Support and SLA upgrades", price: "About 10–20% of licence value", body: "Faster response times, a named contact and scheduled health checks." },
+  { icon: Workflow, title: "Onboarding and policy mapping", price: "One-time, about ₹50k to ₹1.5 lakh", body: "We list the personal data each system holds and turn it into your organisation config: fields, purposes, consent scope and retention." },
+  { icon: LifeBuoy, title: "Support and SLA upgrades", price: "About 10 to 20% of licence value", body: "Faster response times, a named contact and scheduled health checks." },
   { icon: Blocks, title: "Extra agent blocks", price: "Pro-rated from your tier price", body: "More agents beyond your plan's limit, sold in blocks of 10, without changing tier." },
   { icon: FileText, title: "Annual compliance health report", price: "Fixed fee per report", body: "A yearly review of findings, trends and recommendations, written for your DPO or board." },
   { icon: GraduationCap, title: "Training and workshops", price: "Per session", body: "Sessions for developers on keeping personal data out of logs, and for compliance teams on using the dashboard." },
-  { icon: Handshake, title: "Partner programme", price: "15–25% referral margin", body: "For compliance consultants, CA and law firms and managed security providers who bring us customers." },
+  { icon: Handshake, title: "Partner programme", price: "15 to 25% referral margin", body: "For compliance consultants, CA and law firms and managed security providers who bring us customers." },
 ]
 
 const ROADMAP = ["Slack alerts", "Single sign-on", "Remediation hints", "Managed service", "Hosted lite version"]

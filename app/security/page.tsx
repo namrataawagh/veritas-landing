@@ -46,11 +46,11 @@ export default function SecurityPage() {
             {"Security posture."}
           </RevealText>
           <p className="mt-8 text-base text-white/60 leading-relaxed max-w-xl">
-            Veritas is a self-hosted, open-source tool. Security is a core design principle. Here is an honest account of where we are today.
+            Veritas watches personal data, so it is built to hold as little of it as possible. This page sets out the controls in place today, and the assurances we do not yet claim.
           </p>
           <div className="mt-6 p-5 rounded-2xl border border-amber-400/20 bg-amber-400/10">
             <p className="text-sm text-amber-300 leading-relaxed">
-              <span className="font-medium">Beta notice:</span> Veritas is currently in beta. Our security posture is improving rapidly. Some hardening is still in progress. We are transparent about this below.
+              <span className="font-medium">Pilot programme:</span> Veritas is deployed with customers in supervised pilots. Where an assurance is not yet in place, we say so below.
             </p>
           </div>
         </div>
@@ -68,47 +68,41 @@ export default function SecurityPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {[
               {
-                title: "Automatic secret redaction",
-                desc: "API keys, tokens, passwords, and any field names you specify in the redact config are replaced with [REDACTED] before any log is written. Sensitive values are never stored, even temporarily.",
-                status: "available",
+                title: "Masking at the source",
+                desc: "Agents mask, hash or drop personal data on the host before a line is sent. If masking fails for a line, that line is dropped rather than sent raw.",
                 delay: 0,
               },
               {
-                title: "Execution isolation",
-                desc: "Each agent run is isolated from other runs. There is no cross-contamination of session state between concurrent executions.",
-                status: "available",
+                title: "No raw values in the evidence store",
+                desc: "Findings keep masked snippets and keyed hashes. Rights lookups and erasure checks work on keyed hashes, so a raw identifier is never stored.",
                 delay: 80,
               },
               {
-                title: "Access boundary enforcement",
-                desc: "Agents can only call tools explicitly granted to them. Unauthorized tool attempts are blocked and logged with type: access_denied.",
-                status: "beta",
+                title: "Tamper-evident evidence",
+                desc: "Records are hash-chained and encrypted at rest. Signed checkpoints are held by witnesses outside the server, and a stand-alone verifier detects changes even when someone recomputes every hash.",
                 delay: 0,
               },
               {
-                title: "Open source codebase",
-                desc: "The entire Veritas codebase is open source and publicly auditable on GitHub. You can review every line of code that handles your data.",
-                status: "available",
+                title: "Access control and approvals",
+                desc: "Roles are enforced on the server. Rule changes and exceptions need a second person's approval, and administrative actions are written to an audit log.",
                 delay: 80,
               },
               {
-                title: "No external data transmission",
-                desc: "By default, Veritas does not transmit any agent data to external servers. All audit logs are written locally. Your data stays in your environment.",
-                status: "available",
+                title: "Encrypted transport, offline licence",
+                desc: "Dashboard and agent traffic use TLS, and agents can pin the server's certificate. The machine-bound licence is verified locally, with no call home.",
                 delay: 0,
               },
               {
-                title: "Dependency auditing",
-                desc: "We run automated dependency audits on every commit using GitHub Dependabot. Known vulnerabilities in dependencies are addressed promptly.",
-                status: "beta",
+                title: "Signed releases and supply-chain checks",
+                desc: "Release checksums are signed and every release ships a software bill of materials. Dependencies and code are scanned for known vulnerabilities and leaked secrets on every change.",
                 delay: 80,
               },
             ].map((item) => (
               <BentoCard key={item.title} className="p-8" delay={item.delay}>
                 <div className="flex items-start justify-between mb-4">
                   <h3 className="text-base font-light">{item.title}</h3>
-                  <span className={`shrink-0 text-[10px] px-2 py-0.5 rounded-full border tracking-widest ${item.status === "available" ? "bg-[#00cbaa]/10 text-[#00cbaa] border-[#00cbaa]/25" : "bg-amber-400/10 text-amber-300 border-amber-400/20"}`}>
-                    {item.status === "available" ? "Active" : "Beta"}
+                  <span className="shrink-0 text-[10px] px-2 py-0.5 rounded-full border tracking-widest bg-[#00cbaa]/10 text-[#00cbaa] border-[#00cbaa]/25">
+                    Active
                   </span>
                 </div>
                 <p className="text-sm text-white/60 leading-relaxed">{item.desc}</p>
@@ -129,18 +123,20 @@ export default function SecurityPage() {
           </div>
           <BentoCard className="p-8 md:p-10" delay={0}>
             <p className="text-sm text-white/70 leading-relaxed mb-8 max-w-2xl">
-              We do not make security claims we cannot support. The following are not currently in place for Veritas:
+              We do not make security claims we cannot support. The following are not in place for Veritas today:
             </p>
             <div className="space-y-5">
               {[
-                { label: "SOC 2 Type II", note: "We have not undergone a SOC 2 audit. This is a planned milestone for a future version of Veritas when it reaches production-readiness." },
-                { label: "HIPAA / ISO 27001", note: "No compliance certifications are held. Veritas should not be used to process PHI or other regulated data until we can support these requirements." },
-                { label: "Penetration testing", note: "We have not conducted a formal third-party penetration test. This is planned before a v1.0 release." },
-                { label: "Bug bounty program", note: "No formal bug bounty program is in place yet. We encourage responsible disclosure via the contact form (see below)." },
+                { label: "SOC 2 Type II", note: "We have not completed a SOC 2 audit." },
+                { label: "ISO 27001", note: "We do not hold an ISO 27001 certification." },
+                { label: "Penetration testing", note: "No independent third-party penetration test has been completed yet." },
+                { label: "Installer signing", note: "The macOS and Windows installers are not yet signed by the operating system vendors. Release checksums are signed, so you can verify each download before installing it." },
+                { label: "Legal advice", note: "Veritas produces technical evidence. It is not legal advice and does not certify compliance with any law." },
+                { label: "Bug bounty", note: "There is no paid bug bounty programme. We welcome responsible disclosure through the contact form, as described below." },
               ].map((item) => (
                 <div key={item.label} className="flex items-start gap-5 pb-5 border-b border-white/[0.07] last:border-0 last:pb-0">
-                  <div className="flex items-center gap-2 shrink-0 w-44">
-                    <span className="text-sm text-red-400">✗</span>
+                  <div className="flex items-center gap-2.5 shrink-0 w-44">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />
                     <span className="text-sm font-light text-white/80">{item.label}</span>
                   </div>
                   <p className="text-sm text-white/55 leading-relaxed">{item.note}</p>
@@ -164,16 +160,16 @@ export default function SecurityPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
                 <p className="text-sm text-white/70 leading-relaxed mb-6">
-                  If you discover a security vulnerability in Veritas, please report it responsibly. We aim to respond to security reports within 48 hours and to have a fix or mitigation in place within 7 days for critical issues.
+                  If you discover a security vulnerability in Veritas, please report it responsibly. We aim to acknowledge security reports within 48 hours and to have a fix or mitigation in place within 7 days for critical issues.
                 </p>
                 <div className="space-y-4">
                   <div className="text-[10px] text-white/45 tracking-widest uppercase">How to report</div>
                   <ol className="space-y-3">
                     {[
-                      "Use the contact form with subject line: Security Issue",
-                      "Include a description of the vulnerability and steps to reproduce",
-                      "Do not publicly disclose until we have had a chance to respond",
-                      "We will credit you in the security advisory (if you wish)",
+                      "Use the contact form with the subject line: Security Issue",
+                      "Include a description of the vulnerability and the steps to reproduce it",
+                      "Do not disclose it publicly until we have had a chance to respond",
+                      "We will credit you in the security advisory, if you wish",
                     ].map((step, i) => (
                       <li key={i} className="flex items-start gap-3 text-sm text-white/70">
                         <span className="font-pixel text-[10px] text-white/35 tracking-widest shrink-0">{String(i + 1).padStart(2, "0")}</span>

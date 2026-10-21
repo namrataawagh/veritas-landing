@@ -34,9 +34,64 @@ function Tag({ children }: { children: React.ReactNode }) {
   return <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] tracking-widest text-white/55 bg-white/[0.06]">{children}</span>
 }
 
-function Code({ children }: { children: React.ReactNode }) {
-  return <code className="text-[11px] font-mono bg-white/[0.07] px-1.5 py-0.5 rounded text-white/72">{children}</code>
-}
+const STEPS = [
+  {
+    n: "01",
+    title: "Your application writes a log line",
+    desc: "A support service logs a callback with the customer's phone number, Aadhaar number and email address. From its own point of view the application did nothing wrong, but the log file now holds personal data.",
+    example: `2026-10-20 10:05:01 INFO ticket 5001 callback to 9876543210
+  aadhaar 2345 6789 0124 mail asha.rao@example.com done`,
+  },
+  {
+    n: "02",
+    title: "The agent masks it on the host",
+    desc: "The agent on that host reads the new line, masks the Aadhaar number and the email address, and replaces the phone number with a keyed hash. Only then does it forward the line, using its own token. If masking fails, the line is dropped rather than sent.",
+    example: `ticket 5001 callback to [PHONE#69512b.92c8630586a3342e]
+  aadhaar [AADHAAR_REDACTED] mail [EMAIL_REDACTED] done
+
+POST /v1/acme_retail/events
+Authorization: Bearer <agent-token>`,
+  },
+  {
+    n: "03",
+    title: "The server checks it against your policy",
+    desc: "The server records which kinds of personal data the line carried and compares them with the policy you declared for that system: which data it may hold, for what purpose and for how long.",
+    example: `system:        support-ticketing
+kinds seen:    phone (hashed), aadhaar (masked), email (masked)
+declared:      phone
+not declared:  aadhaar, email`,
+  },
+  {
+    n: "04",
+    title: "Findings become one owned incident",
+    desc: "Personal data in a log raises a finding, and so does data the system never declared. Findings with the same cause join a single incident, owned by the team you named for that system.",
+    example: `EXPOSURE_001   personal data in a log
+PURPOSE_001    aadhaar, email not declared here
+
+INC-3          support-ticketing
+owner:         Support team
+status:        OPEN`,
+  },
+  {
+    n: "05",
+    title: "Everything goes into the evidence chain",
+    desc: "Each finding, status change and rule approval is appended to the organisation's chain and linked to the record before it. At intervals, a signed checkpoint of the chain is copied to the witnesses you chose, outside the server.",
+    example: `record:        11356
+prev_hash:     4bca07…31c441
+row_hash:      9f2c41…e8a71e
+checkpoint:    signed, held by two witnesses`,
+  },
+  {
+    n: "06",
+    title: "The team resolves it, and anyone can check",
+    desc: "The owner fixes the logging and resolves the incident. If the same line appears again, the incident reopens. When an auditor asks, the audit pack and the stand-alone verifier show that the records still match what was signed.",
+    example: `INC-3:  OPEN → ACKNOWLEDGED → RESOLVED
+
+$ veritas-verify --evidence evidence.jsonl \\
+    --checkpoints checkpoints.jsonl --pubkey veritas.pub
+PASS  organization acme_retail: 11356 records, 5 checkpoints`,
+  },
+]
 
 export default function HowItWorksPage() {
   return (
@@ -48,10 +103,10 @@ export default function HowItWorksPage() {
         <div className="max-w-6xl mx-auto">
           <Tag>HOW IT WORKS</Tag>
           <RevealText className="mt-5 text-5xl md:text-6xl lg:text-7xl font-light tracking-tight leading-[1.02]">
-            {"Every violation.\nDetected. Recorded.\nResolved."}
+            {"One log line.\nMasked, judged,\nrecorded."}
           </RevealText>
           <p className="mt-8 text-base text-white/60 leading-relaxed max-w-xl">
-            The complete path of a personal data violation  -  from a log line written by your application to a tamper-evident verdict in your compliance team&apos;s dashboard.
+            The path of one piece of personal data: from a log line your application writes, to an incident with an owner, to evidence that an auditor can verify without asking us.
           </p>
         </div>
       </section>
@@ -60,19 +115,19 @@ export default function HowItWorksPage() {
       <section className="py-16 px-6 md:px-12 lg:px-20 border-t border-white/[0.08]">
         <div className="max-w-6xl mx-auto">
           <Tag>ARCHITECTURE</Tag>
-          <h2 className="mt-5 text-3xl md:text-4xl font-light tracking-tight mb-10">Two components. Everything inside your network.</h2>
+          <h2 className="mt-5 text-3xl md:text-4xl font-light tracking-tight mb-10">Runs inside your network. Verifies outside it.</h2>
 
           <BentoCard className="p-8 md:p-10" delay={0}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
               <div>
                 <div className="mb-4"><PixelIcon type="platform" size={32} /></div>
                 <div className="font-pixel text-[10px] text-white/40 tracking-widest mb-4">VERITAS SERVER</div>
-                <h3 className="text-lg font-light mb-3">The compliance brain</h3>
+                <h3 className="text-lg font-light mb-3">The evidence server</h3>
                 <p className="text-sm text-white/65 leading-relaxed mb-5">
-                  Runs on one machine in your network. Receives events from agents, detects PII, evaluates DPDPA rules, stores the evidence chain, and serves the investigation dashboard.
+                  Runs on one machine in your network. Receives events from agents and receivers, finds personal data, checks it against your declared policy, writes every result into the evidence chain, and serves the dashboard.
                 </p>
                 <div className="space-y-2">
-                  {["Receives agent events via HTTP", "PII detection engine (Presidio + spaCy)", "DPDPA rule evaluation (4 rules)", "Append-only SHA-256 hash chain evidence store", "Investigation dashboard (WebSocket live feed)", "RBAC (4 roles)", "Optional LLM investigation"].map(f => (
+                  {["Events from agents, OpenTelemetry logs and syslog", "Detection on your own hardware", "Rules checked against your declared policy", "Hash-chained evidence, encrypted at rest", "Signed checkpoints sent to witnesses you choose", "Dashboard with live updates", "Roles enforced on the server"].map(f => (
                     <div key={f} className="flex items-center gap-2.5 text-xs text-white/65">
                       <div className="w-1 h-1 rounded-full bg-white/25 shrink-0" />
                       {f}
@@ -83,12 +138,12 @@ export default function HowItWorksPage() {
               <div>
                 <div className="mb-4"><PixelIcon type="agents" size={32} /></div>
                 <div className="font-pixel text-[10px] text-white/40 tracking-widest mb-4">VERITAS AGENT</div>
-                <h3 className="text-lg font-light mb-3">The lightweight forwarder</h3>
+                <h3 className="text-lg font-light mb-3">The agent on each host</h3>
                 <p className="text-sm text-white/65 leading-relaxed mb-5">
-                  Deployed on every application host or Kubernetes node. Tails log files and Docker container logs, forwards each line to the Veritas Server using a per-agent token, and buffers then retries when the server is unreachable.
+                  Runs beside your applications on each host or Kubernetes node. Reads log files, containers and syslog, masks, hashes or drops personal data before anything travels, and forwards events with its own token, buffering and retrying when the server is unreachable.
                 </p>
                 <div className="space-y-2">
-                  {["File and Docker log tailing", "Per-agent bearer token auth", "Retry with bounded buffer (survives server restarts)", "Docker image, .deb package, Kubernetes DaemonSet", "128 MB RAM", "Revocable from the dashboard instantly"].map(f => (
+                  {["Files, containers, syslog and database statement logs", "Masking at the source, fail-closed", "Per-agent token, revocable from the dashboard", "Bounded buffer with retry", "Linux and macOS packages, Kubernetes manifest", "About 128 MB of memory"].map(f => (
                     <div key={f} className="flex items-center gap-2.5 text-xs text-white/65">
                       <div className="w-1 h-1 rounded-full bg-white/25 shrink-0" />
                       {f}
@@ -100,74 +155,31 @@ export default function HowItWorksPage() {
 
             {/* Network flow */}
             <div className="mt-10 pt-8 border-t border-white/[0.08]">
-              <div className="font-pixel text-[10px] text-white/40 tracking-widest mb-5">NETWORK FLOW  -  EVERYTHING STAYS INSIDE YOUR NETWORK</div>
+              <div className="font-pixel text-[10px] text-white/40 tracking-widest mb-5">NETWORK FLOW: PERSONAL DATA STAYS INSIDE YOUR NETWORK</div>
               <div className="flex flex-wrap items-center gap-2 text-xs text-white/65">
-                {["Your App Servers", "→", "Veritas Agent", "→", "Veritas Server (your VM)", "→", "Evidence Store (your disk)", "→", "Dashboard (your browser)"].map((item, i) => (
+                {["Your app servers", "→", "Veritas agent (masks)", "→", "Veritas server (your VM)", "→", "Evidence store (your disk)", "→", "Dashboard (your browser)"].map((item, i) => (
                   <span key={i} className={item === "→" ? "text-white/35" : "px-3 py-1.5 rounded-lg bg-white/[0.06] border border-white/[0.08]"}>
                     {item}
                   </span>
                 ))}
               </div>
               <p className="mt-4 text-xs text-white/50">
-                Optional: AI investigation call → OpenAI / Anthropic / Local Ollama (sends <span className="font-medium">only field names + statute text</span>, never raw PII)
+                Outside the server, only <span className="font-medium">signed checkpoints</span> go to the witnesses you choose. They carry hashes of the chain, never personal data.
               </p>
             </div>
           </BentoCard>
         </div>
       </section>
 
-      {/* 6-step event path */}
+      {/* The path of one event */}
       <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-white/[0.08]">
         <div className="max-w-6xl mx-auto">
           <Tag>THE PATH OF ONE EVENT</Tag>
-          <h2 className="mt-5 text-3xl md:text-4xl font-light tracking-tight mb-12">From log line to resolved case.</h2>
+          <h2 className="mt-5 text-3xl md:text-4xl font-light tracking-tight mb-12">From log line to verified record.</h2>
 
           <div className="space-y-4">
-            {[
-              {
-                n: "01",
-                title: "Application writes a log line",
-                desc: "A debug message in your order service dumps a customer record. Your application is doing nothing wrong from its own perspective  -  but the log file now contains personal data.",
-                example: `[2026-10-05T09:14:02Z] DEBUG order-service: fetched customer {\n  name: "Rohan Verma", phone: "9876543210", address: "Flat 4B, Pune"\n}`,
-                delay: 0,
-              },
-              {
-                n: "02",
-                title: "Veritas Agent forwards the event",
-                desc: "The agent is tailing that log file. It reads the new line and sends it to POST /v1/{org}/events on the Veritas Server, authenticated with its per-agent bearer token. If the server is unreachable, the agent buffers and retries automatically.",
-                example: `POST /v1/acme_retail/events\nAuthorization: Bearer <agent-token>\n\n{"source": "order-service", "text": "[2026-10-05..."}`,
-                delay: 60,
-              },
-              {
-                n: "03",
-                title: "PII detection engine runs",
-                desc: "The server's detection pipeline scans the event text. It finds a name, a phone number, and an address. Validators eliminate false positives (e.g. Aadhaar Verhoeff checksum). Runs fully on your server - no external API call.",
-                example: `Detected entities:\n  PERSON       → "Rohan Verma"      confidence: 0.92\n  IN_PHONE     → "9876543210"        confidence: 0.99\n  LOCATION     → "Flat 4B, Pune"     confidence: 0.87`,
-                delay: 120,
-              },
-              {
-                n: "04",
-                title: "Rule engine evaluates the policy",
-                desc: "The rule engine compares what was found against the organisation's declared policy (loaded from the org config YAML). The order-service field has declared_purpose: order_fulfillment  -  logging personal data is not in scope.",
-                example: `Rule EXPOSURE_001 fired:\n  field:    phone\n  source:   order-service\n  severity: HIGH\n  reason:   "Personal data appeared in application logs.\n             Policy prohibits logging of phone field."\n  statute:  DPDPA 2023 § 8(3)`,
-                delay: 180,
-              },
-              {
-                n: "05",
-                title: "Verdict stored in the evidence chain",
-                desc: "The verdict is appended to the SHA-256 hash chain. It stores the previous verdict's hash and its own hash  -  making it mathematically impossible to alter the record without breaking the chain. The verdict is pushed to all connected compliance browsers via WebSocket.",
-                example: `verdict_id:    VRD-20241005-00431\nprev_hash:     sha256(VRD-00430)\nown_hash:      sha256(prev_hash + verdict_payload)\nchain_valid:   true\nstatus:        OPEN`,
-                delay: 240,
-              },
-              {
-                n: "06",
-                title: "Compliance team investigates and resolves",
-                desc: "The violation appears live in the dashboard's Live Stream. A compliance officer opens the case, optionally asks the AI investigation panel 'why is this a violation?' (the LLM receives only rule text and field name  -  no raw PII), adds a comment, and moves the case to RESOLVED. The full audit trail is exportable as a tamper-evident PDF.",
-                example: `Case lifecycle:\n  OPEN → [investigated, AI explanation, comment added]\n  → ACKNOWLEDGED → [developer fixes the logging]\n  → RESOLVED\n\nPDF report exported. Chain hash verified.`,
-                delay: 300,
-              },
-            ].map((step) => (
-              <BentoCard key={step.n} className="p-8 md:p-10" delay={step.delay}>
+            {STEPS.map((step, i) => (
+              <BentoCard key={step.n} className="p-8 md:p-10" delay={i * 60}>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                   <div>
                     <div className="flex items-center gap-3 mb-4">
@@ -186,18 +198,18 @@ export default function HowItWorksPage() {
         </div>
       </section>
 
-      {/* Org config */}
+      {/* Data policy */}
       <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-white/[0.08]">
         <div className="max-w-6xl mx-auto">
-          <Tag>ORG CONFIG</Tag>
-          <h2 className="mt-5 text-3xl md:text-4xl font-light tracking-tight mb-4">Describe your data policy in YAML.</h2>
+          <Tag>DATA POLICY</Tag>
+          <h2 className="mt-5 text-3xl md:text-4xl font-light tracking-tight mb-4">Describe your data policy once.</h2>
           <p className="mt-3 mb-10 text-sm text-white/60 max-w-xl leading-relaxed">
-            Each organisation uploads a YAML config describing what personal data each system holds, why it holds it, and how long it may retain it. No code change or redeploy needed. Updating the policy creates a versioned file  -  so policy changes are themselves auditable.
+            Each organisation declares what personal data each system holds, why it holds it, who owns it and how long it may keep it. No code change or redeploy is needed. Industry policy packs give you a reviewed starting point instead of a blank page.
           </p>
           <BentoCard className="p-0 overflow-hidden" delay={0}>
             <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/[0.08]">
-              <span className="font-pixel text-[10px] text-white/45 tracking-widest">acme_retail_config.yaml</span>
-              <span className="text-[10px] text-white/40 tracking-widest">ORG CONFIG</span>
+              <span className="font-pixel text-[10px] text-white/45 tracking-widest">acme_retail_policy.yaml</span>
+              <span className="text-[10px] text-white/40 tracking-widest">DATA POLICY</span>
             </div>
             <pre className="p-6 text-[12px] font-mono text-white/70 leading-relaxed overflow-x-auto whitespace-pre">{`org_id: acme_retail
 fields:
@@ -205,7 +217,7 @@ fields:
     pii_category: phone
     declared_purpose: order_fulfillment
     consent_scope: order_fulfillment
-    retention_days: 1095              # 3 years from consent
+    retention_days: 1095
     source_system: order-service
 
   - field_name: aadhaar
@@ -214,13 +226,20 @@ fields:
     consent_scope: onboarding_kyc
     retention_days: 180
     source_system: partner-service
-    data_since: 2025-12-24            # system already holds data from this date
+    data_since: 2025-12-24            # the system already holds data from this date
 
-linkage_rules:
-  - fields: [name, phone, delivery_address]  # together they identify a person`}</pre>
+owners:
+  order-service:   { team: Orders, email: orders@acme.example }
+  partner-service: { team: KYC, email: kyc@acme.example }
+
+notices:
+  - notice_id: n-core
+    version: "3"
+    data_categories: [phone]
+    systems: ["*"]`}</pre>
           </BentoCard>
           <p className="mt-4 text-xs text-white/50 leading-relaxed">
-            When you update this config, the old version is kept. Every version is timestamped and auditable  -  your compliance team can prove what your policy was at any point in time.
+            When you update the policy, the earlier version is kept with its timestamp, so you can show what the policy said at any point in time.
           </p>
         </div>
       </section>
@@ -235,17 +254,16 @@ linkage_rules:
               <div className="font-pixel text-[10px] text-[#00cbaa] tracking-widest mb-5">WHAT VERITAS STORES</div>
               <div className="space-y-3">
                 {[
-                  "The rule that fired (e.g. EXPOSURE_001)",
-                  "The field name that triggered it (e.g. 'phone')",
-                  "The source system (e.g. 'order-service')",
-                  "Severity and DPDPA statute reference",
-                  "A masked snippet  -  PII values are replaced with [PHONE_REDACTED]",
-                  "The verdict hash chain (SHA-256)",
-                  "Case status: OPEN / ACKNOWLEDGED / RESOLVED",
-                  "Compliance team comments and timestamps",
+                  "The rule that fired, and why",
+                  "The field and the system it came from",
+                  "The owning team and the incident it belongs to",
+                  "A masked snippet, with values replaced by placeholders such as [PHONE_REDACTED]",
+                  "Keyed hashes for rights lookups and erasure checks",
+                  "The hash chain and its signed checkpoints",
+                  "Incident status, comments, and who changed what",
                 ].map(item => (
                   <div key={item} className="flex items-start gap-2.5 text-sm text-white/70">
-                    <span className="text-[#00cbaa] mt-0.5 shrink-0">✓</span> {item}
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#00cbaa] mt-2 shrink-0" /> {item}
                   </div>
                 ))}
               </div>
@@ -254,21 +272,20 @@ linkage_rules:
               <div className="font-pixel text-[10px] text-red-400 tracking-widest mb-5">WHAT VERITAS NEVER STORES</div>
               <div className="space-y-3">
                 {[
-                  "Raw PII values (Aadhaar numbers, PAN, phone numbers, names)",
-                  "Complete log lines (only masked snippets)",
+                  "Raw personal data values such as Aadhaar numbers, PAN or phone numbers",
+                  "Complete raw log lines",
                   "Your application's source code or configuration",
-                  "Agent authentication secrets after registration",
-                  "Any data on Veritas servers  -  everything is on your disk",
-                  "Anything that crosses your network boundary (except optional LLM call)",
+                  "Agent secrets after registration",
+                  "Anything on Veritas company servers: everything stays on your disk",
                 ].map(item => (
                   <div key={item} className="flex items-start gap-2.5 text-sm text-white/70">
-                    <span className="text-red-400 mt-0.5 shrink-0">✗</span> {item}
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-400 mt-2 shrink-0" /> {item}
                   </div>
                 ))}
               </div>
               <div className="mt-6 p-4 rounded-xl bg-[#b6abff]/10 border border-[#b6abff]/25">
                 <p className="text-xs text-[#b6abff] leading-relaxed">
-                  <span className="font-medium">Optional LLM call:</span> If you enable AI investigation, the model receives <Code>rule_id</Code>, <Code>field_name</Code>, and <Code>statute_text</Code> only. No raw PII is ever sent.
+                  <span className="font-medium">Leaving the server:</span> only signed checkpoints, sent to the witnesses you choose. They carry hashes of the chain, which let an outsider detect changes without seeing any personal data.
                 </p>
               </div>
             </BentoCard>
@@ -276,17 +293,17 @@ linkage_rules:
         </div>
       </section>
 
-      {/* RBAC */}
+      {/* Access control */}
       <section className="py-24 px-6 md:px-12 lg:px-20 border-t border-white/[0.08]">
         <div className="max-w-6xl mx-auto">
           <Tag>ACCESS CONTROL</Tag>
-          <h2 className="mt-5 text-3xl md:text-4xl font-light tracking-tight mb-10">Four roles. Server-enforced.</h2>
+          <h2 className="mt-5 text-3xl md:text-4xl font-light tracking-tight mb-10">Roles, enforced on the server.</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
             {[
-              { role: "SUPER_ADMIN", icon: "platform" as const, desc: "Full access. Creates organisations, manages users and agents across all orgs.", delay: 0 },
-              { role: "COMPLIANCE_ADMIN", icon: "workflow" as const, desc: "Manages users and cases within their organisation. Uploads and updates the org config.", delay: 60 },
-              { role: "AUDITOR", icon: "integrations" as const, desc: "Investigates, acknowledges, and resolves cases. Can export evidence. Cannot change configuration.", delay: 120 },
-              { role: "VIEWER", icon: "pricing" as const, desc: "Read-only access to the dashboard and audit ledger. For management and external auditors.", delay: 180 },
+              { role: "SUPER_ADMIN", icon: "platform" as const, desc: "Full access. Creates organisations and manages users and agents across organisations.", delay: 0 },
+              { role: "COMPLIANCE_ADMIN", icon: "workflow" as const, desc: "Manages users, incidents and the data policy within an organisation, and proposes rule changes.", delay: 60 },
+              { role: "AUDITOR", icon: "integrations" as const, desc: "Reviews incidents and evidence, checks the chain and downloads the audit pack. Cannot change configuration.", delay: 120 },
+              { role: "VIEWER", icon: "pricing" as const, desc: "Read-only access to the dashboard and the Audit Ledger, for management and external reviewers.", delay: 180 },
             ].map((item) => (
               <BentoCard key={item.role} className="p-6" delay={item.delay}>
                 <div className="mb-3"><PixelIcon type={item.icon} size={28} /></div>
@@ -295,7 +312,7 @@ linkage_rules:
               </BentoCard>
             ))}
           </div>
-          <p className="mt-4 text-xs text-white/50">Role checks are enforced server-side. The browser cannot grant itself elevated access by changing its request.</p>
+          <p className="mt-4 text-xs text-white/50">Role checks happen on the server, so a browser cannot grant itself more access by changing its requests. Rule changes take effect only after a second administrator approves them.</p>
         </div>
       </section>
 
